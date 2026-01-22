@@ -7,6 +7,8 @@ import (
 	"time"
 
 	controller "github.com/abhinash-kml/go-api-server/internal/controllers"
+	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
+	service "github.com/abhinash-kml/go-api-server/internal/services"
 	"go.uber.org/zap"
 )
 
@@ -18,7 +20,21 @@ type HttpServer struct {
 	IdleTimeout    time.Duration
 	MaxHeaderBytes int
 	TLSConfig      *tls.Config
-	logger         zap.Logger
+
+	// Services
+	userservice service.UserService
+	// postservice
+	// commentservice
+	// friendsservice
+
+	// Repositories
+	userrepository repository.UserRepository
+	// postsrepository
+	// commentsrepository
+	// friendsrepository
+
+	// Logger
+	logger zap.Logger
 }
 
 func NewHttpServer(Addr string, ReadTimeOut, WriteTimeout, IdleTimeout time.Duration, MaxHeaderBytes int) *HttpServer {
@@ -31,9 +47,21 @@ func NewHttpServer(Addr string, ReadTimeOut, WriteTimeout, IdleTimeout time.Dura
 	}
 }
 
+func (s *HttpServer) SetupServices() error {
+	return nil
+}
+
+func (s *HttpServer) SetupRepository() error {
+	return nil
+}
+
 func (s *HttpServer) SetupRoutes() error {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/users", controller.GetUsers)
+	mux.HandleFunc("GET /users", controller.GetUsers)
+	mux.HandleFunc("POST /users", controller.PostUsers)
+	mux.HandleFunc("PUT /users", controller.PutUsers)
+	mux.HandleFunc("PATCH /users", controller.PatchUsers)
+
 	s.Handler = mux
 	return nil
 }

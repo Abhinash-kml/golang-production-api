@@ -1,12 +1,8 @@
-package repository
+package service
 
 import model "github.com/abhinash-kml/go-api-server/internal/models"
 
-type UserRepository interface {
-	// Initialize
-	Setup() error
-
-	// CRUD logics
+type UserService interface {
 	GetUsers() ([]model.User, error)
 	InsertUsers([]model.User) error
 	UpdateUsers([]model.User) error
