@@ -1,11 +1,11 @@
 package model
 
 type User struct {
-	Id      int
-	Name    string
-	City    string
-	State   string
-	Country string
+	Id      int    `json:"id"`
+	Name    string `json:"name"`
+	City    string `json:"city"`
+	State   string `json:"state"`
+	Country string `json:"country"`
 }
 
 func NewUser(Id int, Name, City, State, Country string) *User {
