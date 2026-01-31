@@ -1,33 +1,48 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
+	controller "github.com/abhinash-kml/go-api-server/internal/controllers"
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
+	"github.com/abhinash-kml/go-api-server/internal/servers"
 	service "github.com/abhinash-kml/go-api-server/internal/services"
+	"go.uber.org/zap"
 )
 
 func main() {
-	// server := servers.NewHttpServer(":9000", time.Second*1, time.Second*1, time.Second*30, 2048)
-	// server.SetupRoutes()
-	// if err := server.Start(); err != nil {
-	// 	fmt.Println("Error: ", err)
-	// }
+	stopSig := make(chan os.Signal, 1)
+	signal.Notify(stopSig, syscall.SIGINT, syscall.SIGTERM)
 
-	repository := repository.NewInMemoryRepository()
-	repository.Setup()
-	userservice := service.NewLocalUserService(repository)
-
-	users, err := userservice.GetUsers()
+	logger, err := zap.NewProduction()
 	if err != nil {
-		fmt.Println(err.Error())
+		panic("Unable to initialize logger - Zap")
 	}
 
-	encoder := json.NewEncoder(os.Stdout)
+	userrepository := repository.NewInMemoryRepository()
+	userrepository.Setup()
+	userservice := service.NewLocalUserService(userrepository)
+	usercontroller := controller.NewUsersController(userservice, logger)
 
-	for _, value := range users {
-		encoder.Encode(&value)
-	}
+	server := servers.NewHttpServer(
+		":9000",
+		time.Second*1,
+		time.Second*1,
+		time.Second*30,
+		2048,
+		*usercontroller)
+
+	server.SetupRoutes()
+	go func() {
+		if err := server.Start(); err != nil {
+			fmt.Println("Error: ", err.Error())
+		}
+	}()
+
+	<-stopSig
+	server.Stop()
 }

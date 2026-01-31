@@ -14,7 +14,7 @@ var (
 type UserService interface {
 	GetUsers() ([]model.User, error)
 	InsertUsers([]model.User) error
-	UpdateUsers([]model.User) error
+	UpdateUsers([]model.User, []model.User) error
 	DeleteUsers([]model.User) error
 }
 
