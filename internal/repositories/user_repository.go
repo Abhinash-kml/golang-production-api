@@ -73,9 +73,7 @@ func (e *InMemoryRepository) Setup() error {
 		},
 	}
 
-	for _, value := range users {
-		e.users = append(e.users, value)
-	}
+	e.users = users
 
 	return nil
 }

@@ -28,13 +28,19 @@ func main() {
 	userservice := service.NewLocalUserService(userrepository)
 	usercontroller := controller.NewUsersController(userservice, logger)
 
+	commentrepository := repository.NewInMemoryCommentsRepository()
+	commentrepository.Setup()
+	commentservice := service.NewLocalCommentService(commentrepository)
+	commentscontroller := controller.NewCommentsController(commentservice, logger)
+
 	server := servers.NewHttpServer(
 		":9000",
 		time.Second*1,
 		time.Second*1,
 		time.Second*30,
 		2048,
-		*usercontroller)
+		*usercontroller,
+		*commentscontroller)
 
 	server.SetupRoutes()
 	go func() {
