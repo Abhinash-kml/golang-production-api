@@ -23,7 +23,7 @@ func main() {
 		panic("Unable to initialize logger - Zap")
 	}
 
-	userrepository := repository.NewInMemoryRepository()
+	userrepository := repository.NewInMemoryUsersRepository()
 	userrepository.Setup()
 	userservice := service.NewLocalUserService(userrepository)
 	usercontroller := controller.NewUsersController(userservice, logger)

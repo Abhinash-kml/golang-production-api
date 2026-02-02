@@ -2,12 +2,16 @@ package servers
 
 import (
 	"crypto/tls"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
+	"slices"
+	"strconv"
 	"time"
 
 	controller "github.com/abhinash-kml/go-api-server/internal/controllers"
+	"github.com/golang-jwt/jwt"
 	"go.uber.org/zap"
 )
 
@@ -50,6 +54,75 @@ func NewHttpServer(
 
 func (s *HttpServer) SetupRoutes() error {
 	mux := http.NewServeMux()
+
+	mux.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
+		// Set CORS headers
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		w.Header().Set("Access-Control-Expose-Headers", "Content-Length, X-Custom-Header")
+		w.Header().Set("Access-Control-Max-Age", "86400")
+
+		// Send JWT token
+		authheader := r.Header.Get("Authorization")
+		token := jwt.NewWithClaims(jwt.SigningMethodHS512, jwt.StandardClaims{
+			Audience:  "meow",
+			ExpiresAt: time.Now().Add(time.Minute * 120).Unix(),
+			Id:        "wjhdbnc scghwdjwx xdwb",
+			IssuedAt:  time.Now().Unix(),
+			Issuer:    "neo",
+			NotBefore: time.Now().Unix(),
+			Subject:   "testing",
+		})
+		signedToken, _ := token.SignedString([]byte("my-secret-key"))
+		w.Write([]byte(fmt.Sprintf("Jwt Token: %s", signedToken)))
+		fmt.Println("Auth header:", authheader)
+		fmt.Println("Origin:", r.Header.Get("Origin"))
+		bytes, _ := json.MarshalIndent(r.Header, "", "    ")
+		fmt.Println(string(bytes))
+	})
+
+	mux.HandleFunc("GET /offset", func(w http.ResponseWriter, r *http.Request) {
+		queryParams := r.URL.Query()
+		offset, _ := strconv.Atoi(queryParams.Get("offset"))
+		limit, _ := strconv.Atoi(queryParams.Get("limit"))
+		sort := queryParams.Get("sort")
+
+		nums := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}
+
+		if offset < 0 || offset >= 20 {
+			http.Error(w, "Invalid offset", http.StatusBadRequest)
+		}
+
+		if limit <= 0 || limit > 10 {
+			http.Error(w, "Invalid limit", http.StatusBadRequest)
+		}
+
+		payload := nums[offset : offset+limit]
+		switch sort {
+		case "asc":
+			json.NewEncoder(w).Encode(payload)
+		case "desc":
+			{
+				slices.Reverse(payload)
+				json.NewEncoder(w).Encode(payload)
+			}
+		}
+	})
+
+	mux.HandleFunc("GET /cursor", func(w http.ResponseWriter, r *http.Request) {
+		nums := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}
+
+		page, _ := strconv.Atoi(r.URL.Query().Get("page"))
+		after := r.URL.Query().Get("after")
+		before := r.URL.Query().Get("before")
+
+		fmt.Println("Page:", page)
+		fmt.Println("After:", after)
+		fmt.Println("Before:", before)
+		fmt.Println(nums)
+	})
 
 	// Users routes
 	mux.HandleFunc("GET /users", s.userscontroller.GetUsers)
