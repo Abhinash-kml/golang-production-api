@@ -28,6 +28,11 @@ func main() {
 	userservice := service.NewLocalUserService(userrepository)
 	usercontroller := controller.NewUsersController(userservice, logger)
 
+	postsrepository := repository.NewInMemoryPostsRepository()
+	postsrepository.Setup()
+	postsservice := service.NewLocalPostsService(postsrepository)
+	postscontroller := controller.NewPostsController(postsservice, logger)
+
 	commentrepository := repository.NewInMemoryCommentsRepository()
 	commentrepository.Setup()
 	commentservice := service.NewLocalCommentService(commentrepository)
@@ -40,6 +45,7 @@ func main() {
 		time.Second*30,
 		2048,
 		*usercontroller,
+		*postscontroller,
 		*commentscontroller)
 
 	server.SetupRoutes()

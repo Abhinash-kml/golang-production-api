@@ -1,8 +1,14 @@
 package repository
 
-import model "github.com/abhinash-kml/go-api-server/internal/models"
+import (
+	"errors"
 
-type PostRepository interface {
+	model "github.com/abhinash-kml/go-api-server/internal/models"
+)
+
+var ErrNoPosts = errors.New("No posts in repository")
+
+type PostsRepository interface {
 	Setup() error
 
 	GetPosts() ([]model.Post, error)
@@ -11,26 +17,30 @@ type PostRepository interface {
 	UpdatePosts([]model.Post) error
 }
 
-type InMemoryPostRepository struct {
+type InMemoryPostsRepository struct {
 	posts []model.Post
 }
 
-func (e *InMemoryPostRepository) Setup() error {
+func NewInMemoryPostsRepository() *InMemoryPostsRepository {
+	return &InMemoryPostsRepository{}
+}
+
+func (e *InMemoryPostsRepository) Setup() error {
 	return nil
 }
 
-func (e *InMemoryPostRepository) GetPosts() ([]model.Post, error) {
+func (e *InMemoryPostsRepository) GetPosts() ([]model.Post, error) {
 	return nil, nil
 }
 
-func (e *InMemoryPostRepository) InsertPosts(posts []model.Post) error {
+func (e *InMemoryPostsRepository) InsertPosts(posts []model.Post) error {
 	return nil
 }
 
-func (e *InMemoryPostRepository) DeletePosts(posts []model.Post) error {
+func (e *InMemoryPostsRepository) DeletePosts(posts []model.Post) error {
 	return nil
 }
 
-func (e *InMemoryPostRepository) UpdatePosts(posts []model.Post) error {
+func (e *InMemoryPostsRepository) UpdatePosts(posts []model.Post) error {
 	return nil
 }

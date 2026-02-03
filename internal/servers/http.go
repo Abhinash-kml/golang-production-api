@@ -27,8 +27,8 @@ type HttpServer struct {
 	TLSConfig      *tls.Config
 
 	// Controllers
-	userscontroller controller.UsersController
-	// postscontroller    controller.PostsController
+	userscontroller    controller.UsersController
+	postscontroller    controller.PostsController
 	commentscontroller controller.CommentsController
 
 	// Logger
@@ -42,6 +42,7 @@ func NewHttpServer(
 	IdleTimeout time.Duration,
 	MaxHeaderBytes int,
 	UsersController controller.UsersController,
+	PostController controller.PostsController,
 	CommentsController controller.CommentsController) *HttpServer {
 	return &HttpServer{
 		Addr:               Addr,
@@ -50,6 +51,7 @@ func NewHttpServer(
 		IdleTimeout:        IdleTimeout,
 		MaxHeaderBytes:     MaxHeaderBytes,
 		userscontroller:    UsersController,
+		postscontroller:    PostController,
 		commentscontroller: CommentsController,
 	}
 }
@@ -180,10 +182,10 @@ func (s *HttpServer) SetupRoutes() error {
 	mux.HandleFunc("PATCH /users", s.userscontroller.PatchUsers)
 
 	// Post routes
-	// mux.HandleFunc("GET /posts", s.postscontroller.GetPosts)
-	// mux.HandleFunc("POST /posts", s.postscontroller.PostPosts)
-	// mux.HandleFunc("PUT /posts", s.postscontroller.PutPosts)
-	// mux.HandleFunc("PATCH /posts", s.postscontroller.PatchPosts)
+	mux.HandleFunc("GET /posts", s.postscontroller.GetPosts)
+	mux.HandleFunc("POST /posts", s.postscontroller.PostPosts)
+	mux.HandleFunc("PUT /posts", s.postscontroller.PutPosts)
+	mux.HandleFunc("PATCH /posts", s.postscontroller.PatchPosts)
 
 	// Comments routes
 	mux.HandleFunc("GET /comments", s.commentscontroller.GetComments)
