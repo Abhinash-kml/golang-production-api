@@ -8,6 +8,7 @@ import (
 	"os"
 	"slices"
 	"strconv"
+	"strings"
 	"time"
 
 	controller "github.com/abhinash-kml/go-api-server/internal/controllers"
@@ -52,6 +53,12 @@ func NewHttpServer(
 	}
 }
 
+type Myclaims struct {
+	jwt.StandardClaims
+	Myid string `json:"myid"`
+	Meow string `json:"meow"`
+}
+
 func (s *HttpServer) SetupRoutes() error {
 	mux := http.NewServeMux()
 
@@ -64,23 +71,49 @@ func (s *HttpServer) SetupRoutes() error {
 		w.Header().Set("Access-Control-Expose-Headers", "Content-Length, X-Custom-Header")
 		w.Header().Set("Access-Control-Max-Age", "86400")
 
+		mclaims := Myclaims{
+			Myid: "mmm",
+			Meow: "llll",
+			StandardClaims: jwt.StandardClaims{
+				IssuedAt:  time.Now().Unix(),
+				Issuer:    "Neo",
+				ExpiresAt: time.Now().Add(time.Hour * 2).Unix(),
+				Subject:   "nice subject",
+				Id:        "nkaheui",
+				Audience:  "Hello Audience",
+			},
+		}
+
 		// Send JWT token
-		authheader := r.Header.Get("Authorization")
-		token := jwt.NewWithClaims(jwt.SigningMethodHS512, jwt.StandardClaims{
-			Audience:  "meow",
-			ExpiresAt: time.Now().Add(time.Minute * 120).Unix(),
-			Id:        "wjhdbnc scghwdjwx xdwb",
-			IssuedAt:  time.Now().Unix(),
-			Issuer:    "neo",
-			NotBefore: time.Now().Unix(),
-			Subject:   "testing",
-		})
+		token := jwt.NewWithClaims(jwt.SigningMethodHS512, mclaims)
 		signedToken, _ := token.SignedString([]byte("my-secret-key"))
 		w.Write([]byte(fmt.Sprintf("Jwt Token: %s", signedToken)))
-		fmt.Println("Auth header:", authheader)
-		fmt.Println("Origin:", r.Header.Get("Origin"))
-		bytes, _ := json.MarshalIndent(r.Header, "", "    ")
-		fmt.Println(string(bytes))
+	})
+
+	mux.HandleFunc("GET /verify", func(w http.ResponseWriter, r *http.Request) {
+		authheader := r.Header.Get("Authorization")
+		separated := strings.Split(authheader, " ")
+
+		if len(separated) < 2 {
+			http.Error(w, "Bad Header", http.StatusBadRequest)
+		}
+
+		if separated[0] != "Bearer" {
+			http.Error(w, "Bad Token Scheme", http.StatusUnauthorized)
+		}
+
+		token, _ := jwt.ParseWithClaims(separated[1], &Myclaims{}, func(t *jwt.Token) (interface{}, error) {
+			return []byte("my-secret-key"), nil
+		})
+
+		if claims, ok := token.Claims.(Myclaims); ok && token.Valid {
+			if claims.Meow != "llll" || claims.Myid != "mmm" || claims.Issuer != "Neo" {
+				http.Error(w, "Invalid claims", 401)
+				return
+			}
+		}
+
+		w.Write([]byte("Success"))
 	})
 
 	mux.HandleFunc("GET /offset", func(w http.ResponseWriter, r *http.Request) {
