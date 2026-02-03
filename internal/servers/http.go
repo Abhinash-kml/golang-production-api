@@ -2,6 +2,7 @@ package servers
 
 import (
 	"crypto/tls"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -147,11 +148,26 @@ func (s *HttpServer) SetupRoutes() error {
 	mux.HandleFunc("GET /cursor", func(w http.ResponseWriter, r *http.Request) {
 		nums := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}
 
-		page, _ := strconv.Atoi(r.URL.Query().Get("page"))
+		limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
 		after := r.URL.Query().Get("after")
 		before := r.URL.Query().Get("before")
 
-		fmt.Println("Page:", page)
+		var (
+			encodedAfter  string
+			encodedBefore string
+			// decodedAfter  []byte
+			// decodedBefore []byte
+		)
+
+		// base64.URLEncoding.Decode(decodedAfter, []byte(after))
+		// base64.URLEncoding.Decode(decodedBefore, []byte(before))
+		encodedAfter = base64.URLEncoding.EncodeToString([]byte("20hgwfhbkewfnk,ejwfnewf"))
+		encodedBefore = base64.URLEncoding.EncodeToString([]byte("10,mfbnewkjufrhewkfnwfjbqedq"))
+
+		fmt.Println("Encoded after:", string(encodedAfter))
+		fmt.Println("Encoded before:", string(encodedBefore))
+
+		fmt.Println("Limit:", limit)
 		fmt.Println("After:", after)
 		fmt.Println("Before:", before)
 		fmt.Println(nums)
