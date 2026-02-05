@@ -1,12 +1,12 @@
 package servers
 
 import (
+	"context"
 	"crypto/tls"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
 	"slices"
 	"strconv"
 	"strings"
@@ -17,14 +17,12 @@ import (
 	"go.uber.org/zap"
 )
 
-type HttpServer struct {
-	Addr           string
-	Handler        http.Handler
-	ReadTimeout    time.Duration
-	WriteTimeout   time.Duration
-	IdleTimeout    time.Duration
-	MaxHeaderBytes int
-	TLSConfig      *tls.Config
+type Hook func() error
+
+type CustomHttpServer struct {
+	// Internal http server
+	server *http.Server
+	mux    *http.ServeMux
 
 	// Controllers
 	userscontroller    controller.UsersController
@@ -33,26 +31,105 @@ type HttpServer struct {
 
 	// Logger
 	logger zap.Logger
+
+	// Before start hooks
+	beforeStartHooks []Hook
+
+	// After start hooks
+	afterStartHooks []Hook
+
+	// Before stop hooks
+	beforeStopHooks []Hook
+
+	// After stop hooks
+	afterStopHooks []Hook
 }
 
-func NewHttpServer(
-	Addr string,
-	ReadTimeOut,
-	WriteTimeout,
-	IdleTimeout time.Duration,
-	MaxHeaderBytes int,
-	UsersController controller.UsersController,
-	PostController controller.PostsController,
-	CommentsController controller.CommentsController) *HttpServer {
-	return &HttpServer{
-		Addr:               Addr,
-		ReadTimeout:        ReadTimeOut,
-		WriteTimeout:       WriteTimeout,
-		IdleTimeout:        IdleTimeout,
-		MaxHeaderBytes:     MaxHeaderBytes,
-		userscontroller:    UsersController,
-		postscontroller:    PostController,
-		commentscontroller: CommentsController,
+func NewCustomCustomHttpServer(options ...FunctionalOption) *CustomHttpServer {
+	internal := &http.Server{}
+	wrapper := &CustomHttpServer{server: internal}
+
+	for _, value := range options {
+		value(wrapper)
+	}
+
+	// Mux provided externally, use that in internal server else provide default one
+	if wrapper.mux != nil {
+		wrapper.server.Handler = wrapper.mux
+	} else {
+		defaultmux := http.NewServeMux()     // Create default
+		wrapper.mux = defaultmux             // Assign external pointer first
+		wrapper.server.Handler = wrapper.mux // Assign internal
+	}
+
+	return wrapper
+}
+
+type FunctionalOption func(*CustomHttpServer)
+
+func WithAddress(address string) FunctionalOption {
+	return func(c *CustomHttpServer) {
+		c.server.Addr = address
+	}
+}
+
+func WithReadTimeout(time time.Duration) FunctionalOption {
+	return func(c *CustomHttpServer) {
+		c.server.ReadTimeout = time
+	}
+}
+
+func WithWriteTimeout(time time.Duration) FunctionalOption {
+	return func(c *CustomHttpServer) {
+		c.server.WriteTimeout = time
+	}
+}
+
+func WithIdleTimeout(time time.Duration) FunctionalOption {
+	return func(c *CustomHttpServer) {
+		c.server.IdleTimeout = time
+	}
+}
+
+func WithMaxHeaderBytes(bytes int) FunctionalOption {
+	return func(c *CustomHttpServer) {
+		c.server.MaxHeaderBytes = bytes
+	}
+}
+
+func WithHandler(handler *http.ServeMux) FunctionalOption {
+	return func(c *CustomHttpServer) {
+		c.mux = handler
+	}
+}
+
+func WithTlsConfig(config *tls.Config) FunctionalOption {
+	return func(c *CustomHttpServer) {
+		c.server.TLSConfig = config
+	}
+}
+
+func WithLogger(logger zap.Logger) FunctionalOption {
+	return func(c *CustomHttpServer) {
+		c.logger = logger
+	}
+}
+
+func WithUsersController(controller controller.UsersController) FunctionalOption {
+	return func(c *CustomHttpServer) {
+		c.userscontroller = controller
+	}
+}
+
+func WithPostsController(controller controller.PostsController) FunctionalOption {
+	return func(c *CustomHttpServer) {
+		c.postscontroller = controller
+	}
+}
+
+func WithCommentsController(controller controller.CommentsController) FunctionalOption {
+	return func(c *CustomHttpServer) {
+		c.commentscontroller = controller
 	}
 }
 
@@ -62,10 +139,8 @@ type Myclaims struct {
 	Meow string `json:"meow"`
 }
 
-func (s *HttpServer) SetupRoutes() error {
-	mux := http.NewServeMux()
-
-	mux.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
+func (s *CustomHttpServer) SetupRoutes() error {
+	s.mux.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
 		// Set CORS headers
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
@@ -93,7 +168,7 @@ func (s *HttpServer) SetupRoutes() error {
 		w.Write([]byte(fmt.Sprintf("Jwt Token: %s", signedToken)))
 	})
 
-	mux.HandleFunc("GET /verify", func(w http.ResponseWriter, r *http.Request) {
+	s.mux.HandleFunc("GET /verify", func(w http.ResponseWriter, r *http.Request) {
 		authheader := r.Header.Get("Authorization")
 		separated := strings.Split(authheader, " ")
 
@@ -119,7 +194,7 @@ func (s *HttpServer) SetupRoutes() error {
 		w.Write([]byte("Success"))
 	})
 
-	mux.HandleFunc("GET /offset", func(w http.ResponseWriter, r *http.Request) {
+	s.mux.HandleFunc("GET /offset", func(w http.ResponseWriter, r *http.Request) {
 		queryParams := r.URL.Query()
 		offset, _ := strconv.Atoi(queryParams.Get("offset"))
 		limit, _ := strconv.Atoi(queryParams.Get("limit"))
@@ -147,7 +222,7 @@ func (s *HttpServer) SetupRoutes() error {
 		}
 	})
 
-	mux.HandleFunc("GET /cursor", func(w http.ResponseWriter, r *http.Request) {
+	s.mux.HandleFunc("GET /cursor", func(w http.ResponseWriter, r *http.Request) {
 		nums := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}
 
 		limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
@@ -176,33 +251,122 @@ func (s *HttpServer) SetupRoutes() error {
 	})
 
 	// Users routes
-	mux.HandleFunc("GET /users", s.userscontroller.GetUsers)
-	mux.HandleFunc("POST /users", s.userscontroller.PostUsers)
-	mux.HandleFunc("PUT /users", s.userscontroller.PutUsers)
-	mux.HandleFunc("PATCH /users", s.userscontroller.PatchUsers)
+	s.mux.HandleFunc("GET /users", s.userscontroller.GetUsers)
+	s.mux.HandleFunc("POST /users", s.userscontroller.PostUsers)
+	s.mux.HandleFunc("PUT /users", s.userscontroller.PutUsers)
+	s.mux.HandleFunc("PATCH /users", s.userscontroller.PatchUsers)
 
 	// Post routes
-	mux.HandleFunc("GET /posts", s.postscontroller.GetPosts)
-	mux.HandleFunc("POST /posts", s.postscontroller.PostPosts)
-	mux.HandleFunc("PUT /posts", s.postscontroller.PutPosts)
-	mux.HandleFunc("PATCH /posts", s.postscontroller.PatchPosts)
+	s.mux.HandleFunc("GET /posts", s.postscontroller.GetPosts)
+	s.mux.HandleFunc("POST /posts", s.postscontroller.PostPosts)
+	s.mux.HandleFunc("PUT /posts", s.postscontroller.PutPosts)
+	s.mux.HandleFunc("PATCH /posts", s.postscontroller.PatchPosts)
 
 	// Comments routes
-	mux.HandleFunc("GET /comments", s.commentscontroller.GetComments)
-	mux.HandleFunc("POST /comments", s.commentscontroller.PostComments)
-	mux.HandleFunc("PUT /comments", s.commentscontroller.PutComments)
-	mux.HandleFunc("PATCH /comments", s.commentscontroller.PatchComments)
+	s.mux.HandleFunc("GET /comments", s.commentscontroller.GetComments)
+	s.mux.HandleFunc("POST /comments", s.commentscontroller.PostComments)
+	s.mux.HandleFunc("PUT /comments", s.commentscontroller.PutComments)
+	s.mux.HandleFunc("PATCH /comments", s.commentscontroller.PatchComments)
 
-	s.Handler = mux
 	return nil
 }
 
-func (s *HttpServer) Start() error {
-	fmt.Println("Starting HTTP server on ", s.Addr)
-	return http.ListenAndServe(s.Addr, s.Handler)
+func (s *CustomHttpServer) AddRoute(pattern string, handler http.HandlerFunc) {
+	s.mux.HandleFunc(pattern, handler)
 }
 
-func (s *HttpServer) Stop() {
+func (s *CustomHttpServer) AddRoutes() {
+
+}
+
+func (s *CustomHttpServer) AddBeforeStartHook(hook Hook) {
+	s.beforeStartHooks = append(s.beforeStartHooks, hook)
+}
+
+func (s *CustomHttpServer) AddAfterStartHook(hook Hook) {
+	s.afterStartHooks = append(s.afterStartHooks, hook)
+}
+
+func (s *CustomHttpServer) AddBeforeStopHook(hook Hook) {
+	s.beforeStopHooks = append(s.beforeStopHooks, hook)
+}
+
+func (s *CustomHttpServer) AddAfterStopHook(hook Hook) {
+	s.afterStopHooks = append(s.afterStopHooks, hook)
+}
+
+func (s *CustomHttpServer) Start() error {
+	// Execute before start hooks
+	for _, hooks := range s.beforeStartHooks {
+		if err := hooks(); err != nil {
+			s.logger.Error("Failed to start server", zap.Error(err))
+			return err
+		}
+	}
+
+	fmt.Println("Starting HTTP server on ", s.server.Addr)
+
+	// Start the actual server on another goroutine and listen for error on buffered channel
+	errChan := make(chan error, 1)
+	go func() {
+		errChan <- s.server.ListenAndServe()
+	}()
+
+	// Lets wait for an immediate failure within 2 sec and then execute after start hooks
+	select {
+	case <-time.After(time.Second * 2):
+		{
+			s.logger.Info("Server started successfully.", zap.String("Address", s.server.Addr))
+
+			// Execute after start hooks in their own goroutine so we start monitoring for error immediately
+			go func() {
+				for _, hooks := range s.afterStartHooks {
+					if err := hooks(); err != nil {
+						s.logger.Error("After start hook error", zap.Error(err))
+					}
+				}
+			}()
+
+			// Monitor errChan in background goroutine as now Start() is returning
+			// and its a blocking work
+			go func() {
+				err := <-errChan
+				if err != nil && err != http.ErrServerClosed {
+					s.logger.Error("Server crashed after successful start", zap.Error(err))
+				}
+			}()
+
+			return nil // Success
+		}
+	case err := <-errChan: // Server failed within 2 secs
+		return err
+	}
+}
+
+func (s *CustomHttpServer) Stop() error {
+	// Execute before stop hooks
+	for _, hooks := range s.beforeStopHooks {
+		if err := hooks(); err != nil {
+			s.logger.Error("Failed to stop server", zap.Error(err))
+			return err
+		}
+	}
+
 	fmt.Println("Shutting down http server...")
-	os.Exit(0)
+
+	// Give it a grace period of 2 secs to terminate all connections and free up resources
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
+	defer cancel()
+	s.server.Shutdown(ctx)
+
+	// Execute after stop hooks
+	for _, hooks := range s.afterStopHooks {
+		if err := hooks(); err != nil {
+			s.logger.Error("After stop hook error", zap.Error(err))
+			return err
+		}
+	}
+
+	return nil
+	// os.Exit(0)
 }

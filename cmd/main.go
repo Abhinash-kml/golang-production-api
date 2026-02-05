@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -38,23 +39,47 @@ func main() {
 	commentservice := service.NewLocalCommentService(commentrepository)
 	commentscontroller := controller.NewCommentsController(commentservice, logger)
 
-	server := servers.NewHttpServer(
-		":9000",
-		time.Second*1,
-		time.Second*1,
-		time.Second*30,
-		2048,
-		*usercontroller,
-		*postscontroller,
-		*commentscontroller)
+	server := servers.NewCustomCustomHttpServer(
+		servers.WithAddress(":9000"),
+		servers.WithIdleTimeout(time.Second*15),
+		servers.WithReadTimeout(time.Second*15),
+		servers.WithWriteTimeout(time.Second*5),
+		servers.WithMaxHeaderBytes(1500),
+		servers.WithLogger(*logger),
+		servers.WithUsersController(*usercontroller),
+		servers.WithPostsController(*postscontroller),
+		servers.WithCommentsController(*commentscontroller))
 
 	server.SetupRoutes()
-	go func() {
-		if err := server.Start(); err != nil {
-			fmt.Println("Error: ", err.Error())
-		}
-	}()
+	server.AddRoute("GET /custom", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Registering custom routes successfull\nIts working yeaaahhh"))
+	})
 
-	<-stopSig
+	server.AddBeforeStartHook(func() error {
+		fmt.Println("Before start hook...")
+		return nil
+	})
+
+	server.AddAfterStartHook(func() error {
+		fmt.Println("After start hook...")
+		return nil
+	})
+
+	server.AddBeforeStopHook(func() error {
+		fmt.Println("Before stop hook...")
+		return nil
+	})
+
+	server.AddAfterStopHook(func() error {
+		fmt.Println("After stop hook...")
+		return nil
+	})
+
+	if err := server.Start(); err != nil {
+		fmt.Println("Error: ", err.Error())
+	}
+
+	fmt.Println("Listening for termination syscall...")
+	fmt.Println("Got:", <-stopSig)
 	server.Stop()
 }
