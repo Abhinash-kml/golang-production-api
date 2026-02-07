@@ -13,7 +13,7 @@ import (
 	"time"
 
 	controller "github.com/abhinash-kml/go-api-server/internal/controllers"
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v5"
 	"go.uber.org/zap"
 )
 
@@ -134,7 +134,7 @@ func WithCommentsController(controller controller.CommentsController) Functional
 }
 
 type Myclaims struct {
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 	Myid string `json:"myid"`
 	Meow string `json:"meow"`
 }
@@ -152,13 +152,13 @@ func (s *CustomHttpServer) SetupRoutes() error {
 		mclaims := Myclaims{
 			Myid: "mmm",
 			Meow: "llll",
-			StandardClaims: jwt.StandardClaims{
-				IssuedAt:  time.Now().Unix(),
+			RegisteredClaims: jwt.RegisteredClaims{
+				IssuedAt:  jwt.NewNumericDate(time.Now()),
 				Issuer:    "Neo",
-				ExpiresAt: time.Now().Add(time.Hour * 2).Unix(),
+				ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 2)),
 				Subject:   "nice subject",
-				Id:        "nkaheui",
-				Audience:  "Hello Audience",
+				ID:        "nkaheui",
+				Audience:  []string{"Hello Audience"},
 			},
 		}
 
@@ -172,17 +172,15 @@ func (s *CustomHttpServer) SetupRoutes() error {
 		authheader := r.Header.Get("Authorization")
 		separated := strings.Split(authheader, " ")
 
-		if len(separated) < 2 {
-			http.Error(w, "Bad Header", http.StatusBadRequest)
+		if len(separated) < 2 || separated[0] != "Bearer" {
+			http.Error(w, "Bad Header", http.StatusUnauthorized)
 		}
 
-		if separated[0] != "Bearer" {
-			http.Error(w, "Bad Token Scheme", http.StatusUnauthorized)
-		}
-
-		token, _ := jwt.ParseWithClaims(separated[1], &Myclaims{}, func(t *jwt.Token) (interface{}, error) {
+		keyfunc := func(token *jwt.Token) (interface{}, error) {
 			return []byte("my-secret-key"), nil
-		})
+		}
+
+		token, _ := jwt.ParseWithClaims(separated[1], &Myclaims{}, keyfunc)
 
 		if claims, ok := token.Claims.(Myclaims); ok && token.Valid {
 			if claims.Meow != "llll" || claims.Myid != "mmm" || claims.Issuer != "Neo" {

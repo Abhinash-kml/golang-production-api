@@ -33,7 +33,6 @@ type Post struct {
 	Title     string    `json:"title"`
 	Body      string    `json:"body"`
 	Likes     int       `json:"likes"`
-	Comments  []Comment `json:"comments"`
 	CreatorId int       `json:"creatorid"`
 	CreatedAt time.Time `json:"createdat"`
 }

@@ -1,0 +1,170 @@
+[
+    {
+        "id": 1,
+        "commenterid": 1,
+        "postid": 1,
+        "body": "This article explains the problem very clearly.\nI especially liked the examples.",
+        "likes": 6
+    },
+    {
+        "id": 2,
+        "commenterid": 2,
+        "postid": 1,
+        "body": "I ran into the same issue last week.\nGood to know there’s a cleaner solution.",
+        "likes": 4
+    },
+    {
+        "id": 3,
+        "commenterid": 3,
+        "postid": 2,
+        "body": "The approach makes sense, but I think edge cases need more coverage.",
+        "likes": 2
+    },
+    {
+        "id": 4,
+        "commenterid": 4,
+        "postid": 2,
+        "body": "Can you share benchmarks for this?\nCurious how it behaves under load.",
+        "likes": 5
+    },
+    {
+        "id": 5,
+        "commenterid": 5,
+        "postid": 2,
+        "body": "Tried this in my own codebase and it worked well.\nThanks for sharing.",
+        "likes": 7
+    },
+    {
+        "id": 6,
+        "commenterid": 6,
+        "postid": 3,
+        "body": "Simple explanation and straight to the point.",
+        "likes": 3
+    },
+    {
+        "id": 7,
+        "commenterid": 7,
+        "postid": 4,
+        "body": "This cleared up a lot of confusion for me.\nReally appreciate the breakdown.",
+        "likes": 8
+    },
+    {
+        "id": 8,
+        "commenterid": 8,
+        "postid": 4,
+        "body": "One thing to watch out for is memory usage.\nOtherwise, solid advice.",
+        "likes": 4
+    },
+    {
+        "id": 9,
+        "commenterid": 9,
+        "postid": 4,
+        "body": "Do you recommend this approach for production systems?",
+        "likes": 2
+    },
+    {
+        "id": 10,
+        "commenterid": 10,
+        "postid": 4,
+        "body": "Nice write-up.\nVery easy to follow.",
+        "likes": 6
+    },
+    {
+        "id": 11,
+        "commenterid": 11,
+        "postid": 5,
+        "body": "I like how you compared this with alternative solutions.",
+        "likes": 5
+    },
+    {
+        "id": 12,
+        "commenterid": 12,
+        "postid": 5,
+        "body": "This saved me a lot of trial and error.\nThanks!",
+        "likes": 9
+    },
+    {
+        "id": 13,
+        "commenterid": 13,
+        "postid": 6,
+        "body": "The diagrams really helped understanding the flow.",
+        "likes": 4
+    },
+    {
+        "id": 14,
+        "commenterid": 14,
+        "postid": 6,
+        "body": "I’m not fully convinced about the scalability aspect.\nWould love more details.",
+        "likes": 3
+    },
+    {
+        "id": 15,
+        "commenterid": 15,
+        "postid": 6,
+        "body": "Tested this on a small service and it behaves as expected.",
+        "likes": 6
+    },
+    {
+        "id": 16,
+        "commenterid": 16,
+        "postid": 7,
+        "body": "Very practical advice.\nThis matches what we do internally.",
+        "likes": 7
+    },
+    {
+        "id": 17,
+        "commenterid": 17,
+        "postid": 8,
+        "body": "Good balance between theory and implementation details.",
+        "likes": 5
+    },
+    {
+        "id": 18,
+        "commenterid": 18,
+        "postid": 8,
+        "body": "Would be nice to see a real-world example next time.",
+        "likes": 3
+    },
+    {
+        "id": 19,
+        "commenterid": 19,
+        "postid": 8,
+        "body": "Clean and readable.\nBookmarked for future reference.",
+        "likes": 8
+    },
+    {
+        "id": 20,
+        "commenterid": 20,
+        "postid": 9,
+        "body": "This aligns with the patterns I’ve seen in large systems.",
+        "likes": 6
+    },
+    {
+        "id": 21,
+        "commenterid": 21,
+        "postid": 9,
+        "body": "Minor typo aside, the content is solid.",
+        "likes": 2
+    },
+    {
+        "id": 22,
+        "commenterid": 22,
+        "postid": 10,
+        "body": "Excellent conclusion.\nSummarizes everything nicely.",
+        "likes": 9
+    },
+    {
+        "id": 23,
+        "commenterid": 23,
+        "postid": 10,
+        "body": "I followed along step by step and it worked perfectly.",
+        "likes": 7
+    },
+    {
+        "id": 24,
+        "commenterid": 24,
+        "postid": 10,
+        "body": "Looking forward to the next post in this series.",
+        "likes": 5
+    }
+]

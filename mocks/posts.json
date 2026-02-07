@@ -1,0 +1,819 @@
+[
+  {
+    "id": 1,
+    "title": "Getting started with Go concurrency",
+    "body": "Today I experimented with goroutines and channels. The simplicity is deceptive but powerful.",
+    "likes": 42,
+    "creatorid": 1,
+    "createdat": "2026-01-20T10:30:00Z"
+  },
+  {
+    "id": 2,
+    "title": "Why slices feel like pointers",
+    "body": "Coming from C++, Go slices feel familiar. Header copies, shared backing arrays, subtle bugs.",
+    "likes": 55,
+    "creatorid": 2,
+    "createdat": "2026-01-20T09:55:00Z"
+  },
+  {
+    "id": 3,
+    "title": "Designing an in-memory repository",
+    "body": "I prototyped an in-memory repo for rapid iteration. Returning slices needs discipline.",
+    "likes": 33,
+    "creatorid": 3,
+    "createdat": "2026-01-20T09:10:00Z"
+  },
+  {
+    "id": 4,
+    "title": "Email HTML is harder than it looks",
+    "body": "Modern CSS habits break fast in email clients. Tables still rule everything.",
+    "likes": 78,
+    "creatorid": 4,
+    "createdat": "2026-01-20T08:40:00Z"
+  },
+  {
+    "id": 5,
+    "title": "Background images in Gmail",
+    "body": "Gmail mobile ignores half of CSS. The only reliable way is table-based layout.",
+    "likes": 64,
+    "creatorid": 5,
+    "createdat": "2026-01-20T08:05:00Z"
+  },
+
+  {
+    "id": 6,
+    "title": "Understanding heap escape in Go",
+    "body": "Escape analysis decides allocation, not pointers. Compiler behavior matters.",
+    "likes": 91,
+    "creatorid": 1,
+    "createdat": "2026-01-19T21:10:00Z"
+  },
+  {
+    "id": 7,
+    "title": "Returning slices from repositories",
+    "body": "Returning slices exposes internal memory. Sometimes fine, sometimes dangerous.",
+    "likes": 47,
+    "creatorid": 2,
+    "createdat": "2026-01-19T20:45:00Z"
+  },
+  {
+    "id": 8,
+    "title": "When to return pointers in Go",
+    "body": "Use pointers for mutation, large structs, or identity. Not by default.",
+    "likes": 88,
+    "creatorid": 3,
+    "createdat": "2026-01-19T20:10:00Z"
+  },
+  {
+    "id": 9,
+    "title": "Go feels like modern C",
+    "body": "Explicit, predictable, minimal magic. A good fit for backend systems.",
+    "likes": 72,
+    "creatorid": 4,
+    "createdat": "2026-01-19T19:30:00Z"
+  },
+  {
+    "id": 10,
+    "title": "Why net/http still scales",
+    "body": "Despite being simple, net/http handles massive traffic when used correctly.",
+    "likes": 60,
+    "creatorid": 5,
+    "createdat": "2026-01-19T18:55:00Z"
+  },
+
+  {
+    "id": 11,
+    "title": "Building a custom router abstraction",
+    "body": "Abstracting routing allows swapping frameworks without touching business logic.",
+    "likes": 66,
+    "creatorid": 6,
+    "createdat": "2026-01-19T18:20:00Z"
+  },
+  {
+    "id": 12,
+    "title": "Why gin handlers need adapters",
+    "body": "Standard http handlers make portability easier across frameworks.",
+    "likes": 41,
+    "creatorid": 7,
+    "createdat": "2026-01-19T17:50:00Z"
+  },
+  {
+    "id": 13,
+    "title": "Go-zero service context explained",
+    "body": "The service context wires configs, DBs, caches, and clients together.",
+    "likes": 85,
+    "creatorid": 8,
+    "createdat": "2026-01-19T17:15:00Z"
+  },
+  {
+    "id": 14,
+    "title": "Why shallow copies are dangerous",
+    "body": "Shared backing arrays can mutate state across layers silently.",
+    "likes": 92,
+    "creatorid": 9,
+    "createdat": "2026-01-19T16:45:00Z"
+  },
+  {
+    "id": 15,
+    "title": "Copy-on-read vs copy-on-write",
+    "body": "Choosing the right strategy depends on ownership and mutation rules.",
+    "likes": 70,
+    "creatorid": 10,
+    "createdat": "2026-01-19T16:10:00Z"
+  },
+
+  {
+    "id": 16,
+    "title": "Mocking repositories cleanly",
+    "body": "Interfaces plus in-memory slices give fast, reliable tests.",
+    "likes": 59,
+    "creatorid": 1,
+    "createdat": "2026-01-19T15:35:00Z"
+  },
+  {
+    "id": 17,
+    "title": "Why immutability helps",
+    "body": "Immutability reduces mental load, especially across service boundaries.",
+    "likes": 83,
+    "creatorid": 2,
+    "createdat": "2026-01-19T15:00:00Z"
+  },
+  {
+    "id": 18,
+    "title": "Layered architecture in Go",
+    "body": "Repo → Service → Handler keeps responsibilities clean.",
+    "likes": 68,
+    "creatorid": 3,
+    "createdat": "2026-01-19T14:30:00Z"
+  },
+  {
+    "id": 19,
+    "title": "Avoid premature optimization",
+    "body": "Measure first. Most performance bugs are imaginary.",
+    "likes": 95,
+    "creatorid": 4,
+    "createdat": "2026-01-19T13:55:00Z"
+  },
+  {
+    "id": 20,
+    "title": "Readable code scales better",
+    "body": "Clear intent beats clever tricks every time.",
+    "likes": 101,
+    "creatorid": 5,
+    "createdat": "2026-01-19T13:20:00Z"
+  },
+    {
+    "id": 21,
+    "title": "Understanding handler ownership",
+    "body": "Handlers should orchestrate, not own business logic. Keep them thin.",
+    "likes": 44,
+    "creatorid": 6,
+    "createdat": "2026-01-19T12:50:00Z"
+  },
+  {
+    "id": 22,
+    "title": "Why returning DTOs matters",
+    "body": "Returning domain models leaks internals. DTOs create safer boundaries.",
+    "likes": 58,
+    "creatorid": 7,
+    "createdat": "2026-01-19T12:20:00Z"
+  },
+  {
+    "id": 23,
+    "title": "Designing APIs for change",
+    "body": "Assume every API will evolve. Versioning and contracts are key.",
+    "likes": 61,
+    "creatorid": 8,
+    "createdat": "2026-01-19T11:45:00Z"
+  },
+  {
+    "id": 24,
+    "title": "Go interfaces are implicit",
+    "body": "Implicit interfaces reduce coupling and make refactoring easier.",
+    "likes": 89,
+    "creatorid": 9,
+    "createdat": "2026-01-19T11:15:00Z"
+  },
+  {
+    "id": 25,
+    "title": "When NOT to use pointers",
+    "body": "Small immutable structs work best as values. Don’t overuse pointers.",
+    "likes": 73,
+    "creatorid": 10,
+    "createdat": "2026-01-19T10:40:00Z"
+  },
+  {
+    "id": 26,
+    "title": "Understanding Go memory model",
+    "body": "Knowing when data is shared prevents subtle race conditions.",
+    "likes": 90,
+    "creatorid": 1,
+    "createdat": "2026-01-19T10:05:00Z"
+  },
+  {
+    "id": 27,
+    "title": "Concurrency is not parallelism",
+    "body": "Concurrency is structure. Parallelism is execution.",
+    "likes": 120,
+    "creatorid": 2,
+    "createdat": "2026-01-19T09:30:00Z"
+  },
+  {
+    "id": 28,
+    "title": "Email clients are hostile environments",
+    "body": "Every client breaks something different. Expect inconsistency.",
+    "likes": 67,
+    "creatorid": 3,
+    "createdat": "2026-01-19T09:00:00Z"
+  },
+  {
+    "id": 29,
+    "title": "Why tables still dominate email HTML",
+    "body": "Flexbox and grid are unreliable. Tables are predictable.",
+    "likes": 82,
+    "creatorid": 4,
+    "createdat": "2026-01-19T08:25:00Z"
+  },
+  {
+    "id": 30,
+    "title": "Testing handlers without servers",
+    "body": "httptest makes handler testing fast and isolated.",
+    "likes": 55,
+    "creatorid": 5,
+    "createdat": "2026-01-19T07:50:00Z"
+  },
+
+  {
+    "id": 31,
+    "title": "Why dependency injection matters",
+    "body": "Explicit dependencies make systems easier to test and evolve.",
+    "likes": 94,
+    "creatorid": 6,
+    "createdat": "2026-01-18T21:20:00Z"
+  },
+  {
+    "id": 32,
+    "title": "Avoid shared mutable state",
+    "body": "Shared state is the root of most concurrency bugs.",
+    "likes": 110,
+    "creatorid": 7,
+    "createdat": "2026-01-18T20:45:00Z"
+  },
+  {
+    "id": 33,
+    "title": "Go encourages composition",
+    "body": "Composition over inheritance leads to simpler designs.",
+    "likes": 76,
+    "creatorid": 8,
+    "createdat": "2026-01-18T20:10:00Z"
+  },
+  {
+    "id": 34,
+    "title": "Understanding zero values",
+    "body": "Zero values make Go APIs safer and easier to use.",
+    "likes": 88,
+    "creatorid": 9,
+    "createdat": "2026-01-18T19:40:00Z"
+  },
+  {
+    "id": 35,
+    "title": "Why context.Context matters",
+    "body": "Context propagates cancellation, deadlines, and request scope.",
+    "likes": 132,
+    "creatorid": 10,
+    "createdat": "2026-01-18T19:05:00Z"
+  },
+
+  {
+    "id": 36,
+    "title": "Designing cancelable workflows",
+    "body": "Cancellation should be part of the design, not an afterthought.",
+    "likes": 71,
+    "creatorid": 1,
+    "createdat": "2026-01-18T18:30:00Z"
+  },
+  {
+    "id": 37,
+    "title": "Why logging is not observability",
+    "body": "Logs help debugging, metrics help understanding systems.",
+    "likes": 99,
+    "creatorid": 2,
+    "createdat": "2026-01-18T17:55:00Z"
+  },
+  {
+    "id": 38,
+    "title": "Handling errors explicitly",
+    "body": "Explicit error handling improves reliability and clarity.",
+    "likes": 140,
+    "creatorid": 3,
+    "createdat": "2026-01-18T17:20:00Z"
+  },
+  {
+    "id": 39,
+    "title": "Avoid panics in production code",
+    "body": "Panics are for programmer errors, not runtime conditions.",
+    "likes": 85,
+    "creatorid": 4,
+    "createdat": "2026-01-18T16:45:00Z"
+  },
+  {
+    "id": 40,
+    "title": "Designing clean service layers",
+    "body": "Service layers should express business intent clearly.",
+    "likes": 77,
+    "creatorid": 5,
+    "createdat": "2026-01-18T16:10:00Z"
+  },
+
+  {
+    "id": 41,
+    "title": "Immutability simplifies reasoning",
+    "body": "Immutable data reduces hidden side effects.",
+    "likes": 91,
+    "creatorid": 6,
+    "createdat": "2026-01-18T15:35:00Z"
+  },
+  {
+    "id": 42,
+    "title": "Go favors explicitness",
+    "body": "What you see is what you pay for — no hidden magic.",
+    "likes": 104,
+    "creatorid": 7,
+    "createdat": "2026-01-18T15:00:00Z"
+  },
+  {
+    "id": 43,
+    "title": "Why code reviews matter",
+    "body": "Reviews catch bugs, spread knowledge, and improve design.",
+    "likes": 69,
+    "creatorid": 8,
+    "createdat": "2026-01-18T14:25:00Z"
+  },
+  {
+    "id": 44,
+    "title": "Write code for humans",
+    "body": "The compiler is forgiving. Humans are not.",
+    "likes": 115,
+    "creatorid": 9,
+    "createdat": "2026-01-18T13:50:00Z"
+  },
+  {
+    "id": 45,
+    "title": "Consistency beats cleverness",
+    "body": "Consistent patterns reduce cognitive load.",
+    "likes": 86,
+    "creatorid": 10,
+    "createdat": "2026-01-18T13:15:00Z"
+  },
+
+  {
+    "id": 46,
+    "title": "Avoid leaking internal slices",
+    "body": "Returning internal slices allows accidental mutation.",
+    "likes": 97,
+    "creatorid": 1,
+    "createdat": "2026-01-18T12:40:00Z"
+  },
+  {
+    "id": 47,
+    "title": "Defensive copying strategies",
+    "body": "Copy-on-read can prevent entire classes of bugs.",
+    "likes": 83,
+    "creatorid": 2,
+    "createdat": "2026-01-18T12:05:00Z"
+  },
+  {
+    "id": 48,
+    "title": "Why ownership rules matter",
+    "body": "Clear ownership prevents unintended side effects.",
+    "likes": 78,
+    "creatorid": 3,
+    "createdat": "2026-01-18T11:30:00Z"
+  },
+  {
+    "id": 49,
+    "title": "Go encourages simple APIs",
+    "body": "Small APIs are easier to understand and maintain.",
+    "likes": 101,
+    "creatorid": 4,
+    "createdat": "2026-01-18T10:55:00Z"
+  },
+  {
+    "id": 50,
+    "title": "Clarity over abstraction",
+    "body": "Abstract only when repetition forces you to.",
+    "likes": 122,
+    "creatorid": 5,
+    "createdat": "2026-01-18T10:20:00Z"
+  },
+
+  {
+    "id": 51,
+    "title": "Avoid framework lock-in",
+    "body": "Keep business logic independent of frameworks.",
+    "likes": 87,
+    "creatorid": 6,
+    "createdat": "2026-01-18T09:45:00Z"
+  },
+  {
+    "id": 52,
+    "title": "Write tests you trust",
+    "body": "Flaky tests destroy confidence in codebases.",
+    "likes": 109,
+    "creatorid": 7,
+    "createdat": "2026-01-18T09:10:00Z"
+  },
+  {
+    "id": 53,
+    "title": "Prefer simple data structures",
+    "body": "Simple structures are easier to reason about.",
+    "likes": 68,
+    "creatorid": 8,
+    "createdat": "2026-01-18T08:35:00Z"
+  },
+  {
+    "id": 54,
+    "title": "Understand your tools deeply",
+    "body": "Depth beats breadth when building reliable systems.",
+    "likes": 134,
+    "creatorid": 9,
+    "createdat": "2026-01-18T08:00:00Z"
+  },
+  {
+    "id": 55,
+    "title": "Trade-offs are unavoidable",
+    "body": "Every design decision carries a cost.",
+    "likes": 92,
+    "creatorid": 10,
+    "createdat": "2026-01-18T07:25:00Z"
+  },
+
+  {
+    "id": 56,
+    "title": "Why simplicity scales",
+    "body": "Simple systems fail less and recover faster.",
+    "likes": 150,
+    "creatorid": 1,
+    "createdat": "2026-01-17T21:00:00Z"
+  },
+  {
+    "id": 57,
+    "title": "Engineering is decision making",
+    "body": "Code reflects the decisions you made under constraints.",
+    "likes": 88,
+    "creatorid": 2,
+    "createdat": "2026-01-17T20:30:00Z"
+  },
+  {
+    "id": 58,
+    "title": "Good APIs age well",
+    "body": "Stable APIs reduce churn and friction.",
+    "likes": 103,
+    "creatorid": 3,
+    "createdat": "2026-01-17T20:00:00Z"
+  },
+  {
+    "id": 59,
+    "title": "Refactoring is continuous",
+    "body": "Refactoring keeps systems healthy over time.",
+    "likes": 76,
+    "creatorid": 4,
+    "createdat": "2026-01-17T19:30:00Z"
+  },
+  {
+    "id": 60,
+    "title": "Optimize for readability",
+    "body": "Readable code outlives clever optimizations.",
+    "likes": 141,
+    "creatorid": 5,
+    "createdat": "2026-01-17T19:00:00Z"
+  },
+
+  {
+    "id": 61,
+    "title": "APIs are contracts",
+    "body": "Breaking contracts breaks trust with users.",
+    "likes": 95,
+    "creatorid": 6,
+    "createdat": "2026-01-17T18:30:00Z"
+  },
+  {
+    "id": 62,
+    "title": "Code reflects thought quality",
+    "body": "Messy code often signals unclear thinking.",
+    "likes": 84,
+    "creatorid": 7,
+    "createdat": "2026-01-17T18:00:00Z"
+  },
+  {
+    "id": 63,
+    "title": "Design for failure",
+    "body": "Failures are inevitable. Design for graceful recovery.",
+    "likes": 119,
+    "creatorid": 8,
+    "createdat": "2026-01-17T17:30:00Z"
+  },
+  {
+    "id": 64,
+    "title": "Observability is a feature",
+    "body": "Systems without visibility are impossible to operate.",
+    "likes": 102,
+    "creatorid": 9,
+    "createdat": "2026-01-17T17:00:00Z"
+  },
+  {
+    "id": 65,
+    "title": "Clean code reduces bugs",
+    "body": "Clarity removes entire classes of errors.",
+    "likes": 138,
+    "creatorid": 10,
+    "createdat": "2026-01-17T16:30:00Z"
+  },
+
+  {
+    "id": 66,
+    "title": "Minimize global state",
+    "body": "Global state hides dependencies and creates coupling.",
+    "likes": 90,
+    "creatorid": 1,
+    "createdat": "2026-01-17T16:00:00Z"
+  },
+  {
+    "id": 67,
+    "title": "APIs should be boring",
+    "body": "Boring APIs are predictable and reliable.",
+    "likes": 111,
+    "creatorid": 2,
+    "createdat": "2026-01-17T15:30:00Z"
+  },
+  {
+    "id": 68,
+    "title": "Focus on correctness first",
+    "body": "Fast wrong answers are still wrong.",
+    "likes": 147,
+    "creatorid": 3,
+    "createdat": "2026-01-17T15:00:00Z"
+  },
+  {
+    "id": 69,
+    "title": "Concurrency needs discipline",
+    "body": "Concurrency magnifies both good and bad design.",
+    "likes": 98,
+    "creatorid": 4,
+    "createdat": "2026-01-17T14:30:00Z"
+  },
+  {
+    "id": 70,
+    "title": "Good names matter",
+    "body": "Names communicate intent better than comments.",
+    "likes": 155,
+    "creatorid": 5,
+    "createdat": "2026-01-17T14:00:00Z"
+  },
+
+  {
+    "id": 71,
+    "title": "Short functions scale better",
+    "body": "Small functions are easier to test and reason about.",
+    "likes": 93,
+    "creatorid": 6,
+    "createdat": "2026-01-17T13:30:00Z"
+  },
+  {
+    "id": 72,
+    "title": "Avoid hidden side effects",
+    "body": "Side effects should be obvious and explicit.",
+    "likes": 107,
+    "creatorid": 7,
+    "createdat": "2026-01-17T13:00:00Z"
+  },
+  {
+    "id": 73,
+    "title": "Document design decisions",
+    "body": "Future maintainers will thank you.",
+    "likes": 66,
+    "creatorid": 8,
+    "createdat": "2026-01-17T12:30:00Z"
+  },
+  {
+    "id": 74,
+    "title": "Consistency enables velocity",
+    "body": "Teams move faster when patterns are predictable.",
+    "likes": 120,
+    "creatorid": 9,
+    "createdat": "2026-01-17T12:00:00Z"
+  },
+  {
+    "id": 75,
+    "title": "Code is read more than written",
+    "body": "Optimize for readers, not writers.",
+    "likes": 168,
+    "creatorid": 10,
+    "createdat": "2026-01-17T11:30:00Z"
+  },
+
+  {
+    "id": 76,
+    "title": "Build small, compose later",
+    "body": "Small pieces compose better than monoliths.",
+    "likes": 82,
+    "creatorid": 1,
+    "createdat": "2026-01-17T11:00:00Z"
+  },
+  {
+    "id": 77,
+    "title": "Design APIs you’d enjoy using",
+    "body": "Empathy improves API quality.",
+    "likes": 114,
+    "creatorid": 2,
+    "createdat": "2026-01-17T10:30:00Z"
+  },
+  {
+    "id": 78,
+    "title": "Avoid unnecessary abstractions",
+    "body": "Abstractions have a cost. Earn them.",
+    "likes": 101,
+    "creatorid": 3,
+    "createdat": "2026-01-17T10:00:00Z"
+  },
+  {
+    "id": 79,
+    "title": "Code review is knowledge sharing",
+    "body": "Reviews spread context across the team.",
+    "likes": 74,
+    "creatorid": 4,
+    "createdat": "2026-01-17T09:30:00Z"
+  },
+  {
+    "id": 80,
+    "title": "Avoid magic behavior",
+    "body": "Explicit behavior is easier to debug.",
+    "likes": 96,
+    "creatorid": 5,
+    "createdat": "2026-01-17T09:00:00Z"
+  },
+
+  {
+    "id": 81,
+    "title": "Write boring production code",
+    "body": "Production code should be predictable, not clever.",
+    "likes": 143,
+    "creatorid": 6,
+    "createdat": "2026-01-17T08:30:00Z"
+  },
+  {
+    "id": 82,
+    "title": "Understand before optimizing",
+    "body": "Optimizing without understanding creates bugs.",
+    "likes": 117,
+    "creatorid": 7,
+    "createdat": "2026-01-17T08:00:00Z"
+  },
+  {
+    "id": 83,
+    "title": "Clear boundaries reduce bugs",
+    "body": "Boundaries enforce discipline.",
+    "likes": 88,
+    "creatorid": 8,
+    "createdat": "2026-01-17T07:30:00Z"
+  },
+  {
+    "id": 84,
+    "title": "Prefer explicit data flow",
+    "body": "Hidden data flow creates confusion.",
+    "likes": 109,
+    "creatorid": 9,
+    "createdat": "2026-01-17T07:00:00Z"
+  },
+  {
+    "id": 85,
+    "title": "Make invalid states impossible",
+    "body": "Types are your first line of defense.",
+    "likes": 162,
+    "creatorid": 10,
+    "createdat": "2026-01-16T21:00:00Z"
+  },
+
+  {
+    "id": 86,
+    "title": "Errors are part of the API",
+    "body": "Error handling defines API quality.",
+    "likes": 97,
+    "creatorid": 1,
+    "createdat": "2026-01-16T20:30:00Z"
+  },
+  {
+    "id": 87,
+    "title": "Prefer explicit lifetimes",
+    "body": "Lifetimes should be obvious in code.",
+    "likes": 83,
+    "creatorid": 2,
+    "createdat": "2026-01-16T20:00:00Z"
+  },
+  {
+    "id": 88,
+    "title": "Design for readability first",
+    "body": "Readable code accelerates teams.",
+    "likes": 129,
+    "creatorid": 3,
+    "createdat": "2026-01-16T19:30:00Z"
+  },
+  {
+    "id": 89,
+    "title": "Be conservative with mutability",
+    "body": "Mutation should be intentional and rare.",
+    "likes": 91,
+    "creatorid": 4,
+    "createdat": "2026-01-16T19:00:00Z"
+  },
+  {
+    "id": 90,
+    "title": "Code is a communication tool",
+    "body": "You’re writing for future readers.",
+    "likes": 174,
+    "creatorid": 5,
+    "createdat": "2026-01-16T18:30:00Z"
+  },
+
+  {
+    "id": 91,
+    "title": "Stable interfaces enable growth",
+    "body": "Stability enables teams to move independently.",
+    "likes": 105,
+    "creatorid": 6,
+    "createdat": "2026-01-16T18:00:00Z"
+  },
+  {
+    "id": 92,
+    "title": "Minimize cognitive overhead",
+    "body": "Less thinking means fewer mistakes.",
+    "likes": 118,
+    "creatorid": 7,
+    "createdat": "2026-01-16T17:30:00Z"
+  },
+  {
+    "id": 93,
+    "title": "Design APIs defensively",
+    "body": "Assume misuse and guard against it.",
+    "likes": 94,
+    "creatorid": 8,
+    "createdat": "2026-01-16T17:00:00Z"
+  },
+  {
+    "id": 94,
+    "title": "Simple systems are resilient",
+    "body": "Complex systems fail in complex ways.",
+    "likes": 137,
+    "creatorid": 9,
+    "createdat": "2026-01-16T16:30:00Z"
+  },
+  {
+    "id": 95,
+    "title": "Consistency beats documentation",
+    "body": "Consistent patterns reduce the need for docs.",
+    "likes": 81,
+    "creatorid": 10,
+    "createdat": "2026-01-16T16:00:00Z"
+  },
+
+  {
+    "id": 96,
+    "title": "Prefer boring architectures",
+    "body": "Boring architectures are proven and stable.",
+    "likes": 122,
+    "creatorid": 1,
+    "createdat": "2026-01-16T15:30:00Z"
+  },
+  {
+    "id": 97,
+    "title": "Design for maintainability",
+    "body": "Maintenance cost dominates system lifetime.",
+    "likes": 148,
+    "creatorid": 2,
+    "createdat": "2026-01-16T15:00:00Z"
+  },
+  {
+    "id": 98,
+    "title": "Clear code enables speed",
+    "body": "Teams move faster with clarity.",
+    "likes": 116,
+    "creatorid": 3,
+    "createdat": "2026-01-16T14:30:00Z"
+  },
+  {
+    "id": 99,
+    "title": "Explicit contracts reduce bugs",
+    "body": "Contracts make assumptions visible.",
+    "likes": 89,
+    "creatorid": 4,
+    "createdat": "2026-01-16T14:00:00Z"
+  },
+  {
+    "id": 100,
+    "title": "Software is about trade-offs",
+    "body": "There are no perfect solutions, only balanced ones.",
+    "likes": 200,
+    "creatorid": 5,
+    "createdat": "2026-01-16T13:30:00Z"
+  }
+]
