@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/abhinash-kml/go-api-server/config"
 	controller "github.com/abhinash-kml/go-api-server/internal/controllers"
 	"github.com/golang-jwt/jwt/v5"
 	"go.uber.org/zap"
@@ -43,6 +44,32 @@ type CustomHttpServer struct {
 
 	// After stop hooks
 	afterStopHooks []Hook
+}
+
+func NewHttpWithConfig(config *config.HttpConfig, options ...FunctionalOption) *CustomHttpServer {
+	internal := &http.Server{
+		Addr:           fmt.Sprintf(":%s", config.Port),
+		IdleTimeout:    time.Second * time.Duration(config.IdleTimeout),
+		ReadTimeout:    time.Second * time.Duration(config.ReadTimeout),
+		WriteTimeout:   time.Second * time.Duration(config.WriteTimeout),
+		MaxHeaderBytes: config.MaxHeaderBytes,
+	}
+
+	wrapper := &CustomHttpServer{server: internal}
+
+	for _, option := range options {
+		option(wrapper)
+	}
+
+	if wrapper.mux != nil {
+		wrapper.server.Handler = wrapper.mux
+	} else {
+		defaultmux := http.NewServeMux()
+		wrapper.mux = defaultmux
+		wrapper.server.Handler = wrapper.mux
+	}
+
+	return wrapper
 }
 
 func NewCustomCustomHttpServer(options ...FunctionalOption) *CustomHttpServer {
@@ -139,7 +166,7 @@ type Myclaims struct {
 	Meow string `json:"meow"`
 }
 
-func (s *CustomHttpServer) SetupRoutes() error {
+func (s *CustomHttpServer) SetupDefaultRoutes() error {
 	s.mux.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
 		// Set CORS headers
 		w.Header().Set("Access-Control-Allow-Origin", "*")

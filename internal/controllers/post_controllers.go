@@ -35,24 +35,38 @@ func (c *PostsController) PostPost(w http.ResponseWriter, r *http.Request) {
 
 	incoming := model.PostCreateDTO{}
 	json.NewDecoder(r.Body).Decode(&incoming)
-	// c.service.InsertPost(model.Post{Id: })
+	c.service.InsertPost(incoming)
 
-	w.Write([]byte("Posts POST route"))
+	w.Write([]byte("OK"))
+
 }
 
 func (c *PostsController) PutPost(w http.ResponseWriter, r *http.Request) {
 	c.logger.Info("Connection", zap.String("IP", r.RemoteAddr), zap.String("Method", r.Method), zap.String("Path", r.Pattern))
 
-	w.Write([]byte("Posts"))
+	incoming := model.PostUpdateDTO{}
+	json.NewDecoder(r.Body).Decode(&incoming)
+	c.service.UpdatePost(incoming.Id, incoming)
+
+	w.Write([]byte("OK"))
 }
 
 func (c *PostsController) PatchPost(w http.ResponseWriter, r *http.Request) {
 	c.logger.Info("Connection", zap.String("IP", r.RemoteAddr), zap.String("Method", r.Method), zap.String("Path", r.Pattern))
 
-	w.Write([]byte("Posts PATCH route"))
+	incoming := model.PostUpdateDTO{}
+	json.NewDecoder(r.Body).Decode(&incoming)
+	c.service.UpdatePost(incoming.Id, incoming)
+
+	w.Write([]byte("OK"))
 }
 
 func (c *PostsController) DeletePost(w http.ResponseWriter, r *http.Request) {
 	c.logger.Info("Connection", zap.String("IP", r.RemoteAddr), zap.String("Method", r.Method), zap.String("Path", r.Pattern))
 
+	incoming := model.PostDeleteDTO{}
+	json.NewDecoder(r.Body).Decode(&incoming)
+	c.service.DeletePost(incoming.Id)
+
+	w.Write([]byte("OK"))
 }

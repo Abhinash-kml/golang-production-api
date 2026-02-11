@@ -6,8 +6,8 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
+	"github.com/abhinash-kml/go-api-server/config"
 	controller "github.com/abhinash-kml/go-api-server/internal/controllers"
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
 	"github.com/abhinash-kml/go-api-server/internal/servers"
@@ -18,6 +18,8 @@ import (
 func main() {
 	stopSig := make(chan os.Signal, 1)
 	signal.Notify(stopSig, syscall.SIGINT, syscall.SIGTERM)
+
+	config := config.Initialize()
 
 	logger, err := zap.NewProduction()
 	if err != nil {
@@ -39,18 +41,24 @@ func main() {
 	commentservice := service.NewLocalCommentService(commentrepository)
 	commentscontroller := controller.NewCommentsController(commentservice, logger)
 
-	server := servers.NewCustomCustomHttpServer(
-		servers.WithAddress(":9000"),
-		servers.WithIdleTimeout(time.Second*15),
-		servers.WithReadTimeout(time.Second*15),
-		servers.WithWriteTimeout(time.Second*5),
-		servers.WithMaxHeaderBytes(1500),
+	// server := servers.NewCustomCustomHttpServer(
+	// 	servers.WithAddress(":9000"),
+	// 	servers.WithIdleTimeout(time.Second*15),
+	// 	servers.WithReadTimeout(time.Second*15),
+	// 	servers.WithWriteTimeout(time.Second*5),
+	// 	servers.WithMaxHeaderBytes(1500),
+	// 	servers.WithLogger(*logger),
+	// 	servers.WithUsersController(*usercontroller),
+	// 	servers.WithPostsController(*postscontroller),
+	// 	servers.WithCommentsController(*commentscontroller))
+
+	server := servers.NewHttpWithConfig(&config.Server.Http,
 		servers.WithLogger(*logger),
 		servers.WithUsersController(*usercontroller),
 		servers.WithPostsController(*postscontroller),
 		servers.WithCommentsController(*commentscontroller))
 
-	server.SetupRoutes()
+	server.SetupDefaultRoutes()
 	server.AddRoute("GET /custom", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Registering custom routes successfull\nIts working yeaaahhh"))
 	})
