@@ -78,6 +78,7 @@ func (s *LocalCommentService) UpdateComment(id int, comment model.CommentUpdateD
 func ConvertCommentToCommentResponseDTO(comment *model.Comment) model.CommentResponseDTO {
 	return model.CommentResponseDTO{
 		Id:          comment.Id,
+		PostID:      comment.PostId,
 		CommenterId: comment.CommenterId,
 		Body:        comment.Body,
 		Likes:       comment.Likes,

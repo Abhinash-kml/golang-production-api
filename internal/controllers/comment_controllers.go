@@ -24,38 +24,60 @@ func NewCommentsController(service service.CommentService, logger *zap.Logger) *
 func (c *CommentsController) GetComments(w http.ResponseWriter, r *http.Request) {
 	c.logger.Info("Connection", zap.String("IP", r.RemoteAddr), zap.String("Method", r.Method), zap.String("Path", r.Pattern))
 
-	comments, _ := c.service.GetComments()
+	comments, _ := c.service.GetComments() // No point of error handling here as empty row will return [] and 200 status
 	encoder := json.NewEncoder(w)
 	encoder.SetIndent("", "    ")
 	encoder.Encode(comments)
 }
 
-func (c *CommentsController) PostComments(w http.ResponseWriter, r *http.Request) {
+func (c *CommentsController) PostComment(w http.ResponseWriter, r *http.Request) {
 	c.logger.Info("Connection", zap.String("IP", r.RemoteAddr), zap.String("Method", r.Method), zap.String("Path", r.Pattern))
 
 	incoming := model.CommentCreateDTO{}
 	json.NewDecoder(r.Body).Decode(&incoming)
-	c.service.InsertComment(incoming)
+	err := c.service.InsertComment(incoming)
+	if err != nil {
+		http.Error(w, "Failed", http.StatusInternalServerError)
+	}
 
-	w.Write([]byte("OK"))
+	w.WriteHeader(http.StatusCreated)
 }
 
-func (c *CommentsController) PatchComments(w http.ResponseWriter, r *http.Request) {
+func (c *CommentsController) PatchComment(w http.ResponseWriter, r *http.Request) {
 	c.logger.Info("Connection", zap.String("IP", r.RemoteAddr), zap.String("Method", r.Method), zap.String("Path", r.Pattern))
 
 	incoming := model.CommentUpdateDTO{}
 	json.NewDecoder(r.Body).Decode(&incoming)
-	c.service.UpdateComment(incoming.Id, incoming)
+	err := c.service.UpdateComment(incoming.Id, incoming)
+	if err != nil {
+		http.Error(w, "Failed", http.StatusInternalServerError)
+	}
 
-	w.Write([]byte("OK"))
+	w.WriteHeader(http.StatusNoContent)
 }
 
-func (c *CommentsController) PutComments(w http.ResponseWriter, r *http.Request) {
+func (c *CommentsController) PutComment(w http.ResponseWriter, r *http.Request) {
 	c.logger.Info("Connection", zap.String("IP", r.RemoteAddr), zap.String("Method", r.Method), zap.String("Path", r.Pattern))
 
 	incoming := model.CommentUpdateDTO{}
 	json.NewDecoder(r.Body).Decode(&incoming)
-	c.service.UpdateComment(incoming.Id, incoming)
+	err := c.service.UpdateComment(incoming.Id, incoming)
+	if err != nil {
+		http.Error(w, "Failed", http.StatusInternalServerError)
+	}
 
-	w.Write([]byte("OK"))
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func (c *CommentsController) DeleteComment(w http.ResponseWriter, r *http.Request) {
+	c.logger.Info("Connection", zap.String("IP", r.RemoteAddr), zap.String("Method", r.Method), zap.String("Path", r.Pattern))
+
+	incoming := model.CommentDeleteDTO{}
+	json.NewDecoder(r.Body).Decode(&incoming)
+	err := c.service.DeleteComment(incoming.Id)
+	if err != nil {
+		http.Error(w, "Failed", http.StatusInternalServerError)
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }

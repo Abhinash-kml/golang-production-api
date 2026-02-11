@@ -24,7 +24,7 @@ func NewUsersController(service service.UserService, logger *zap.Logger) *UsersC
 func (c *UsersController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	// state := r.URL.Query().Get("state")
 
-	users, _ := c.service.GetUsers()
+	users, _ := c.service.GetUsers() // No point of error handling here as empty row will return [] and 200 status
 	encoder := json.NewEncoder(w)
 	encoder.SetIndent("", "    ")
 	encoder.Encode(users)
@@ -35,9 +35,13 @@ func (c *UsersController) PostUser(w http.ResponseWriter, r *http.Request) {
 
 	user := model.UserCreateDTO{}
 	json.NewDecoder(r.Body).Decode(&user)
-	c.service.InsertUser(user)
+	err := c.service.InsertUser(user)
+	if err != nil {
+		// TODO: Handle custom error here
+		http.Error(w, "Failed", http.StatusInternalServerError)
+	}
 
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusCreated)
 }
 
 func (c *UsersController) PatchUser(w http.ResponseWriter, r *http.Request) {
@@ -46,13 +50,19 @@ func (c *UsersController) PatchUser(w http.ResponseWriter, r *http.Request) {
 	// testing only
 	patch := model.UserUpdateDTO{}
 	json.NewDecoder(r.Body).Decode(&patch)
-	c.service.UpdateUser(patch.Id, patch)
+	err := c.service.UpdateUser(patch.Id, patch)
+	if err != nil {
+		http.Error(w, "Failed", http.StatusInternalServerError)
+	}
 
+	w.WriteHeader(http.StatusNoContent)
 	w.Write([]byte("OK"))
 }
 
 func (c *UsersController) PutUser(w http.ResponseWriter, r *http.Request) {
 	c.logger.Info("Connection", zap.String("IP", r.RemoteAddr), zap.String("Method", r.Method), zap.String("Path", r.Pattern))
+
+	w.WriteHeader(http.StatusNoContent)
 
 	w.Write([]byte("Users Put route"))
 }
@@ -67,5 +77,5 @@ func (c *UsersController) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed", http.StatusInternalServerError)
 	}
 
-	w.Write([]byte("OK"))
+	w.WriteHeader(http.StatusNoContent)
 }

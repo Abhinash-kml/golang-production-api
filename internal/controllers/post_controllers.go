@@ -26,7 +26,7 @@ func (c *PostsController) GetPosts(w http.ResponseWriter, r *http.Request) {
 
 	encoder := json.NewEncoder(w)
 	encoder.SetIndent("", "    ")
-	posts, _ := c.service.GetPosts()
+	posts, _ := c.service.GetPosts() // No point of error handling here as, if returned rows is zero it will return [] 200 code
 	encoder.Encode(posts)
 }
 
@@ -35,10 +35,12 @@ func (c *PostsController) PostPost(w http.ResponseWriter, r *http.Request) {
 
 	incoming := model.PostCreateDTO{}
 	json.NewDecoder(r.Body).Decode(&incoming)
-	c.service.InsertPost(incoming)
+	err := c.service.InsertPost(incoming)
+	if err != nil {
+		http.Error(w, "Failed", http.StatusInternalServerError)
+	}
 
-	w.Write([]byte("OK"))
-
+	w.WriteHeader(http.StatusCreated)
 }
 
 func (c *PostsController) PutPost(w http.ResponseWriter, r *http.Request) {
@@ -46,9 +48,12 @@ func (c *PostsController) PutPost(w http.ResponseWriter, r *http.Request) {
 
 	incoming := model.PostUpdateDTO{}
 	json.NewDecoder(r.Body).Decode(&incoming)
-	c.service.UpdatePost(incoming.Id, incoming)
+	err := c.service.UpdatePost(incoming.Id, incoming)
+	if err != nil {
+		http.Error(w, "Failed", http.StatusInternalServerError)
+	}
 
-	w.Write([]byte("OK"))
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func (c *PostsController) PatchPost(w http.ResponseWriter, r *http.Request) {
@@ -56,9 +61,12 @@ func (c *PostsController) PatchPost(w http.ResponseWriter, r *http.Request) {
 
 	incoming := model.PostUpdateDTO{}
 	json.NewDecoder(r.Body).Decode(&incoming)
-	c.service.UpdatePost(incoming.Id, incoming)
+	err := c.service.UpdatePost(incoming.Id, incoming)
+	if err != nil {
+		http.Error(w, "Failed", http.StatusInternalServerError)
+	}
 
-	w.Write([]byte("OK"))
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func (c *PostsController) DeletePost(w http.ResponseWriter, r *http.Request) {
@@ -66,7 +74,10 @@ func (c *PostsController) DeletePost(w http.ResponseWriter, r *http.Request) {
 
 	incoming := model.PostDeleteDTO{}
 	json.NewDecoder(r.Body).Decode(&incoming)
-	c.service.DeletePost(incoming.Id)
+	err := c.service.DeletePost(incoming.Id)
+	if err != nil {
+		http.Error(w, "Failed", http.StatusInternalServerError)
+	}
 
-	w.Write([]byte("OK"))
+	w.WriteHeader(http.StatusNoContent)
 }

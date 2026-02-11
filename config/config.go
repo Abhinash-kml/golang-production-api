@@ -32,6 +32,8 @@ func Initialize() *Config {
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath("./config/")
 
+	SetDefaults()
+
 	if err := viper.ReadInConfig(); err != nil {
 		log.Fatal("Error Reading config. Err:", err)
 	}

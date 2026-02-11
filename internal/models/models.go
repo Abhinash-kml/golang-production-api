@@ -125,6 +125,7 @@ type CommentRequestDTO struct {
 type CommentResponseDTO struct {
 	Id          int    `json:"id"`
 	CommenterId int    `json:"commenterid"`
+	PostID      int    `json:"postid"`
 	Body        string `json:"body"`
 	Likes       int    `json:"likes"`
 }

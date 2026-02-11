@@ -287,12 +287,14 @@ func (s *CustomHttpServer) SetupDefaultRoutes() error {
 	s.mux.HandleFunc("POST /posts", s.postscontroller.PostPost)
 	s.mux.HandleFunc("PUT /posts", s.postscontroller.PutPost)
 	s.mux.HandleFunc("PATCH /posts", s.postscontroller.PatchPost)
+	s.mux.HandleFunc("DELETE /posts", s.postscontroller.DeletePost)
 
 	// Comments routes
 	s.mux.HandleFunc("GET /comments", s.commentscontroller.GetComments)
-	s.mux.HandleFunc("POST /comments", s.commentscontroller.PostComments)
-	s.mux.HandleFunc("PUT /comments", s.commentscontroller.PutComments)
-	s.mux.HandleFunc("PATCH /comments", s.commentscontroller.PatchComments)
+	s.mux.HandleFunc("POST /comments", s.commentscontroller.PostComment)
+	s.mux.HandleFunc("PUT /comments", s.commentscontroller.PutComment)
+	s.mux.HandleFunc("PATCH /comments", s.commentscontroller.PatchComment)
+	s.mux.HandleFunc("DELETE /comments", s.commentscontroller.DeleteComment)
 
 	return nil
 }
