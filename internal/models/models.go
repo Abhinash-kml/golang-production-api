@@ -10,13 +10,38 @@ type User struct {
 	Country string `json:"country"`
 }
 
-type UserRequest struct {
+type UserRequestDTO struct {
 	Id   int    `json:"id"`
 	Name string `json:"name"`
 }
 
 // Aliased to main type
-type UserResponse = User
+type UserResponseDTO = User
+
+type UserCreateDTO struct {
+	Name    string `json:"name"`
+	City    string `json:"city"`
+	State   string `json:"state"`
+	Country string `json:"country"`
+}
+
+type UserDeleteDTO struct {
+	Id int `json:"id"`
+}
+
+type UserUpdateDTO struct {
+	Id      int    `json:"id"`
+	What    string `json:"what"`
+	NewData string `json:"newdata"`
+}
+
+type UserReplaceDTO struct {
+	Id      int    `json:"id"`
+	Name    string `json:"name"`
+	City    string `json:"city"`
+	State   string `json:"state"`
+	Country string `json:"country"`
+}
 
 func NewUser(Id int, Name, City, State, Country string) *User {
 	return &User{
@@ -48,17 +73,41 @@ func NewPost(id int, title, body string, likes, creatorid int, createdat time.Ti
 	}
 }
 
-type PostRequest struct {
+type PostRequestDTO struct {
 	Id    int    `json:"id"`
 	Title string `json:"title"`
 }
 
-type PostResponse struct {
+type PostResponseDTO struct {
 	Id       int    `json:"id"`
+	AuthorId int    `json:"authorid"`
 	Title    string `json:"title"`
 	Body     string `json:"body"`
 	Likes    int    `json:"likes"`
 	Comments int    `json:"comments"`
+}
+
+type PostCreateDTO struct {
+	Authorid int    `json:"authorid"`
+	Title    string `json:"title"`
+	Body     string `json:"body"`
+}
+
+type PostDeleteDTO struct {
+	Id int `json:"id"`
+}
+
+type PostUpdateDTO struct {
+	Id    int    `json:"id"`
+	Title string `json:"title"`
+	Body  string `json:"body"`
+}
+
+type PostReplaceDTO struct {
+	Id    int    `json:"id"`
+	Title string `json:"title"`
+	Body  string `json:"body"`
+	Likes int    `json:"likes"`
 }
 
 type Comment struct {
@@ -69,15 +118,30 @@ type Comment struct {
 	Likes       int    `json:"likes"`
 }
 
-type CommentRequest struct {
+type CommentRequestDTO struct {
 	Id int `json:"id"`
 }
 
-type CommentResponse struct {
+type CommentResponseDTO struct {
 	Id          int    `json:"id"`
 	CommenterId int    `json:"commenterid"`
 	Body        string `json:"body"`
 	Likes       int    `json:"likes"`
+}
+
+type CommentCreateDTO struct {
+	Postid   int    `json:"postid"`
+	Authorid int    `json:"authorid"`
+	Body     string `json:"body"`
+}
+
+type CommentDeleteDTO struct {
+	Id int `json:"id"`
+}
+
+type CommentUpdateDTO struct {
+	Id   int    `json:"id"`
+	Body string `json:"body"`
 }
 
 func NewComment(id, commenterid, postid int, body string, likes int) *Comment {

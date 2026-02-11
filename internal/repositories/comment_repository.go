@@ -21,9 +21,10 @@ type CommentRepository interface {
 	Setup() error
 
 	GetComments() ([]model.Comment, error)
-	InsertComments([]model.Comment) error
-	DeleteComments([]model.Comment) error
-	UpdateComments([]model.Comment) error
+	InsertComment(model.Comment) error
+	DeleteComment(int) error
+	UpdateComment(int, model.Comment) error
+	Count() int
 }
 
 type InMemoryCommentRepository struct {
@@ -62,29 +63,19 @@ func (e *InMemoryCommentRepository) GetComments() ([]model.Comment, error) {
 	return e.comments, nil
 }
 
-func (e *InMemoryCommentRepository) InsertComments(comments []model.Comment) error {
-	if len(comments) <= 0 {
-		return ErrZeroLengthSlice
-	}
-
-	e.comments = append(e.comments, comments...)
+func (e *InMemoryCommentRepository) InsertComment(comment model.Comment) error {
+	e.comments = append(e.comments, comment)
 	return nil
 }
 
-func (e *InMemoryCommentRepository) DeleteComments(comments []model.Comment) error {
-	if len(comments) <= 0 {
-		return ErrZeroLengthSlice
-	}
-
+func (e *InMemoryCommentRepository) DeleteComment(id int) error {
 	if len(e.comments) <= 0 {
 		return ErrNoComments
 	}
 
 	e.comments = slices.DeleteFunc(e.comments, func(e model.Comment) bool {
-		for _, value := range comments {
-			if value.Id == e.Id {
-				return true
-			}
+		if e.Id == id {
+			return true
 		}
 
 		return false
@@ -93,18 +84,17 @@ func (e *InMemoryCommentRepository) DeleteComments(comments []model.Comment) err
 	return nil
 }
 
-func (e *InMemoryCommentRepository) UpdateComments(comments []model.Comment) error {
-	if len(comments) <= 0 {
-		return ErrZeroLengthSlice
-	}
-
-	for _, internal := range e.comments {
-		for _, incoming := range comments {
-			if internal.Body == incoming.Body {
-				internal.Body = incoming.Body
-			}
+func (e *InMemoryCommentRepository) UpdateComment(id int, comment model.Comment) error {
+	for index := range e.comments {
+		if e.comments[index].Id == id {
+			e.comments[index] = comment
+			break
 		}
 	}
 
 	return nil
+}
+
+func (e *InMemoryCommentRepository) Count() int {
+	return len(e.comments)
 }

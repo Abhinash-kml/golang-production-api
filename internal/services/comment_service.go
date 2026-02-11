@@ -1,17 +1,15 @@
 package service
 
 import (
-	"errors"
-
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
 )
 
 type CommentService interface {
-	GetComments() ([]model.Comment, error)
-	InsertComments([]model.Comment) error
-	DeleteComments([]model.Comment) error
-	UpdateComments([]model.Comment) error
+	GetComments() ([]model.CommentResponseDTO, error)
+	InsertComment(model.CommentCreateDTO) error
+	DeleteComment(int) error
+	UpdateComment(int, model.CommentUpdateDTO) error
 }
 
 type LocalCommentService struct {
@@ -24,44 +22,64 @@ func NewLocalCommentService(repository repository.CommentRepository) *LocalComme
 	}
 }
 
-func (s *LocalCommentService) GetComments() ([]model.Comment, error) {
+func (s *LocalCommentService) GetComments() ([]model.CommentResponseDTO, error) {
 	comments, err := s.repo.GetComments()
 	if err != nil {
 		return nil, ErrOpFailed
 	}
 
-	return comments, nil
+	dtos := make([]model.CommentResponseDTO, len(comments))
+
+	for index, value := range comments {
+		dtos[index] = ConvertCommentToCommentResponseDTO(&value)
+	}
+
+	return dtos, nil
 }
 
-func (s *LocalCommentService) InsertComments(comments []model.Comment) error {
-	err := s.repo.InsertComments(comments)
+func (s *LocalCommentService) InsertComment(comment model.CommentCreateDTO) error {
+	newcomment := model.Comment{
+		Id:          s.repo.Count() + 1,
+		CommenterId: comment.Authorid,
+		PostId:      comment.Postid,
+		Body:        comment.Body,
+	}
+	err := s.repo.InsertComment(newcomment)
 	if err != nil {
-		if errors.Is(err, repository.ErrZeroLengthSlice) {
-			return ErrOpFailed
-		}
+		return err
 	}
 
 	return nil
 }
 
-func (s *LocalCommentService) DeleteComments(comments []model.Comment) error {
-	err := s.repo.DeleteComments(comments)
+func (s *LocalCommentService) DeleteComment(id int) error {
+	err := s.repo.DeleteComment(id)
 	if err != nil {
-		if errors.Is(err, repository.ErrZeroLengthSlice) {
-			return ErrOpFailed
-		}
+		return err
 	}
 
 	return nil
 }
 
-func (s *LocalCommentService) UpdateComments(comments []model.Comment) error {
-	err := s.repo.UpdateComments(comments)
+func (s *LocalCommentService) UpdateComment(id int, comment model.CommentUpdateDTO) error {
+	// TODO: Fetch and replace old values of unmodifed attributes
+	updatedcomment := model.Comment{
+		Id:   comment.Id,
+		Body: comment.Body,
+	}
+	err := s.repo.UpdateComment(id, updatedcomment)
 	if err != nil {
-		if errors.Is(err, repository.ErrZeroLengthSlice) {
-			return ErrOpFailed
-		}
+		return err
 	}
 
 	return nil
+}
+
+func ConvertCommentToCommentResponseDTO(comment *model.Comment) model.CommentResponseDTO {
+	return model.CommentResponseDTO{
+		Id:          comment.Id,
+		CommenterId: comment.CommenterId,
+		Body:        comment.Body,
+		Likes:       comment.Likes,
+	}
 }

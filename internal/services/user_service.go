@@ -12,10 +12,10 @@ var (
 )
 
 type UserService interface {
-	GetUsers() ([]model.User, error)
-	InsertUsers([]model.User) error
-	UpdateUsers([]model.User, []model.User) error
-	DeleteUsers([]model.User) error
+	GetUsers() ([]model.UserResponseDTO, error)
+	InsertUser(model.UserCreateDTO) error
+	UpdateUser(int, model.UserUpdateDTO) error
+	DeleteUser(int) error
 }
 
 type LocalUserService struct {
@@ -39,34 +39,59 @@ func (s *LocalUserService) GetUsers() ([]model.User, error) {
 	return users, nil
 }
 
-func (s *LocalUserService) InsertUsers(users []model.User) error {
-	err := s.repo.InsertUsers(users)
+func (s *LocalUserService) InsertUser(user model.UserCreateDTO) error {
+	newuser := model.User{
+		Id:      s.repo.Count() + 1,
+		Name:    user.Name,
+		City:    user.City,
+		State:   user.State,
+		Country: user.Country,
+	}
+	err := s.repo.InsertUser(newuser)
 	if err != nil {
-		if errors.Is(err, repository.ErrZeroLengthSlice) {
-			return ErrOpFailed
-		}
+		return err
 	}
 
 	return nil
 }
 
-func (s *LocalUserService) UpdateUsers(old, new []model.User) error {
-	err := s.repo.UpdateUsers(old, new)
-	if err != nil {
-		if errors.Is(err, repository.ErrZeroLengthSlice) {
-			return ErrOpFailed
+func (s *LocalUserService) UpdateUser(id int, new model.UserUpdateDTO) error {
+	updateduser := model.User{
+		Id: id,
+	}
+
+	// TODO: Improve this
+	switch new.What {
+	case "name":
+		{
+			updateduser.Name = new.NewData
 		}
+	case "country":
+		{
+			updateduser.Country = new.NewData
+		}
+	case "city":
+		{
+			updateduser.City = new.NewData
+		}
+	case "state":
+		{
+			updateduser.State = new.NewData
+		}
+	}
+
+	err := s.repo.UpdateUser(id, updateduser)
+	if err != nil {
+		return err
 	}
 
 	return nil
 }
 
-func (s *LocalUserService) DeleteUsers(users []model.User) error {
-	err := s.repo.DeleteUsers(users)
+func (s *LocalUserService) DeleteUser(id int) error {
+	err := s.repo.DeleteUser(id)
 	if err != nil {
-		if errors.Is(err, repository.ErrZeroLengthSlice) {
-			return ErrOpFailed
-		}
+		return err
 	}
 
 	return nil

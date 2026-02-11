@@ -25,9 +25,10 @@ type UserRepository interface {
 
 	// CRUD logics
 	GetUsers() ([]model.User, error)
-	InsertUsers([]model.User) error
-	UpdateUsers([]model.User, []model.User) error
-	DeleteUsers([]model.User) error
+	InsertUser(model.User) error
+	UpdateUser(int, model.User) error
+	DeleteUser(int) error
+	Count() int
 }
 
 type InMemoryUsersRepository struct {
@@ -68,48 +69,37 @@ func (e *InMemoryUsersRepository) GetUsers() ([]model.User, error) {
 	return e.users, nil
 }
 
-func (e *InMemoryUsersRepository) InsertUsers(users []model.User) error {
-	if len(users) <= 0 {
-		return ErrZeroLengthSlice
-	}
-
-	for _, value := range users {
-		e.users = append(e.users, value)
-	}
+func (e *InMemoryUsersRepository) InsertUser(user model.User) error {
+	e.users = append(e.users, user)
 
 	return nil
 }
 
-func (e *InMemoryUsersRepository) UpdateUsers(old, new []model.User) error {
-	if len(old) <= 0 || len(new) <= 0 {
-		return ErrZeroLengthSlice
-	}
-
-	for _, value := range e.users {
-		for i := 0; i < len(old); i++ {
-			if value.Id == old[i].Id {
-				value = new[i]
-			}
+func (e *InMemoryUsersRepository) UpdateUser(id int, user model.User) error {
+	for index := range e.users {
+		if e.users[index].Id == id {
+			e.users[index] = user
+			break
 		}
 	}
 
 	return nil
 }
 
-func (e *InMemoryUsersRepository) DeleteUsers(users []model.User) error {
-	if len(users) <= 0 {
-		return ErrZeroLengthSlice
-	}
+func (e *InMemoryUsersRepository) DeleteUser(id int) error {
 
-	e.users = slices.DeleteFunc(e.users, func(u model.User) bool {
-		for _, value := range users {
-			if u.Id == value.Id {
-				return true
-			}
+	users := slices.DeleteFunc(e.users, func(u model.User) bool {
+		if u.Id == id {
+			return true
 		}
 
 		return false
 	})
 
+	e.users = users
 	return nil
+}
+
+func (e *InMemoryUsersRepository) Count() int {
+	return len(e.users)
 }

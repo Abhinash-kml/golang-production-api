@@ -8,10 +8,10 @@ import (
 )
 
 type PostsService interface {
-	GetPosts() ([]model.Post, error)
-	InsertPosts([]model.Post) error
-	UpdatePosts([]model.Post) error
-	DeletePosts([]model.Post) error
+	GetPosts() ([]model.PostResponseDTO, error)
+	InsertPost(model.PostCreateDTO) error
+	UpdatePost(int, model.PostUpdateDTO) error
+	DeletePost(int) error
 }
 
 type LocalPostsService struct {
@@ -24,7 +24,7 @@ func NewLocalPostsService(repository repository.PostsRepository) *LocalPostsServ
 	}
 }
 
-func (s *LocalPostsService) GetPosts() ([]model.Post, error) {
+func (s *LocalPostsService) GetPosts() ([]model.PostResponseDTO, error) {
 	posts, err := s.repo.GetPosts()
 	if err != nil {
 		if errors.Is(err, repository.ErrNoPosts) {
@@ -32,38 +32,62 @@ func (s *LocalPostsService) GetPosts() ([]model.Post, error) {
 		}
 	}
 
-	return posts, nil
+	dtos := make([]model.PostResponseDTO, len(posts))
+
+	for index, value := range posts {
+		dtos[index] = ConvertPostToPostResponseDTO(&value)
+	}
+
+	return dtos, nil
 }
 
-func (s *LocalPostsService) InsertPosts(posts []model.Post) error {
-	err := s.repo.InsertPosts(posts)
+func (s *LocalPostsService) InsertPost(post model.PostCreateDTO) error {
+	newpost := model.Post{
+		Id:        s.repo.Count() + 1,
+		Title:     post.Title,
+		Body:      post.Body,
+		CreatorId: post.Authorid,
+		Likes:     0,
+	}
+	err := s.repo.InsertPost(newpost)
 	if err != nil {
-		if errors.Is(err, repository.ErrZeroLengthSlice) {
-			return ErrOpFailed
-		}
+		return err
 	}
 
 	return nil
 }
 
-func (s *LocalPostsService) UpdatePosts(posts []model.Post) error {
-	err := s.repo.UpdatePosts(posts)
+// TODO: Improvement needed
+func (s *LocalPostsService) UpdatePost(id int, post model.PostUpdateDTO) error {
+	updated := model.Post{
+		Id:    post.Id,
+		Title: post.Title,
+		Body:  post.Body,
+	}
+	err := s.repo.UpdatePost(id, updated)
 	if err != nil {
-		if errors.Is(err, repository.ErrZeroLengthSlice) {
-			return ErrOpFailed
-		}
+		return err
 	}
 
 	return nil
 }
 
-func (s *LocalPostsService) DeletePosts(posts []model.Post) error {
-	err := s.repo.DeletePosts(posts)
+func (s *LocalPostsService) DeletePost(id int) error {
+	err := s.repo.DeletePost(id)
 	if err != nil {
-		if errors.Is(err, repository.ErrZeroLengthSlice) {
-			return ErrOpFailed
-		}
+		return err
 	}
 
 	return nil
+}
+
+func ConvertPostToPostResponseDTO(post *model.Post) model.PostResponseDTO {
+	return model.PostResponseDTO{
+		Id:       post.Id,
+		AuthorId: post.CreatorId,
+		Title:    post.Title,
+		Body:     post.Body,
+		Likes:    post.Likes,
+		Comments: 0, // TODO: Later
+	}
 }

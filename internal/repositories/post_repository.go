@@ -17,9 +17,10 @@ type PostsRepository interface {
 	Setup() error
 
 	GetPosts() ([]model.Post, error)
-	InsertPosts([]model.Post) error
-	DeletePosts([]model.Post) error
-	UpdatePosts([]model.Post) error
+	InsertPost(model.Post) error
+	DeletePost(int) error
+	UpdatePost(int, model.Post) error
+	Count() int
 }
 
 type InMemoryPostsRepository struct {
@@ -57,26 +58,16 @@ func (e *InMemoryPostsRepository) GetPosts() ([]model.Post, error) {
 	return e.posts, nil
 }
 
-func (e *InMemoryPostsRepository) InsertPosts(posts []model.Post) error {
-	if len(posts) <= 0 {
-		return ErrZeroLengthSlice
-	}
-
-	e.posts = append(e.posts, posts...)
+func (e *InMemoryPostsRepository) InsertPost(post model.Post) error {
+	e.posts = append(e.posts, post)
 
 	return nil
 }
 
-func (e *InMemoryPostsRepository) DeletePosts(posts []model.Post) error {
-	if len(posts) <= 0 {
-		return ErrZeroLengthSlice
-	}
-
+func (e *InMemoryPostsRepository) DeletePost(id int) error {
 	e.posts = slices.DeleteFunc(e.posts, func(post model.Post) bool {
-		for _, value := range posts {
-			if value.Id == post.Id {
-				return true
-			}
+		if post.Id == id {
+			return true
 		}
 
 		return false
@@ -85,18 +76,17 @@ func (e *InMemoryPostsRepository) DeletePosts(posts []model.Post) error {
 	return nil
 }
 
-func (e *InMemoryPostsRepository) UpdatePosts(posts []model.Post) error {
-	if len(posts) <= 0 {
-		return ErrZeroLengthSlice
-	}
-
-	for _, internal := range e.posts {
-		for _, incoming := range posts {
-			if internal.Id == incoming.Id {
-				internal.Body = incoming.Body
-			}
+func (e *InMemoryPostsRepository) UpdatePost(id int, post model.Post) error {
+	for index := range e.posts {
+		if e.posts[index].Id == id {
+			e.posts[index] = post
+			break
 		}
 	}
 
 	return nil
+}
+
+func (e *InMemoryPostsRepository) Count() int {
+	return len(e.posts)
 }

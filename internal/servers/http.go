@@ -250,15 +250,16 @@ func (s *CustomHttpServer) SetupRoutes() error {
 
 	// Users routes
 	s.mux.HandleFunc("GET /users", s.userscontroller.GetUsers)
-	s.mux.HandleFunc("POST /users", s.userscontroller.PostUsers)
-	s.mux.HandleFunc("PUT /users", s.userscontroller.PutUsers)
-	s.mux.HandleFunc("PATCH /users", s.userscontroller.PatchUsers)
+	s.mux.HandleFunc("POST /users", s.userscontroller.PostUser)
+	s.mux.HandleFunc("PUT /users", s.userscontroller.PutUser)
+	s.mux.HandleFunc("PATCH /users", s.userscontroller.PatchUser)
+	s.mux.HandleFunc("DELETE /users", s.userscontroller.DeleteUser)
 
 	// Post routes
 	s.mux.HandleFunc("GET /posts", s.postscontroller.GetPosts)
-	s.mux.HandleFunc("POST /posts", s.postscontroller.PostPosts)
-	s.mux.HandleFunc("PUT /posts", s.postscontroller.PutPosts)
-	s.mux.HandleFunc("PATCH /posts", s.postscontroller.PatchPosts)
+	s.mux.HandleFunc("POST /posts", s.postscontroller.PostPost)
+	s.mux.HandleFunc("PUT /posts", s.postscontroller.PutPost)
+	s.mux.HandleFunc("PATCH /posts", s.postscontroller.PatchPost)
 
 	// Comments routes
 	s.mux.HandleFunc("GET /comments", s.commentscontroller.GetComments)
