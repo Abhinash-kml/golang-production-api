@@ -277,7 +277,7 @@ func (s *CustomHttpServer) SetupDefaultRoutes() error {
 	})
 
 	// Users routes
-	s.mux.Handle("GET /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.GetUsers), m.Logger))
+	s.mux.Handle("GET /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.GetUsers), m.RateLimit, m.Logger))
 	s.mux.Handle("POST /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.PostUser), m.Logger))
 	s.mux.Handle("PUT /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.PutUser), m.Logger))
 	s.mux.Handle("PATCH /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.PatchUser), m.Logger))

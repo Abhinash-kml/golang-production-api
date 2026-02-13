@@ -88,6 +88,24 @@ func main() {
 		fmt.Println("Error: ", err.Error())
 	}
 
+	// limiter := ratelimiter.FixedWindowLimiter{
+	// 	WindowDuration: time.Second * 10,
+	// 	LimitPerWindow: 5,
+	// 	Table:          make(map[string]*ratelimiter.ClientInfo),
+	// }
+
+	// go func() {
+	// 	count := 0
+	// 	for {
+	// 		if limiter.Allow("aaa") {
+	// 			count++
+	// 			fmt.Println("Allowed:", count)
+	// 		} else {
+	// 			continue
+	// 		}
+	// 	}
+	// }()
+
 	fmt.Println("Listening for termination syscall...")
 	fmt.Println("Got:", <-stopSig)
 	server.Stop()
