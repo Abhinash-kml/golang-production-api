@@ -2,9 +2,9 @@ package middlewares
 
 import "net/http"
 
-func JwtAuthorization(next http.Handler) http.Handler {
+func RateLimit(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Auth logic
+		// Rate limit logic
 
 		next.ServeHTTP(w, r)
 	})
