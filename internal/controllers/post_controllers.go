@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	service "github.com/abhinash-kml/go-api-server/internal/services"
@@ -24,10 +25,20 @@ func NewPostsController(service service.PostsService, logger *zap.Logger) *Posts
 func (c *PostsController) GetPosts(w http.ResponseWriter, r *http.Request) {
 	c.logger.Info("Connection", zap.String("IP", r.RemoteAddr), zap.String("Method", r.Method), zap.String("Path", r.Pattern))
 
+	cursor := r.URL.Query().Get("cursor")
+	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
+	if err != nil {
+		http.Error(w, "Cannot convert provided limit to integer", http.StatusBadRequest)
+	}
+	if limit < 1 || limit > 100 {
+		http.Error(w, "Malformed query limit. Correct range: 1-100", http.StatusBadRequest)
+	}
+
+	posts, _ := c.service.GetPosts() // No point of error handling here as empty row will return [] and 200 status
+	paginatedResponse := Paginate(posts, cursor, limit, "posts", "http://localhost")
 	encoder := json.NewEncoder(w)
 	encoder.SetIndent("", "    ")
-	posts, _ := c.service.GetPosts() // No point of error handling here as, if returned rows is zero it will return [] 200 code
-	encoder.Encode(posts)
+	encoder.Encode(paginatedResponse)
 }
 
 func (c *PostsController) PostPost(w http.ResponseWriter, r *http.Request) {

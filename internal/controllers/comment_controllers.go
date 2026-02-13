@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	service "github.com/abhinash-kml/go-api-server/internal/services"
@@ -24,10 +25,20 @@ func NewCommentsController(service service.CommentService, logger *zap.Logger) *
 func (c *CommentsController) GetComments(w http.ResponseWriter, r *http.Request) {
 	c.logger.Info("Connection", zap.String("IP", r.RemoteAddr), zap.String("Method", r.Method), zap.String("Path", r.Pattern))
 
+	cursor := r.URL.Query().Get("cursor")
+	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
+	if err != nil {
+		http.Error(w, "Cannot convert provided limit to integer", http.StatusBadRequest)
+	}
+	if limit < 1 || limit > 100 {
+		http.Error(w, "Malformed query limit. Correct range: 1-100", http.StatusBadRequest)
+	}
+
 	comments, _ := c.service.GetComments() // No point of error handling here as empty row will return [] and 200 status
+	paginatedResponse := Paginate(comments, cursor, limit, "posts", "http://localhost")
 	encoder := json.NewEncoder(w)
 	encoder.SetIndent("", "    ")
-	encoder.Encode(comments)
+	encoder.Encode(paginatedResponse)
 }
 
 func (c *CommentsController) PostComment(w http.ResponseWriter, r *http.Request) {

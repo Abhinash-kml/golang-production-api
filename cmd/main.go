@@ -22,6 +22,7 @@ func main() {
 	config := config.Initialize()
 
 	logger, err := zap.NewProduction()
+	defer logger.Sync()
 	if err != nil {
 		panic("Unable to initialize logger - Zap")
 	}

@@ -14,6 +14,7 @@ import (
 
 	"github.com/abhinash-kml/go-api-server/config"
 	controller "github.com/abhinash-kml/go-api-server/internal/controllers"
+	m "github.com/abhinash-kml/go-api-server/internal/middlewares"
 	"github.com/golang-jwt/jwt/v5"
 	"go.uber.org/zap"
 )
@@ -276,25 +277,25 @@ func (s *CustomHttpServer) SetupDefaultRoutes() error {
 	})
 
 	// Users routes
-	s.mux.HandleFunc("GET /users", s.userscontroller.GetUsers)
-	s.mux.HandleFunc("POST /users", s.userscontroller.PostUser)
-	s.mux.HandleFunc("PUT /users", s.userscontroller.PutUser)
-	s.mux.HandleFunc("PATCH /users", s.userscontroller.PatchUser)
-	s.mux.HandleFunc("DELETE /users", s.userscontroller.DeleteUser)
+	s.mux.Handle("GET /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.GetUsers), m.Logger))
+	s.mux.Handle("POST /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.PostUser), m.Logger))
+	s.mux.Handle("PUT /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.PutUser), m.Logger))
+	s.mux.Handle("PATCH /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.PatchUser), m.Logger))
+	s.mux.Handle("DELETE /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.DeleteUser), m.Logger))
 
 	// Post routes
-	s.mux.HandleFunc("GET /posts", s.postscontroller.GetPosts)
-	s.mux.HandleFunc("POST /posts", s.postscontroller.PostPost)
-	s.mux.HandleFunc("PUT /posts", s.postscontroller.PutPost)
-	s.mux.HandleFunc("PATCH /posts", s.postscontroller.PatchPost)
-	s.mux.HandleFunc("DELETE /posts", s.postscontroller.DeletePost)
+	s.mux.Handle("GET /posts", m.CompileHandlers(http.HandlerFunc(s.postscontroller.GetPosts), m.Logger))
+	s.mux.Handle("POST /posts", m.CompileHandlers(http.HandlerFunc(s.postscontroller.PostPost), m.Logger))
+	s.mux.Handle("PUT /posts", m.CompileHandlers(http.HandlerFunc(s.postscontroller.PutPost), m.Logger))
+	s.mux.Handle("PATCH /posts", m.CompileHandlers(http.HandlerFunc(s.postscontroller.PatchPost), m.Logger))
+	s.mux.Handle("DELETE /posts", m.CompileHandlers(http.HandlerFunc(s.postscontroller.DeletePost), m.Logger))
 
 	// Comments routes
-	s.mux.HandleFunc("GET /comments", s.commentscontroller.GetComments)
-	s.mux.HandleFunc("POST /comments", s.commentscontroller.PostComment)
-	s.mux.HandleFunc("PUT /comments", s.commentscontroller.PutComment)
-	s.mux.HandleFunc("PATCH /comments", s.commentscontroller.PatchComment)
-	s.mux.HandleFunc("DELETE /comments", s.commentscontroller.DeleteComment)
+	s.mux.Handle("GET /comments", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.GetComments), m.Logger))
+	s.mux.Handle("POST /comments", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.PostComment), m.Logger))
+	s.mux.Handle("PUT /comments", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.PutComment), m.Logger))
+	s.mux.Handle("PATCH /comments", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.PatchComment), m.Logger))
+	s.mux.Handle("DELETE /comments", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.DeleteComment), m.Logger))
 
 	return nil
 }

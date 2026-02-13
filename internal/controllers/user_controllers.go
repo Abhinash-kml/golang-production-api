@@ -1,8 +1,12 @@
 package controller
 
 import (
+	"encoding/base64"
 	"encoding/json"
+	"fmt"
+	"log"
 	"net/http"
+	"strconv"
 
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	service "github.com/abhinash-kml/go-api-server/internal/services"
@@ -22,12 +26,20 @@ func NewUsersController(service service.UserService, logger *zap.Logger) *UsersC
 }
 
 func (c *UsersController) GetUsers(w http.ResponseWriter, r *http.Request) {
-	// state := r.URL.Query().Get("state")
+	cursor := r.URL.Query().Get("cursor")
+	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
+	if err != nil {
+		http.Error(w, "Cannot convert provided limit to integer", http.StatusBadRequest)
+	}
+	if limit < 1 || limit > 100 {
+		http.Error(w, "Malformed query limit. Correct range: 1-100", http.StatusBadRequest)
+	}
 
 	users, _ := c.service.GetUsers() // No point of error handling here as empty row will return [] and 200 status
+	paginatedResponse := Paginate(users, cursor, limit, "users", "http://localhost")
 	encoder := json.NewEncoder(w)
 	encoder.SetIndent("", "    ")
-	encoder.Encode(users)
+	encoder.Encode(paginatedResponse)
 }
 
 func (c *UsersController) PostUser(w http.ResponseWriter, r *http.Request) {
@@ -78,4 +90,53 @@ func (c *UsersController) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusNoContent)
+}
+
+// Generic pagination helper to paginate incoming data from service layer
+// TODO: Move to utils package
+func Paginate[T any](data []T, currentCursorstring string, limit int, route, baseurl string) *model.ApiPaginatedResponseDTO[T] {
+	// Extract pagination key from current cursor
+	// If currunt cursor is nil / empty then present them first page
+	var currentCursor int
+	if currentCursorstring == "" {
+		currentCursor = 0
+	} else {
+		bytes, err := base64.URLEncoding.DecodeString(currentCursorstring)
+		if err != nil {
+			log.Fatal("Failed to decode cursor from url")
+		}
+
+		currentCursor, err = strconv.Atoi(string(bytes))
+		if err != nil {
+			log.Fatal("Failed to convert decoded cursor to integer")
+		}
+	}
+
+	encode := func(k int) string {
+		return base64.URLEncoding.EncodeToString([]byte(strconv.Itoa(k)))
+	}
+
+	// Calculate Previous and Next Cursors
+	selfCursor := currentCursor
+	prevCursor := currentCursor - limit
+	nextCursor := currentCursor + limit
+	firstPageCursor := 1  // Hardcoded, TODO: Adapt to real data source
+	lastpageCursor := 150 // Hardcoded. TODO: Adapt to real data source
+
+	response := &model.ApiPaginatedResponseDTO[T]{
+		Data: data[currentCursor : currentCursor+limit],
+		Links: model.Links{
+			Self:     fmt.Sprintf("%s/%s?cursor=%s&limit=%d", baseurl, route, encode(selfCursor), limit),
+			Previous: fmt.Sprintf("%s/%s?cursor=%s&limit=%d", baseurl, route, encode(prevCursor), limit),
+			Next:     fmt.Sprintf("%s/%s?cursor=%s&limit=%d", baseurl, route, encode(nextCursor), limit),
+			First:    fmt.Sprintf("%s/%s?cursor=%slimit=%d", baseurl, route, encode(firstPageCursor), limit),
+			Last:     fmt.Sprintf("%s/%s?cursor=%slimit=%d", baseurl, route, encode(lastpageCursor), limit),
+		},
+		Meta: model.Meta{
+			CurrentPage: 1,  // To be calculated dynamically
+			TotalPages:  10, // To be calculated dynamically
+		},
+	}
+
+	return response
 }

@@ -154,3 +154,23 @@ func NewComment(id, commenterid, postid int, body string, likes int) *Comment {
 		Likes:       likes,
 	}
 }
+
+// Pagination related types
+type Links struct {
+	Self     string `json:"self"`
+	Previous string `json:"previous"`
+	Next     string `json:"next"`
+	First    string `json:"first"`
+	Last     string `json:"last"`
+}
+
+type Meta struct {
+	CurrentPage int `json:"current_page"`
+	TotalPages  int `json:"total_page"`
+}
+
+type ApiPaginatedResponseDTO[T any] struct {
+	Data  []T   `json:"data"`
+	Links Links `json:"links"`
+	Meta  Meta  `json:"meta"`
+}

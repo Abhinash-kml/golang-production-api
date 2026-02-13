@@ -1,9 +1,12 @@
 package middlewares
 
 import (
-	"fmt"
 	"net/http"
+
+	"go.uber.org/zap"
 )
+
+var logger, _ = zap.NewProduction()
 
 type MiddleWare func(http.Handler) http.Handler
 
@@ -17,9 +20,9 @@ func CompileHandlers(base http.Handler, middlewares ...MiddleWare) http.Handler 
 	return final
 }
 
-func logger(next http.Handler) http.Handler {
+func Logger(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Printf("IP: %s Method: %s Path: %s", r.RemoteAddr, r.Method, r.URL.Path)
+		logger.Info("Connection", zap.String("IP", r.RemoteAddr), zap.String("Method", r.Method), zap.String("Path", r.Pattern))
 
 		next.ServeHTTP(w, r)
 	})
