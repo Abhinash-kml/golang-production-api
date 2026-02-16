@@ -9,6 +9,8 @@ import (
 
 type PostsService interface {
 	GetPosts() ([]model.PostResponseDTO, error)
+	GetById(int) (*model.PostResponseDTO, error)
+	GetPostsOfUser(int) ([]model.PostResponseDTO, error)
 	InsertPost(model.PostCreateDTO) error
 	UpdatePost(int, model.PostUpdateDTO) error
 	DeletePost(int) error
@@ -36,6 +38,31 @@ func (s *LocalPostsService) GetPosts() ([]model.PostResponseDTO, error) {
 
 	for index, value := range posts {
 		dtos[index] = ConvertPostToPostResponseDTO(&value)
+	}
+
+	return dtos, nil
+}
+
+func (s *LocalPostsService) GetById(id int) (*model.PostResponseDTO, error) {
+	post, err := s.repo.GetById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	postReponse := ConvertPostToPostResponseDTO(post)
+	return &postReponse, nil
+}
+
+func (s *LocalPostsService) GetPostsOfUser(id int) ([]model.PostResponseDTO, error) {
+	posts, err := s.repo.GetPostsOfUser(id)
+	if err != nil {
+		return nil, err
+	}
+
+	dtos := make([]model.PostResponseDTO, len(posts))
+
+	for index := range posts {
+		dtos[index] = ConvertPostToPostResponseDTO(&posts[index])
 	}
 
 	return dtos, nil

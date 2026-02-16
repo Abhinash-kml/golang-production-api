@@ -17,6 +17,7 @@ var (
 	ErrUndefinedUsers  = errors.New("Undefined users")
 	ErrZeroLengthSlice = errors.New("Provided slice is of zero length")
 	ErrUserDoesntExist = errors.New("Provided users doesn't exist")
+	ErrNoRecord        = errors.New("No record in database")
 )
 
 type UserRepository interface {
@@ -25,6 +26,7 @@ type UserRepository interface {
 
 	// CRUD logics
 	GetUsers() ([]model.User, error)
+	GetById(int) (*model.User, error)
 	InsertUser(model.User) error
 	UpdateUser(int, model.User) error
 	DeleteUser(int) error
@@ -67,6 +69,16 @@ func (e *InMemoryUsersRepository) GetUsers() ([]model.User, error) {
 	}
 
 	return e.users, nil
+}
+
+func (e *InMemoryUsersRepository) GetById(id int) (*model.User, error) {
+	for _, value := range e.users {
+		if value.Id == id {
+			return &value, nil
+		}
+	}
+
+	return nil, ErrNoRecord
 }
 
 func (e *InMemoryUsersRepository) InsertUser(user model.User) error {

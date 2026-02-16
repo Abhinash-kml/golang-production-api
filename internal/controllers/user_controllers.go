@@ -3,25 +3,32 @@ package controller
 import (
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"strconv"
 
 	model "github.com/abhinash-kml/go-api-server/internal/models"
+	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
 	service "github.com/abhinash-kml/go-api-server/internal/services"
 	"go.uber.org/zap"
 )
 
 type UsersController struct {
-	service service.UserService
-	logger  *zap.Logger
+	userservice    service.UserService
+	postservice    service.PostsService
+	commentservice service.CommentService
+
+	logger *zap.Logger
 }
 
-func NewUsersController(service service.UserService, logger *zap.Logger) *UsersController {
+func NewUsersController(userService service.UserService, postService service.PostsService, commentService service.CommentService, logger *zap.Logger) *UsersController {
 	return &UsersController{
-		service: service,
-		logger:  logger,
+		userservice:    userService,
+		postservice:    postService,
+		commentservice: commentService,
+		logger:         logger,
 	}
 }
 
@@ -35,11 +42,40 @@ func (c *UsersController) GetUsers(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Malformed query limit. Correct range: 1-100", http.StatusBadRequest)
 	}
 
-	users, _ := c.service.GetUsers() // No point of error handling here as empty row will return [] and 200 status
+	users, _ := c.userservice.GetUsers() // No point of error handling here as empty row will return [] and 200 status
 	paginatedResponse := Paginate(users, cursor, limit, "users", "http://localhost")
 	encoder := json.NewEncoder(w)
 	encoder.SetIndent("", "    ")
 	encoder.Encode(paginatedResponse)
+}
+
+func (c *UsersController) GetById(w http.ResponseWriter, r *http.Request) {
+	idString := r.PathValue("id")
+	id, err := strconv.Atoi(idString)
+	if err != nil {
+		http.Error(w, "Malformed id string", http.StatusBadRequest)
+	}
+
+	user, err := c.userservice.GetById(id)
+	if err != nil {
+		if errors.Is(err, repository.ErrNoRecord) {
+			http.Error(w, "No Record", http.StatusNotFound)
+		}
+	}
+	json.NewEncoder(w).Encode(user)
+}
+
+// GET /users/xxx-xxx-xxx/posts?limit=x
+func (c *UsersController) GetPostsOfUser(w http.ResponseWriter, r *http.Request) {
+	userString := r.PathValue("id")
+	userId, err := strconv.Atoi(userString)
+	if err != nil {
+		http.Error(w, "Malformed id string", http.StatusBadRequest)
+	}
+
+	postResponse, err := c.postservice.GetPostsOfUser(userId)
+	paginatedResponse := Paginate(postResponse, "", 10, "users", "http://localhost:9000")
+	json.NewEncoder(w).Encode(paginatedResponse)
 }
 
 func (c *UsersController) PostUser(w http.ResponseWriter, r *http.Request) {
@@ -47,7 +83,7 @@ func (c *UsersController) PostUser(w http.ResponseWriter, r *http.Request) {
 
 	user := model.UserCreateDTO{}
 	json.NewDecoder(r.Body).Decode(&user)
-	err := c.service.InsertUser(user)
+	err := c.userservice.InsertUser(user)
 	if err != nil {
 		// TODO: Handle custom error here
 		http.Error(w, "Failed", http.StatusInternalServerError)
@@ -62,7 +98,7 @@ func (c *UsersController) PatchUser(w http.ResponseWriter, r *http.Request) {
 	// testing only
 	patch := model.UserUpdateDTO{}
 	json.NewDecoder(r.Body).Decode(&patch)
-	err := c.service.UpdateUser(patch.Id, patch)
+	err := c.userservice.UpdateUser(patch.Id, patch)
 	if err != nil {
 		http.Error(w, "Failed", http.StatusInternalServerError)
 	}
@@ -84,7 +120,7 @@ func (c *UsersController) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	deleteuser := model.UserDeleteDTO{}
 	json.NewDecoder(r.Body).Decode(&deleteuser)
-	err := c.service.DeleteUser(deleteuser.Id)
+	err := c.userservice.DeleteUser(deleteuser.Id)
 	if err != nil {
 		http.Error(w, "Failed", http.StatusInternalServerError)
 	}
@@ -94,6 +130,7 @@ func (c *UsersController) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 // Generic pagination helper to paginate incoming data from service layer
 // TODO: Move to utils package
+// TODO: Improve this
 func Paginate[T any](data []T, currentCursorstring string, limit int, route, baseurl string) *model.ApiPaginatedResponseDTO[T] {
 	// Extract pagination key from current cursor
 	// If currunt cursor is nil / empty then present them first page
@@ -124,7 +161,7 @@ func Paginate[T any](data []T, currentCursorstring string, limit int, route, bas
 	lastpageCursor := 150 // Hardcoded. TODO: Adapt to real data source
 
 	response := &model.ApiPaginatedResponseDTO[T]{
-		Data: data[currentCursor : currentCursor+limit],
+		Data: data[currentCursor : currentCursor+limit], // TODO: Fix this [overflow error]
 		Links: model.Links{
 			Self:     fmt.Sprintf("%s/%s?cursor=%s&limit=%d", baseurl, route, encode(selfCursor), limit),
 			Previous: fmt.Sprintf("%s/%s?cursor=%s&limit=%d", baseurl, route, encode(prevCursor), limit),

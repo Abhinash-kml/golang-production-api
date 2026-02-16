@@ -7,6 +7,8 @@ import (
 
 type CommentService interface {
 	GetComments() ([]model.CommentResponseDTO, error)
+	GetById(int) (*model.CommentResponseDTO, error)
+	GetCommentsOfPost(int) ([]model.CommentResponseDTO, error)
 	InsertComment(model.CommentCreateDTO) error
 	DeleteComment(int) error
 	UpdateComment(int, model.CommentUpdateDTO) error
@@ -32,6 +34,30 @@ func (s *LocalCommentService) GetComments() ([]model.CommentResponseDTO, error) 
 
 	for index, value := range comments {
 		dtos[index] = ConvertCommentToCommentResponseDTO(&value)
+	}
+
+	return dtos, nil
+}
+
+func (s *LocalCommentService) GetById(id int) (*model.CommentResponseDTO, error) {
+	comment, err := s.repo.GetById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	commentResponse := ConvertCommentToCommentResponseDTO(comment)
+	return &commentResponse, nil
+}
+
+func (s *LocalCommentService) GetCommentsOfPost(id int) ([]model.CommentResponseDTO, error) {
+	comments, err := s.repo.GetCommentsOfPost(id)
+	if err != nil {
+		return nil, err
+	}
+
+	dtos := make([]model.CommentResponseDTO, len(comments))
+	for index := range comments {
+		dtos[index] = ConvertCommentToCommentResponseDTO(&comments[index])
 	}
 
 	return dtos, nil

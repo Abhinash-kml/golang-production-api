@@ -13,6 +13,7 @@ var (
 
 type UserService interface {
 	GetUsers() ([]model.UserResponseDTO, error)
+	GetById(int) (*model.UserResponseDTO, error)
 	InsertUser(model.UserCreateDTO) error
 	UpdateUser(int, model.UserUpdateDTO) error
 	DeleteUser(int) error
@@ -36,7 +37,19 @@ func (s *LocalUserService) GetUsers() ([]model.User, error) {
 		}
 	}
 
+	// TODO: Convert to dtos and then send
+
 	return users, nil
+}
+
+func (s *LocalUserService) GetById(id int) (*model.UserResponseDTO, error) {
+	user, err := s.repo.GetById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	userResponse := ConvertUserToUserReponseDTO(user)
+	return userResponse, nil
 }
 
 func (s *LocalUserService) InsertUser(user model.UserCreateDTO) error {
@@ -95,4 +108,14 @@ func (s *LocalUserService) DeleteUser(id int) error {
 	}
 
 	return nil
+}
+
+func ConvertUserToUserReponseDTO(user *model.User) *model.UserResponseDTO {
+	return &model.UserResponseDTO{
+		Id:      user.Id,
+		Name:    user.Name,
+		City:    user.City,
+		State:   user.State,
+		Country: user.Country,
+	}
 }

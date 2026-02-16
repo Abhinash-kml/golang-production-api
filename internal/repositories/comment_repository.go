@@ -21,6 +21,8 @@ type CommentRepository interface {
 	Setup() error
 
 	GetComments() ([]model.Comment, error)
+	GetById(int) (*model.Comment, error)
+	GetCommentsOfPost(int) ([]model.Comment, error)
 	InsertComment(model.Comment) error
 	DeleteComment(int) error
 	UpdateComment(int, model.Comment) error
@@ -61,6 +63,32 @@ func (e *InMemoryCommentRepository) GetComments() ([]model.Comment, error) {
 	}
 
 	return e.comments, nil
+}
+
+func (e *InMemoryCommentRepository) GetById(id int) (*model.Comment, error) {
+	for _, value := range e.comments {
+		if value.Id == id {
+			return &value, nil
+		}
+	}
+
+	return nil, ErrNoRecord
+}
+
+func (e *InMemoryCommentRepository) GetCommentsOfPost(id int) ([]model.Comment, error) {
+	var comments []model.Comment
+
+	for _, value := range e.comments {
+		if value.PostId == id {
+			comments = append(comments, value)
+		}
+	}
+
+	if len(comments) < 1 {
+		return nil, ErrNoComments
+	}
+
+	return comments, nil
 }
 
 func (e *InMemoryCommentRepository) InsertComment(comment model.Comment) error {

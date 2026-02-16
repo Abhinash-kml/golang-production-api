@@ -29,18 +29,18 @@ func main() {
 
 	userrepository := repository.NewInMemoryUsersRepository()
 	userrepository.Setup()
-	userservice := service.NewLocalUserService(userrepository)
-	usercontroller := controller.NewUsersController(userservice, logger)
-
 	postsrepository := repository.NewInMemoryPostsRepository()
 	postsrepository.Setup()
-	postsservice := service.NewLocalPostsService(postsrepository)
-	postscontroller := controller.NewPostsController(postsservice, logger)
-
 	commentrepository := repository.NewInMemoryCommentsRepository()
 	commentrepository.Setup()
+
+	userservice := service.NewLocalUserService(userrepository)
+	postsservice := service.NewLocalPostsService(postsrepository)
 	commentservice := service.NewLocalCommentService(commentrepository)
-	commentscontroller := controller.NewCommentsController(commentservice, logger)
+
+	usercontroller := controller.NewUsersController(userservice, postsservice, commentservice, logger)
+	postscontroller := controller.NewPostsController(userservice, postsservice, commentservice, logger)
+	commentscontroller := controller.NewCommentsController(userservice, postsservice, commentservice, logger)
 
 	// server := servers.NewCustomCustomHttpServer(
 	// 	servers.WithAddress(":9000"),

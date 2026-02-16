@@ -17,6 +17,8 @@ type PostsRepository interface {
 	Setup() error
 
 	GetPosts() ([]model.Post, error)
+	GetById(int) (*model.Post, error)
+	GetPostsOfUser(int) ([]model.Post, error)
 	InsertPost(model.Post) error
 	DeletePost(int) error
 	UpdatePost(int, model.Post) error
@@ -56,6 +58,31 @@ func (e *InMemoryPostsRepository) GetPosts() ([]model.Post, error) {
 	}
 
 	return e.posts, nil
+}
+
+func (e *InMemoryPostsRepository) GetById(id int) (*model.Post, error) {
+	for _, value := range e.posts {
+		if value.Id == id {
+			return &value, nil
+		}
+	}
+
+	return nil, ErrNoRecord
+}
+
+func (e *InMemoryPostsRepository) GetPostsOfUser(id int) ([]model.Post, error) {
+	var posts []model.Post
+	for _, value := range e.posts {
+		if value.CreatorId == id {
+			posts = append(posts, value)
+		}
+	}
+
+	if len(posts) < 1 {
+		return nil, ErrNoPosts
+	}
+
+	return posts, nil
 }
 
 func (e *InMemoryPostsRepository) InsertPost(post model.Post) error {

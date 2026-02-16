@@ -278,24 +278,29 @@ func (s *CustomHttpServer) SetupDefaultRoutes() error {
 
 	// Users routes
 	s.mux.Handle("GET /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.GetUsers), m.RateLimit, m.Logger))
-	s.mux.Handle("POST /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.PostUser), m.Logger))
-	s.mux.Handle("PUT /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.PutUser), m.Logger))
-	s.mux.Handle("PATCH /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.PatchUser), m.Logger))
-	s.mux.Handle("DELETE /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.DeleteUser), m.Logger))
+	s.mux.Handle("GET /users/{id}", m.CompileHandlers(http.HandlerFunc(s.userscontroller.GetById), m.RateLimit, m.Logger))
+	s.mux.Handle("GET /users/{id}/posts", m.CompileHandlers(http.HandlerFunc(s.userscontroller.GetPostsOfUser), m.RateLimit, m.Logger))
+	s.mux.Handle("POST /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.PostUser), m.RateLimit, m.Logger))
+	s.mux.Handle("PUT /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.PutUser), m.RateLimit, m.Logger))
+	s.mux.Handle("PATCH /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.PatchUser), m.RateLimit, m.Logger))
+	s.mux.Handle("DELETE /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.DeleteUser), m.RateLimit, m.Logger))
 
 	// Post routes
-	s.mux.Handle("GET /posts", m.CompileHandlers(http.HandlerFunc(s.postscontroller.GetPosts), m.Logger))
-	s.mux.Handle("POST /posts", m.CompileHandlers(http.HandlerFunc(s.postscontroller.PostPost), m.Logger))
-	s.mux.Handle("PUT /posts", m.CompileHandlers(http.HandlerFunc(s.postscontroller.PutPost), m.Logger))
-	s.mux.Handle("PATCH /posts", m.CompileHandlers(http.HandlerFunc(s.postscontroller.PatchPost), m.Logger))
-	s.mux.Handle("DELETE /posts", m.CompileHandlers(http.HandlerFunc(s.postscontroller.DeletePost), m.Logger))
+	s.mux.Handle("GET /posts", m.CompileHandlers(http.HandlerFunc(s.postscontroller.GetPosts), m.RateLimit, m.Logger))
+	s.mux.Handle("GET /posts/{id}", m.CompileHandlers(http.HandlerFunc(s.postscontroller.GetById), m.RateLimit, m.Logger))
+	s.mux.Handle("GET /posts/{id}/comments", m.CompileHandlers(http.HandlerFunc(s.postscontroller.GetCommentsOfPost), m.RateLimit, m.Logger)) // NEW
+	s.mux.Handle("POST /posts", m.CompileHandlers(http.HandlerFunc(s.postscontroller.PostPost), m.RateLimit, m.Logger))
+	s.mux.Handle("PUT /posts", m.CompileHandlers(http.HandlerFunc(s.postscontroller.PutPost), m.RateLimit, m.Logger))
+	s.mux.Handle("PATCH /posts", m.CompileHandlers(http.HandlerFunc(s.postscontroller.PatchPost), m.RateLimit, m.Logger))
+	s.mux.Handle("DELETE /posts", m.CompileHandlers(http.HandlerFunc(s.postscontroller.DeletePost), m.RateLimit, m.Logger))
 
 	// Comments routes
-	s.mux.Handle("GET /comments", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.GetComments), m.Logger))
-	s.mux.Handle("POST /comments", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.PostComment), m.Logger))
-	s.mux.Handle("PUT /comments", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.PutComment), m.Logger))
-	s.mux.Handle("PATCH /comments", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.PatchComment), m.Logger))
-	s.mux.Handle("DELETE /comments", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.DeleteComment), m.Logger))
+	s.mux.Handle("GET /comments", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.GetComments), m.RateLimit, m.Logger))
+	s.mux.Handle("GET /comments/{id}", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.GetById), m.RateLimit, m.Logger))
+	s.mux.Handle("POST /comments", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.PostComment), m.RateLimit, m.Logger))
+	s.mux.Handle("PUT /comments", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.PutComment), m.RateLimit, m.Logger))
+	s.mux.Handle("PATCH /comments", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.PatchComment), m.RateLimit, m.Logger))
+	s.mux.Handle("DELETE /comments", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.DeleteComment), m.RateLimit, m.Logger))
 
 	return nil
 }
