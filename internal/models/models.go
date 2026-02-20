@@ -174,3 +174,19 @@ type ApiPaginatedResponseDTO[T any] struct {
 	Links Links `json:"links"`
 	Meta  Meta  `json:"meta"`
 }
+
+type ProblemDetailsResponse struct {
+	Type     string `json:"type"`
+	Title    string `json:"title"`
+	Status   int    `json:"status"`
+	Detail   string `json:"detail"`
+	Instance string `json:"instance"`
+}
+
+type AuthResponse struct {
+	AccessToken  string `json:"access_token"`
+	TokenType    string `json:"token_type"`
+	ExpiresIn    int    `json:"expires_in"`
+	RefreshToken string `json:"refresh_token,omitempty"`
+	Scope        string `json:"scope,omitempty"`
+}

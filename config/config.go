@@ -7,8 +7,9 @@ import (
 )
 
 type Config struct {
-	AppName string       `mapstructure:"app_name"`
-	Server  ServerConfig `mapstructure:"server"`
+	AppName string          `mapstructure:"app_name"`
+	Server  ServerConfig    `mapstructure:"server"`
+	Auth    AuthTokenConfig `mapstructure:"auth"`
 }
 
 type ServerConfig struct {

@@ -3,18 +3,17 @@ package servers
 import (
 	"context"
 	"crypto/tls"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
-	"slices"
-	"strconv"
-	"strings"
 	"time"
 
 	"github.com/abhinash-kml/go-api-server/config"
 	controller "github.com/abhinash-kml/go-api-server/internal/controllers"
 	m "github.com/abhinash-kml/go-api-server/internal/middlewares"
+	model "github.com/abhinash-kml/go-api-server/internal/models"
+	"github.com/abhinash-kml/go-api-server/pkg/util"
 	"github.com/golang-jwt/jwt/v5"
 	"go.uber.org/zap"
 )
@@ -23,8 +22,9 @@ type Hook func() error
 
 type CustomHttpServer struct {
 	// Internal http server
-	server *http.Server
-	mux    *http.ServeMux
+	server     *http.Server
+	mux        *http.ServeMux
+	authConfig *config.AuthTokenConfig
 
 	// Controllers
 	userscontroller    controller.UsersController
@@ -47,7 +47,7 @@ type CustomHttpServer struct {
 	afterStopHooks []Hook
 }
 
-func NewHttpWithConfig(config *config.HttpConfig, options ...FunctionalOption) *CustomHttpServer {
+func NewHttpWithConfig(config *config.HttpConfig, authConfig *config.AuthTokenConfig, options ...FunctionalOption) *CustomHttpServer {
 	internal := &http.Server{
 		Addr:           fmt.Sprintf(":%s", config.Port),
 		IdleTimeout:    time.Second * time.Duration(config.IdleTimeout),
@@ -56,7 +56,10 @@ func NewHttpWithConfig(config *config.HttpConfig, options ...FunctionalOption) *
 		MaxHeaderBytes: config.MaxHeaderBytes,
 	}
 
-	wrapper := &CustomHttpServer{server: internal}
+	wrapper := &CustomHttpServer{
+		server:     internal,
+		authConfig: authConfig,
+	}
 
 	for _, option := range options {
 		option(wrapper)
@@ -196,88 +199,53 @@ func (s *CustomHttpServer) SetupDefaultRoutes() error {
 		w.Write([]byte(fmt.Sprintf("Jwt Token: %s", signedToken)))
 	})
 
-	s.mux.HandleFunc("GET /verify", func(w http.ResponseWriter, r *http.Request) {
-		authheader := r.Header.Get("Authorization")
-		separated := strings.Split(authheader, " ")
-
-		if len(separated) < 2 || separated[0] != "Bearer" {
-			http.Error(w, "Bad Header", http.StatusUnauthorized)
+	// Token routes
+	s.mux.Handle("GET /login", m.CompileHandlers(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		accessTokenDuration, err := time.ParseDuration(s.authConfig.AccessToken.Expiration)
+		if err != nil {
+			log.Fatal("Failed to parse time duration for access token expiration")
+		}
+		refreshTokenDuration, err := time.ParseDuration(s.authConfig.RefreshToken.Expiration)
+		if err != nil {
+			log.Fatal("Failed to parse time duration for access token expiration")
 		}
 
-		keyfunc := func(token *jwt.Token) (interface{}, error) {
-			return []byte("my-secret-key"), nil
-		}
-
-		token, _ := jwt.ParseWithClaims(separated[1], &Myclaims{}, keyfunc)
-
-		if claims, ok := token.Claims.(Myclaims); ok && token.Valid {
-			if claims.Meow != "llll" || claims.Myid != "mmm" || claims.Issuer != "Neo" {
-				http.Error(w, "Invalid claims", 401)
-				return
-			}
-		}
-
-		w.Write([]byte("Success"))
-	})
-
-	s.mux.HandleFunc("GET /offset", func(w http.ResponseWriter, r *http.Request) {
-		queryParams := r.URL.Query()
-		offset, _ := strconv.Atoi(queryParams.Get("offset"))
-		limit, _ := strconv.Atoi(queryParams.Get("limit"))
-		sort := queryParams.Get("sort")
-
-		nums := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}
-
-		if offset < 0 || offset >= 20 {
-			http.Error(w, "Invalid offset", http.StatusBadRequest)
-		}
-
-		if limit <= 0 || limit > 10 {
-			http.Error(w, "Invalid limit", http.StatusBadRequest)
-		}
-
-		payload := nums[offset : offset+limit]
-		switch sort {
-		case "asc":
-			json.NewEncoder(w).Encode(payload)
-		case "desc":
-			{
-				slices.Reverse(payload)
-				json.NewEncoder(w).Encode(payload)
-			}
-		}
-	})
-
-	s.mux.HandleFunc("GET /cursor", func(w http.ResponseWriter, r *http.Request) {
-		nums := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}
-
-		limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
-		after := r.URL.Query().Get("after")
-		before := r.URL.Query().Get("before")
-
-		var (
-			encodedAfter  string
-			encodedBefore string
-			// decodedAfter  []byte
-			// decodedBefore []byte
+		accessToken, err := util.CreateToken(
+			s.authConfig.AccessToken.Secret,
+			s.authConfig.AccessToken.Issuer,
+			"123",
+			[]string{s.authConfig.AccessToken.Audience},
+			accessTokenDuration,
 		)
+		if err != nil {
+			fmt.Println("Access Token Erorr", err.Error())
+		}
 
-		// base64.URLEncoding.Decode(decodedAfter, []byte(after))
-		// base64.URLEncoding.Decode(decodedBefore, []byte(before))
-		encodedAfter = base64.URLEncoding.EncodeToString([]byte("20hgwfhbkewfnk,ejwfnewf"))
-		encodedBefore = base64.URLEncoding.EncodeToString([]byte("10,mfbnewkjufrhewkfnwfjbqedq"))
+		refreshToken, err := util.CreateToken(
+			s.authConfig.RefreshToken.Secret,
+			s.authConfig.RefreshToken.Issuer,
+			"123",
+			[]string{s.authConfig.RefreshToken.Audience},
+			refreshTokenDuration,
+		)
+		if err != nil {
+			fmt.Println("Refresh Token Error", err.Error())
+		}
 
-		fmt.Println("Encoded after:", string(encodedAfter))
-		fmt.Println("Encoded before:", string(encodedBefore))
+		response := model.AuthResponse{
+			AccessToken:  accessToken,
+			TokenType:    "Bearer",
+			ExpiresIn:    10,
+			RefreshToken: refreshToken,
+			Scope:        "null",
+		}
 
-		fmt.Println("Limit:", limit)
-		fmt.Println("After:", after)
-		fmt.Println("Before:", before)
-		fmt.Println(nums)
-	})
+		json.NewEncoder(w).Encode(response)
+
+	}), m.RateLimit, m.Logger))
 
 	// Users routes
-	s.mux.Handle("GET /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.GetUsers), m.RateLimit, m.Logger))
+	s.mux.Handle("GET /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.GetUsers), m.JwtAuthorization, m.RateLimit, m.Logger)) // On test
 	s.mux.Handle("GET /users/{id}", m.CompileHandlers(http.HandlerFunc(s.userscontroller.GetById), m.RateLimit, m.Logger))
 	s.mux.Handle("GET /users/{id}/posts", m.CompileHandlers(http.HandlerFunc(s.userscontroller.GetPostsOfUser), m.RateLimit, m.Logger))
 	s.mux.Handle("POST /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.PostUser), m.RateLimit, m.Logger))

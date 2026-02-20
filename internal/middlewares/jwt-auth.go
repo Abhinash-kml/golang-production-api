@@ -17,22 +17,35 @@ func JwtAuthorization(next http.Handler) http.Handler {
 		}
 
 		tokenString := strings.Split(authHeader, " ")
-		if len(tokenString) < 2 || tokenString[0] != "Bearer" {
+		if len(tokenString) < 2 || len(tokenString) > 2 || tokenString[0] != "Bearer" {
 			http.Error(w, "Bad token format", http.StatusUnauthorized)
+			return
 		}
 
-		token, err := jwt.ParseWithClaims(tokenString[1], jwt.RegisteredClaims{}, func(t *jwt.Token) (any, error) {
-			return []byte("my-secret-key"), nil
-		})
+		tempClaims := &jwt.RegisteredClaims{}
+		token, err := jwt.ParseWithClaims(tokenString[1], tempClaims, func(t *jwt.Token) (any, error) {
+			return []byte("my-special-secret"), nil
+		},
+			jwt.WithIssuer("my-app"),
+			jwt.WithExpirationRequired(),
+			jwt.WithNotBeforeRequired(),
+			jwt.WithAllAudiences("www.myapp.com"))
+
 		if err != nil {
-			http.Error(w, "Failed to parse jwt token", http.StatusUnauthorized)
-			fmt.Println("Failed to Parse jwt token")
+			http.Error(w, fmt.Sprintf("%+v", err), http.StatusUnauthorized)
+			fmt.Printf("JWT Error: %+v\n", err)
+			return
 		}
 
-		claims, ok := token.Claims.(jwt.RegisteredClaims)
+		if !token.Valid {
+			http.Error(w, "Token is now valid meow meow", http.StatusUnauthorized)
+			return
+		}
+
+		claims, ok := token.Claims.(*jwt.RegisteredClaims)
 		if !ok {
-			fmt.Println("Failed to type assert claims to custom claims type")
-			http.Error(w, "Failed to parse jwt token", http.StatusUnauthorized)
+			http.Error(w, "Failed to parse jwt token meow meow", http.StatusUnauthorized)
+			return
 		}
 
 		// Do real work here

@@ -15,11 +15,11 @@ logging:
 auth:
   access_token:
     secret: my-special-secret
-    expiration: 10min
+    expiration: 10m
     audience: www.myapp.com
     issuer: my-app
   refresh_token:
     secret: my-special-secret
-    expiration: 7days
+    expiration: 10080m
     audience: www.myapp.com
     issuer: my-app

@@ -54,6 +54,7 @@ func main() {
 	// 	servers.WithCommentsController(*commentscontroller))
 
 	server := servers.NewHttpWithConfig(&config.Server.Http,
+		&config.Auth,
 		servers.WithLogger(*logger),
 		servers.WithUsersController(*usercontroller),
 		servers.WithPostsController(*postscontroller),
