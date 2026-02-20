@@ -7,6 +7,19 @@ server:
     idletimeout: 15
     maxheaderbytes: 1024
   grpc:
+    port:
 
 logging:
   level: info
+
+auth:
+  access_token:
+    secret: my-special-secret
+    expiration: 10min
+    audience: www.myapp.com
+    issuer: my-app
+  refresh_token:
+    secret: my-special-secret
+    expiration: 7days
+    audience: www.myapp.com
+    issuer: my-app

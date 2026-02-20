@@ -25,6 +25,19 @@ type HttpConfig struct {
 }
 
 type GrpcConfig struct {
+	Port string `mapstructure:"port"`
+}
+
+type AuthTokenConfig struct {
+	AccessToken  TokenConfig `mapstructure:"access_token"`
+	RefreshToken TokenConfig `mapstructure:"refresh_token"`
+}
+
+type TokenConfig struct {
+	Secret     string `mapstructure:"secret"`
+	Expiration string `mapstructure:"expiration"`
+	Audience   string `mapstructure:"audience"`
+	Issuer     string `mapstructure:"issuer"`
 }
 
 func Initialize() *Config {

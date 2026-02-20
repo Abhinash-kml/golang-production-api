@@ -37,9 +37,11 @@ func (c *UsersController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
 	if err != nil {
 		http.Error(w, "Cannot convert provided limit to integer", http.StatusBadRequest)
+		return
 	}
-	if limit < 1 || limit > 100 {
+	if limit < 1 || limit > 10 {
 		http.Error(w, "Malformed query limit. Correct range: 1-100", http.StatusBadRequest)
+		return
 	}
 
 	users, _ := c.userservice.GetUsers() // No point of error handling here as empty row will return [] and 200 status
@@ -153,25 +155,55 @@ func Paginate[T any](data []T, currentCursorstring string, limit int, route, bas
 		return base64.URLEncoding.EncodeToString([]byte(strconv.Itoa(k)))
 	}
 
+	dataLenth := len(data)
+	var last int
+	if currentCursor+limit > dataLenth {
+		last = dataLenth
+	} else {
+		last = currentCursor + limit
+	}
+
+	pageSize := 10
+	currentPage := currentCursor / pageSize
+	totalPages := len(data) / pageSize
+	nextPage := currentPage + 1
+	prevPage := currentPage - 1
+	if nextPage > totalPages {
+		nextPage = 0
+	}
+
 	// Calculate Previous and Next Cursors
 	selfCursor := currentCursor
 	prevCursor := currentCursor - limit
 	nextCursor := currentCursor + limit
-	firstPageCursor := 1  // Hardcoded, TODO: Adapt to real data source
-	lastpageCursor := 150 // Hardcoded. TODO: Adapt to real data source
+	firstPageCursor := 0                                // Hardcoded, TODO: Maybe adapt to real data source
+	lastpageCursor := ((totalPages + 1) - 1) * pageSize // +1 as pages are 0 based index
+
+	calculateNextPageString := func(n int) string {
+		if n <= 0 {
+			return "null"
+		}
+		return fmt.Sprintf("%s/%s?cursor=%s&limit=%d", baseurl, route, encode(nextCursor), limit)
+	}
+	calculatePrevPageString := func(n int) string {
+		if n < 0 {
+			return "null"
+		}
+		return fmt.Sprintf("%s/%s?cursor=%s&limit=%d", baseurl, route, encode(prevCursor), limit)
+	}
 
 	response := &model.ApiPaginatedResponseDTO[T]{
-		Data: data[currentCursor : currentCursor+limit], // TODO: Fix this [overflow error]
+		Data: data[currentCursor:last], // TODO: Fix this [overflow error]
 		Links: model.Links{
 			Self:     fmt.Sprintf("%s/%s?cursor=%s&limit=%d", baseurl, route, encode(selfCursor), limit),
-			Previous: fmt.Sprintf("%s/%s?cursor=%s&limit=%d", baseurl, route, encode(prevCursor), limit),
-			Next:     fmt.Sprintf("%s/%s?cursor=%s&limit=%d", baseurl, route, encode(nextCursor), limit),
-			First:    fmt.Sprintf("%s/%s?cursor=%slimit=%d", baseurl, route, encode(firstPageCursor), limit),
-			Last:     fmt.Sprintf("%s/%s?cursor=%slimit=%d", baseurl, route, encode(lastpageCursor), limit),
+			Previous: calculatePrevPageString(prevPage),
+			Next:     calculateNextPageString(nextPage),
+			First:    fmt.Sprintf("%s/%s?cursor=%s&limit=%d", baseurl, route, encode(firstPageCursor), limit),
+			Last:     fmt.Sprintf("%s/%s?cursor=%s&limit=%d", baseurl, route, encode(lastpageCursor), limit),
 		},
 		Meta: model.Meta{
-			CurrentPage: 1,  // To be calculated dynamically
-			TotalPages:  10, // To be calculated dynamically
+			CurrentPage: currentPage,
+			TotalPages:  totalPages,
 		},
 	}
 

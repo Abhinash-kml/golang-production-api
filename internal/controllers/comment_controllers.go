@@ -36,8 +36,8 @@ func (c *CommentsController) GetComments(w http.ResponseWriter, r *http.Request)
 	if err != nil {
 		http.Error(w, "Cannot convert provided limit to integer", http.StatusBadRequest)
 	}
-	if limit < 1 || limit > 100 {
-		http.Error(w, "Malformed query limit. Correct range: 1-100", http.StatusBadRequest)
+	if limit < 1 || limit > 10 {
+		limit = 10
 	}
 
 	comments, _ := c.commentservice.GetComments() // No point of error handling here as empty row will return [] and 200 status
