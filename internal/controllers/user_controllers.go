@@ -36,11 +36,25 @@ func (c *UsersController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	cursor := r.URL.Query().Get("cursor")
 	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
 	if err != nil {
-		http.Error(w, "Cannot convert provided limit to integer", http.StatusBadRequest)
+		SendProblemDetailsResponse(
+			w,
+			"https://api.example.com/malformed-limit-query",
+			"Malformed query parameter",
+			"Cannot convert provoded limit",
+			"/users",
+			http.StatusBadRequest,
+		)
 		return
 	}
 	if limit < 1 || limit > 10 {
-		http.Error(w, "Malformed query limit. Correct range: 1-100", http.StatusBadRequest)
+		SendProblemDetailsResponse(
+			w,
+			"https://api.example.com/malformed-limit-query",
+			"Malformed query limit",
+			"Valid range 1-10",
+			"/users",
+			http.StatusBadRequest,
+		)
 		return
 	}
 
@@ -55,13 +69,29 @@ func (c *UsersController) GetById(w http.ResponseWriter, r *http.Request) {
 	idString := r.PathValue("id")
 	id, err := strconv.Atoi(idString)
 	if err != nil {
-		http.Error(w, "Malformed id string", http.StatusBadRequest)
+		SendProblemDetailsResponse(
+			w,
+			"https://api.example.com/malformed-id-parameter",
+			"Malformed id parameter",
+			"The provided id parameter is malformed",
+			"/users/{id}",
+			http.StatusBadRequest,
+		)
+		return
 	}
 
 	user, err := c.userservice.GetById(id)
 	if err != nil {
 		if errors.Is(err, repository.ErrNoRecord) {
-			http.Error(w, "No Record", http.StatusNotFound)
+			SendProblemDetailsResponse(
+				w,
+				"https://api.example.com/no-record",
+				"No record",
+				"The requested resource record is not found",
+				"/users/{id}",
+				http.StatusNotFound,
+			)
+			return
 		}
 	}
 	json.NewEncoder(w).Encode(user)
@@ -87,8 +117,15 @@ func (c *UsersController) PostUser(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&user)
 	err := c.userservice.InsertUser(user)
 	if err != nil {
-		// TODO: Handle custom error here
-		http.Error(w, "Failed", http.StatusInternalServerError)
+		SendProblemDetailsResponse(
+			w,
+			"https://api.example.com/generic-insert-error",
+			"Generic Insert Error",
+			"This is generic insert error response",
+			"POST /users",
+			http.StatusInternalServerError,
+		)
+		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
@@ -208,4 +245,19 @@ func Paginate[T any](data []T, currentCursorstring string, limit int, route, bas
 	}
 
 	return response
+}
+
+func SendProblemDetailsResponse(w http.ResponseWriter, Type, title, details, instance string, status int) {
+	reponse := model.ProblemDetailsResponse{
+		Type:     Type,
+		Title:    title,
+		Detail:   details,
+		Instance: instance,
+		Status:   status,
+	}
+
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(status)
+
+	json.NewEncoder(w).Encode(reponse)
 }
