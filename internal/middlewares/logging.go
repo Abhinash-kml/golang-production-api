@@ -6,8 +6,6 @@ import (
 	"go.uber.org/zap"
 )
 
-var logger, _ = zap.NewProduction()
-
 type MiddleWare func(http.Handler) http.Handler
 
 func CompileHandlers(base http.Handler, middlewares ...MiddleWare) http.Handler {
@@ -22,7 +20,7 @@ func CompileHandlers(base http.Handler, middlewares ...MiddleWare) http.Handler 
 
 func Logger(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		logger.Info("Connection", zap.String("IP", r.RemoteAddr), zap.String("Method", r.Method), zap.String("Path", r.Pattern))
+		zap.L().Info("Connection", zap.String("IP", r.RemoteAddr), zap.String("Method", r.Method), zap.String("Path", r.Pattern))
 
 		next.ServeHTTP(w, r)
 	})

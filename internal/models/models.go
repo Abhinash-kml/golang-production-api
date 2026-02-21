@@ -197,3 +197,10 @@ type AuthResponse struct {
 	RefreshToken string `json:"refresh_token,omitempty"`
 	Scope        string `json:"scope,omitempty"`
 }
+
+type AccessTokenRequest struct {
+	GrantType    string `json:"grant_type"`
+	RefreshToken string `json:"refresh_token"`
+	ClientId     string `json:"client_id"`
+	ClientSecret string `json:"client_secret"`
+}

@@ -171,34 +171,6 @@ type Myclaims struct {
 }
 
 func (s *CustomHttpServer) SetupDefaultRoutes() error {
-	s.mux.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
-		// Set CORS headers
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-		w.Header().Set("Access-Control-Allow-Credentials", "true")
-		w.Header().Set("Access-Control-Expose-Headers", "Content-Length, X-Custom-Header")
-		w.Header().Set("Access-Control-Max-Age", "86400")
-
-		mclaims := Myclaims{
-			Myid: "mmm",
-			Meow: "llll",
-			RegisteredClaims: jwt.RegisteredClaims{
-				IssuedAt:  jwt.NewNumericDate(time.Now()),
-				Issuer:    "Neo",
-				ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 2)),
-				Subject:   "nice subject",
-				ID:        "nkaheui",
-				Audience:  []string{"Hello Audience"},
-			},
-		}
-
-		// Send JWT token
-		token := jwt.NewWithClaims(jwt.SigningMethodHS512, mclaims)
-		signedToken, _ := token.SignedString([]byte("my-secret-key"))
-		w.Write([]byte(fmt.Sprintf("Jwt Token: %s", signedToken)))
-	})
-
 	// Token routes
 	s.mux.Handle("GET /login", m.CompileHandlers(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		accessTokenDuration, err := time.ParseDuration(s.authConfig.AccessToken.Expiration)
@@ -210,26 +182,28 @@ func (s *CustomHttpServer) SetupDefaultRoutes() error {
 			log.Fatal("Failed to parse time duration for access token expiration")
 		}
 
-		accessToken, err := util.CreateToken(
+		// Create access token
+		accessToken, err := util.CreateJwtToken(
 			s.authConfig.AccessToken.Secret,
 			s.authConfig.AccessToken.Issuer,
-			"123",
+			"123", // This subject should be filled with real entity identifier
 			[]string{s.authConfig.AccessToken.Audience},
 			accessTokenDuration,
 		)
 		if err != nil {
-			fmt.Println("Access Token Erorr", err.Error())
+			s.logger.Info("Access Token creation error", zap.Error(err))
 		}
 
-		refreshToken, err := util.CreateToken(
+		// Create refresh token
+		refreshToken, err := util.CreateJwtToken(
 			s.authConfig.RefreshToken.Secret,
 			s.authConfig.RefreshToken.Issuer,
-			"123",
+			"123", // This subject should be filled with real entity identifier
 			[]string{s.authConfig.RefreshToken.Audience},
 			refreshTokenDuration,
 		)
 		if err != nil {
-			fmt.Println("Refresh Token Error", err.Error())
+			s.logger.Info("Refresh Token creation error", zap.Error(err))
 		}
 
 		response := model.AuthResponse{
@@ -240,35 +214,59 @@ func (s *CustomHttpServer) SetupDefaultRoutes() error {
 			Scope:        "null",
 		}
 
+		s.logger.Debug("Auth Response", zap.String("Info", fmt.Sprintf("%+v", response)))
 		json.NewEncoder(w).Encode(response)
+
+	}), m.RateLimit, m.Logger))
+
+	// Subjected to change
+	s.mux.Handle("POST /access_token", m.CompileHandlers(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var requestBody model.AccessTokenRequest
+		json.NewDecoder(r.Body).Decode(&requestBody)
+
+		// Verify jwt using util function
+		_, claims, err := util.VerifyJwtToken(s.authConfig, requestBody.RefreshToken, "refresh")
+		if err != nil {
+			s.logger.Info("Refresh token verfication failed", zap.Error(err))
+		}
+
+		// Check if Token ID i.e JTI is in ban list
+		// using real logic like checking JTI from banlist store
+		tokenId := claims.ID
+
+		// This is placeholder logic
+		fmt.Println("Got token id:", tokenId)
+
+		// If banned then dont provide a new token
+		// Else provide a new access token
 
 	}), m.RateLimit, m.Logger))
 
 	// Users routes
 	s.mux.Handle("GET /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.GetUsers), m.JwtAuthorization, m.RateLimit, m.Logger)) // On test
-	s.mux.Handle("GET /users/{id}", m.CompileHandlers(http.HandlerFunc(s.userscontroller.GetById), m.RateLimit, m.Logger))
-	s.mux.Handle("GET /users/{id}/posts", m.CompileHandlers(http.HandlerFunc(s.userscontroller.GetPostsOfUser), m.RateLimit, m.Logger))
-	s.mux.Handle("POST /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.PostUser), m.RateLimit, m.Logger))
-	s.mux.Handle("PUT /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.PutUser), m.RateLimit, m.Logger))
-	s.mux.Handle("PATCH /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.PatchUser), m.RateLimit, m.Logger))
-	s.mux.Handle("DELETE /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.DeleteUser), m.RateLimit, m.Logger))
+	s.mux.Handle("GET /users/{id}", m.CompileHandlers(http.HandlerFunc(s.userscontroller.GetById), m.JwtAuthorization, m.RateLimit, m.Logger))
+	s.mux.Handle("GET /users/{id}/posts", m.CompileHandlers(http.HandlerFunc(s.userscontroller.GetPostsOfUser), m.JwtAuthorization, m.RateLimit, m.Logger))
+	s.mux.Handle("POST /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.PostUser), m.JwtAuthorization, m.RateLimit, m.Logger))
+	s.mux.Handle("PUT /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.PutUser), m.JwtAuthorization, m.RateLimit, m.Logger))
+	s.mux.Handle("PATCH /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.PatchUser), m.JwtAuthorization, m.RateLimit, m.Logger))
+	s.mux.Handle("DELETE /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.DeleteUser), m.JwtAuthorization, m.RateLimit, m.Logger))
 
 	// Post routes
-	s.mux.Handle("GET /posts", m.CompileHandlers(http.HandlerFunc(s.postscontroller.GetPosts), m.RateLimit, m.Logger))
-	s.mux.Handle("GET /posts/{id}", m.CompileHandlers(http.HandlerFunc(s.postscontroller.GetById), m.RateLimit, m.Logger))
-	s.mux.Handle("GET /posts/{id}/comments", m.CompileHandlers(http.HandlerFunc(s.postscontroller.GetCommentsOfPost), m.RateLimit, m.Logger)) // NEW
-	s.mux.Handle("POST /posts", m.CompileHandlers(http.HandlerFunc(s.postscontroller.PostPost), m.RateLimit, m.Logger))
-	s.mux.Handle("PUT /posts", m.CompileHandlers(http.HandlerFunc(s.postscontroller.PutPost), m.RateLimit, m.Logger))
-	s.mux.Handle("PATCH /posts", m.CompileHandlers(http.HandlerFunc(s.postscontroller.PatchPost), m.RateLimit, m.Logger))
-	s.mux.Handle("DELETE /posts", m.CompileHandlers(http.HandlerFunc(s.postscontroller.DeletePost), m.RateLimit, m.Logger))
+	s.mux.Handle("GET /posts", m.CompileHandlers(http.HandlerFunc(s.postscontroller.GetPosts), m.JwtAuthorization, m.RateLimit, m.Logger))
+	s.mux.Handle("GET /posts/{id}", m.CompileHandlers(http.HandlerFunc(s.postscontroller.GetById), m.JwtAuthorization, m.RateLimit, m.Logger))
+	s.mux.Handle("GET /posts/{id}/comments", m.CompileHandlers(http.HandlerFunc(s.postscontroller.GetCommentsOfPost), m.JwtAuthorization, m.RateLimit, m.Logger)) // NEW
+	s.mux.Handle("POST /posts", m.CompileHandlers(http.HandlerFunc(s.postscontroller.PostPost), m.JwtAuthorization, m.RateLimit, m.Logger))
+	s.mux.Handle("PUT /posts", m.CompileHandlers(http.HandlerFunc(s.postscontroller.PutPost), m.JwtAuthorization, m.RateLimit, m.Logger))
+	s.mux.Handle("PATCH /posts", m.CompileHandlers(http.HandlerFunc(s.postscontroller.PatchPost), m.JwtAuthorization, m.RateLimit, m.Logger))
+	s.mux.Handle("DELETE /posts", m.CompileHandlers(http.HandlerFunc(s.postscontroller.DeletePost), m.JwtAuthorization, m.RateLimit, m.Logger))
 
 	// Comments routes
-	s.mux.Handle("GET /comments", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.GetComments), m.RateLimit, m.Logger))
-	s.mux.Handle("GET /comments/{id}", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.GetById), m.RateLimit, m.Logger))
-	s.mux.Handle("POST /comments", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.PostComment), m.RateLimit, m.Logger))
-	s.mux.Handle("PUT /comments", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.PutComment), m.RateLimit, m.Logger))
-	s.mux.Handle("PATCH /comments", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.PatchComment), m.RateLimit, m.Logger))
-	s.mux.Handle("DELETE /comments", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.DeleteComment), m.RateLimit, m.Logger))
+	s.mux.Handle("GET /comments", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.GetComments), m.JwtAuthorization, m.RateLimit, m.Logger))
+	s.mux.Handle("GET /comments/{id}", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.GetById), m.JwtAuthorization, m.RateLimit, m.Logger))
+	s.mux.Handle("POST /comments", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.PostComment), m.JwtAuthorization, m.RateLimit, m.Logger))
+	s.mux.Handle("PUT /comments", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.PutComment), m.JwtAuthorization, m.RateLimit, m.Logger))
+	s.mux.Handle("PATCH /comments", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.PatchComment), m.JwtAuthorization, m.RateLimit, m.Logger))
+	s.mux.Handle("DELETE /comments", m.CompileHandlers(http.HandlerFunc(s.commentscontroller.DeleteComment), m.JwtAuthorization, m.RateLimit, m.Logger))
 
 	return nil
 }

@@ -32,11 +32,17 @@ func main() {
 	}
 	defer logFile.Close()
 
-	// Logger
-	syncer := zapcore.AddSync(logFile)
-	loglevel := zap.NewAtomicLevelAt(zap.InfoLevel)
-	core := zapcore.NewCore(zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig()), syncer, loglevel)
-	logger := zap.New(core, zap.AddCaller())
+	// Logger - stdout + file
+	fileSyncer := zapcore.AddSync(logFile)
+	stdoutSyncer := zapcore.AddSync(os.Stdout)
+	loglevel := zap.NewAtomicLevelAt(zap.DebugLevel)
+	encoderConfig := zap.NewProductionEncoderConfig()
+	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+	fileCore := zapcore.NewCore(zapcore.NewJSONEncoder(encoderConfig), fileSyncer, loglevel)
+	stdoutCore := zapcore.NewCore(zapcore.NewConsoleEncoder(encoderConfig), stdoutSyncer, loglevel)
+	combinedCore := zapcore.NewTee(fileCore, stdoutCore)
+	logger := zap.New(combinedCore, zap.AddCaller())
+	zap.ReplaceGlobals(logger)
 	defer logger.Sync()
 
 	// Repository
