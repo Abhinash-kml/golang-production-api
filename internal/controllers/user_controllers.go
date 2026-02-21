@@ -36,25 +36,23 @@ func (c *UsersController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	cursor := r.URL.Query().Get("cursor")
 	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
 	if err != nil {
-		SendProblemDetailsResponse(
-			w,
-			"https://api.example.com/malformed-limit-query",
-			"Malformed query parameter",
-			"Cannot convert provoded limit",
-			"/users",
-			http.StatusBadRequest,
-		)
+		SendProblemDetails(w, "ValidationError", []model.ProblemDetailsError{
+			{
+				Field:   "limit",
+				Message: "Provided limit cannot be converted to internal representation",
+				Code:    "PARAMETER_MALFORMED",
+			},
+		}, r.URL.String())
 		return
 	}
 	if limit < 1 || limit > 10 {
-		SendProblemDetailsResponse(
-			w,
-			"https://api.example.com/malformed-limit-query",
-			"Malformed query limit",
-			"Valid range 1-10",
-			"/users",
-			http.StatusBadRequest,
-		)
+		SendProblemDetails(w, "ValidationError", []model.ProblemDetailsError{
+			{
+				Field:   "limit",
+				Message: "Provided limit is out of range. Valid: 1-10",
+				Code:    "PARAMETER_MALFORMED",
+			},
+		}, r.URL.String())
 		return
 	}
 
@@ -69,28 +67,20 @@ func (c *UsersController) GetById(w http.ResponseWriter, r *http.Request) {
 	idString := r.PathValue("id")
 	id, err := strconv.Atoi(idString)
 	if err != nil {
-		SendProblemDetailsResponse(
-			w,
-			"https://api.example.com/malformed-id-parameter",
-			"Malformed id parameter",
-			"The provided id parameter is malformed",
-			"/users/{id}",
-			http.StatusBadRequest,
-		)
+		SendProblemDetails(w, "ValidationError", []model.ProblemDetailsError{
+			{
+				Field:   "id",
+				Message: "Provided id is malformed",
+				Code:    "PARAMETER_MALFORMED",
+			},
+		}, r.URL.String())
 		return
 	}
 
 	user, err := c.userservice.GetById(id)
 	if err != nil {
 		if errors.Is(err, repository.ErrNoRecord) {
-			SendProblemDetailsResponse(
-				w,
-				"https://api.example.com/no-record",
-				"No record",
-				"The requested resource record is not found",
-				"/users/{id}",
-				http.StatusNotFound,
-			)
+			SendProblemDetails(w, "NotFound", nil, r.URL.String())
 			return
 		}
 	}
@@ -117,14 +107,7 @@ func (c *UsersController) PostUser(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&user)
 	err := c.userservice.InsertUser(user)
 	if err != nil {
-		SendProblemDetailsResponse(
-			w,
-			"https://api.example.com/generic-insert-error",
-			"Generic Insert Error",
-			"This is generic insert error response",
-			"POST /users",
-			http.StatusInternalServerError,
-		)
+		SendProblemDetails(w, "Error", nil, r.URL.String())
 		return
 	}
 
@@ -139,7 +122,8 @@ func (c *UsersController) PatchUser(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&patch)
 	err := c.userservice.UpdateUser(patch.Id, patch)
 	if err != nil {
-		http.Error(w, "Failed", http.StatusInternalServerError)
+		SendProblemDetails(w, "Error", nil, r.URL.String())
+		return
 	}
 
 	w.WriteHeader(http.StatusNoContent)
@@ -161,7 +145,8 @@ func (c *UsersController) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&deleteuser)
 	err := c.userservice.DeleteUser(deleteuser.Id)
 	if err != nil {
-		http.Error(w, "Failed", http.StatusInternalServerError)
+		SendProblemDetails(w, "NotFound", nil, r.URL.String())
+		return
 	}
 
 	w.WriteHeader(http.StatusNoContent)
@@ -247,13 +232,39 @@ func Paginate[T any](data []T, currentCursorstring string, limit int, route, bas
 	return response
 }
 
-func SendProblemDetailsResponse(w http.ResponseWriter, Type, title, details, instance string, status int) {
+func SendProblemDetails(w http.ResponseWriter, problemType string, errors []model.ProblemDetailsError, route string) {
+	switch problemType {
+	case "NotFound":
+		{
+			SendProblemDetailsCustom(w, "https://api.example.com/docs/error-not-found", "Resource not found", "The requested resource was not found", route, errors, http.StatusNotFound)
+		}
+	case "ValidationError":
+		{
+			SendProblemDetailsCustom(w, "https://api.example.com/docs/malformed-parameter", "Validation error", "There's validation error", route, errors, http.StatusBadRequest)
+		}
+	case "Error":
+		{
+			SendProblemDetailsCustom(w, "https://api.example.com/docs/internal-error", "Internal error", "The requested operation failed due to internal server error", route, errors, http.StatusInternalServerError)
+		}
+	case "Forbidden":
+		{
+			SendProblemDetailsCustom(w, "https://api.example.com/docs/forbidden", "Access denied", "Access to requested resource denied", route, errors, http.StatusForbidden)
+		}
+	case "Unauthorised":
+		{
+			SendProblemDetailsCustom(w, "https://api.example.com/docs/unauthorized", "Unauthorized", "Authorization is required", route, errors, http.StatusUnauthorized)
+		}
+	}
+}
+
+func SendProblemDetailsCustom(w http.ResponseWriter, Type, title, details, instance string, errors []model.ProblemDetailsError, status int) {
 	reponse := model.ProblemDetailsResponse{
 		Type:     Type,
 		Title:    title,
 		Detail:   details,
 		Instance: instance,
 		Status:   status,
+		Errors:   errors,
 	}
 
 	w.Header().Set("Content-Type", "application/problem+json")

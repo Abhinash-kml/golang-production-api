@@ -176,11 +176,18 @@ type ApiPaginatedResponseDTO[T any] struct {
 }
 
 type ProblemDetailsResponse struct {
-	Type     string `json:"type"`
-	Title    string `json:"title"`
-	Status   int    `json:"status"`
-	Detail   string `json:"detail"`
-	Instance string `json:"instance"`
+	Type     string                `json:"type"`
+	Title    string                `json:"title"`
+	Status   int                   `json:"status"`
+	Detail   string                `json:"detail"`
+	Instance string                `json:"instance"`
+	Errors   []ProblemDetailsError `json:"errors,omitempty"`
+}
+
+type ProblemDetailsError struct {
+	Field   string `json:"field"`
+	Message string `json:"message"`
+	Code    string `json:"code"`
 }
 
 type AuthResponse struct {

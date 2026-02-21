@@ -29,15 +29,27 @@ func NewPostsController(userService service.UserService, postService service.Pos
 }
 
 func (c *PostsController) GetPosts(w http.ResponseWriter, r *http.Request) {
-	c.logger.Info("Connection", zap.String("IP", r.RemoteAddr), zap.String("Method", r.Method), zap.String("Path", r.Pattern))
-
 	cursor := r.URL.Query().Get("cursor")
 	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
 	if err != nil {
-		http.Error(w, "Cannot convert provided limit to integer", http.StatusBadRequest)
+		SendProblemDetails(w, "ValidationError", []model.ProblemDetailsError{
+			{
+				Field:   "limit",
+				Message: "Provided limit cannot be converted to internal representation",
+				Code:    "PARAMETER_MALFORMED",
+			},
+		}, r.URL.String())
+		return
 	}
 	if limit < 1 || limit > 100 {
-		http.Error(w, "Malformed query limit. Correct range: 1-100", http.StatusBadRequest)
+		SendProblemDetails(w, "ValidationError", []model.ProblemDetailsError{
+			{
+				Field:   "limit",
+				Message: "Provided limit is out of range. Valid: 1-10",
+				Code:    "PARAMETER_MALFORMED",
+			},
+		}, r.URL.String())
+		return
 	}
 
 	posts, _ := c.postservice.GetPosts() // No point of error handling here as empty row will return [] and 200 status
@@ -51,13 +63,21 @@ func (c *PostsController) GetById(w http.ResponseWriter, r *http.Request) {
 	idString := r.PathValue("id")
 	id, err := strconv.Atoi(idString)
 	if err != nil {
-		http.Error(w, "Malformed id string", http.StatusBadRequest)
+		SendProblemDetails(w, "ValidationError", []model.ProblemDetailsError{
+			{
+				Field:   "id",
+				Message: "Provided id is malformed",
+				Code:    "PARAMETER_MALFORMED",
+			},
+		}, r.URL.String())
+		return
 	}
 
 	post, err := c.postservice.GetById(id)
 	if err != nil {
 		if errors.Is(err, repository.ErrNoRecord) {
-			http.Error(w, "No Record", http.StatusNotFound)
+			SendProblemDetails(w, "NotFound", nil, r.URL.String())
+			return
 		}
 	}
 	json.NewEncoder(w).Encode(post)
@@ -69,7 +89,14 @@ func (c *PostsController) GetCommentsOfPost(w http.ResponseWriter, r *http.Reque
 	postIdString := r.PathValue("id")
 	postId, err := strconv.Atoi(postIdString)
 	if err != nil {
-		http.Error(w, "Malformed id string", http.StatusBadRequest)
+		SendProblemDetails(w, "ValidationError", []model.ProblemDetailsError{
+			{
+				Field:   "id",
+				Message: "Provided id is malformed",
+				Code:    "PARAMETER_MALFORMED",
+			},
+		}, r.URL.String())
+		return
 	}
 
 	commentResponse, err := c.commentservice.GetCommentsOfPost(postId)
@@ -78,52 +105,50 @@ func (c *PostsController) GetCommentsOfPost(w http.ResponseWriter, r *http.Reque
 }
 
 func (c *PostsController) PostPost(w http.ResponseWriter, r *http.Request) {
-	c.logger.Info("Connection", zap.String("IP", r.RemoteAddr), zap.String("Method", r.Method), zap.String("Path", r.Pattern))
-
 	incoming := model.PostCreateDTO{}
 	json.NewDecoder(r.Body).Decode(&incoming)
 	err := c.postservice.InsertPost(incoming)
 	if err != nil {
-		http.Error(w, "Failed", http.StatusInternalServerError)
+		SendProblemDetails(w, "Error", nil, r.URL.String())
+		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
 }
 
 func (c *PostsController) PutPost(w http.ResponseWriter, r *http.Request) {
-	c.logger.Info("Connection", zap.String("IP", r.RemoteAddr), zap.String("Method", r.Method), zap.String("Path", r.Pattern))
-
 	incoming := model.PostUpdateDTO{}
 	json.NewDecoder(r.Body).Decode(&incoming)
 	err := c.postservice.UpdatePost(incoming.Id, incoming)
 	if err != nil {
-		http.Error(w, "Failed", http.StatusInternalServerError)
+		SendProblemDetails(w, "Error", nil, r.URL.String())
+		return
 	}
 
 	w.WriteHeader(http.StatusNoContent)
 }
 
 func (c *PostsController) PatchPost(w http.ResponseWriter, r *http.Request) {
-	c.logger.Info("Connection", zap.String("IP", r.RemoteAddr), zap.String("Method", r.Method), zap.String("Path", r.Pattern))
-
 	incoming := model.PostUpdateDTO{}
 	json.NewDecoder(r.Body).Decode(&incoming)
 	err := c.postservice.UpdatePost(incoming.Id, incoming)
 	if err != nil {
-		http.Error(w, "Failed", http.StatusInternalServerError)
+		SendProblemDetails(w, "Error", nil, r.URL.String())
+		return
 	}
 
 	w.WriteHeader(http.StatusNoContent)
 }
 
 func (c *PostsController) DeletePost(w http.ResponseWriter, r *http.Request) {
-	c.logger.Info("Connection", zap.String("IP", r.RemoteAddr), zap.String("Method", r.Method), zap.String("Path", r.Pattern))
-
 	incoming := model.PostDeleteDTO{}
 	json.NewDecoder(r.Body).Decode(&incoming)
 	err := c.postservice.DeletePost(incoming.Id)
 	if err != nil {
-		http.Error(w, "Failed", http.StatusInternalServerError)
+		if errors.Is(err, repository.ErrNoRecord) {
+			SendProblemDetails(w, "NotFound", nil, r.URL.String())
+			return
+		}
 	}
 
 	w.WriteHeader(http.StatusNoContent)

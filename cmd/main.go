@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -13,20 +14,32 @@ import (
 	"github.com/abhinash-kml/go-api-server/internal/servers"
 	service "github.com/abhinash-kml/go-api-server/internal/services"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 func main() {
+	// Signal handling
 	stopSig := make(chan os.Signal, 1)
 	signal.Notify(stopSig, syscall.SIGINT, syscall.SIGTERM)
 
+	// Config
 	config := config.Initialize()
 
-	logger, err := zap.NewProduction()
-	defer logger.Sync()
+	// Log file
+	logFile, err := os.OpenFile("./logs/temp.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 	if err != nil {
-		panic("Unable to initialize logger - Zap")
+		log.Fatal("Failed to open log file")
 	}
+	defer logFile.Close()
 
+	// Logger
+	syncer := zapcore.AddSync(logFile)
+	loglevel := zap.NewAtomicLevelAt(zap.InfoLevel)
+	core := zapcore.NewCore(zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig()), syncer, loglevel)
+	logger := zap.New(core, zap.AddCaller())
+	defer logger.Sync()
+
+	// Repository
 	userrepository := repository.NewInMemoryUsersRepository()
 	userrepository.Setup()
 	postsrepository := repository.NewInMemoryPostsRepository()
@@ -34,10 +47,12 @@ func main() {
 	commentrepository := repository.NewInMemoryCommentsRepository()
 	commentrepository.Setup()
 
+	// Service
 	userservice := service.NewLocalUserService(userrepository)
 	postsservice := service.NewLocalPostsService(postsrepository)
 	commentservice := service.NewLocalCommentService(commentrepository)
 
+	// Controllers
 	usercontroller := controller.NewUsersController(userservice, postsservice, commentservice, logger)
 	postscontroller := controller.NewPostsController(userservice, postsservice, commentservice, logger)
 	commentscontroller := controller.NewCommentsController(userservice, postsservice, commentservice, logger)
