@@ -1,10 +1,14 @@
 package service
 
 import (
+	"context"
 	"errors"
+	"fmt"
 
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
+	"github.com/redis/go-redis/v9"
+	"go.uber.org/zap"
 )
 
 var (
@@ -20,16 +24,18 @@ type UserService interface {
 }
 
 type LocalUserService struct {
-	repo repository.UserRepository
+	repo  repository.UserRepository
+	cache *redis.Client
 }
 
-func NewLocalUserService(repository repository.UserRepository) *LocalUserService {
+func NewLocalUserService(repository repository.UserRepository, cache *redis.Client) *LocalUserService {
 	return &LocalUserService{
-		repo: repository,
+		repo:  repository,
+		cache: cache,
 	}
 }
 
-func (s *LocalUserService) GetUsers() ([]model.User, error) {
+func (s *LocalUserService) GetUsers() ([]model.UserResponseDTO, error) {
 	users, err := s.repo.GetUsers()
 	if err != nil {
 		if errors.Is(err, repository.ErrNoUsers) {
@@ -37,19 +43,28 @@ func (s *LocalUserService) GetUsers() ([]model.User, error) {
 		}
 	}
 
-	// TODO: Convert to dtos and then send
+	dtos := make([]model.UserResponseDTO, len(users))
+
+	for index, value := range users {
+		dtos[index] = ConvertUserToUserReponseDTO(&value)
+	}
 
 	return users, nil
 }
 
 func (s *LocalUserService) GetById(id int) (*model.UserResponseDTO, error) {
-	user, err := s.repo.GetById(id)
-	if err != nil {
-		return nil, err
+	user, err := s.getUserFromCache(id)
+	if err != nil && errors.Is(err, redis.Nil) {
+		zap.L().Debug("Cache miss", zap.Int("id", id))
+
+		user, err = s.repo.GetById(id) // Get from db in case of case miss
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	userResponse := ConvertUserToUserReponseDTO(user)
-	return userResponse, nil
+	return &userResponse, nil
 }
 
 func (s *LocalUserService) InsertUser(user model.UserCreateDTO) error {
@@ -110,12 +125,43 @@ func (s *LocalUserService) DeleteUser(id int) error {
 	return nil
 }
 
-func ConvertUserToUserReponseDTO(user *model.User) *model.UserResponseDTO {
-	return &model.UserResponseDTO{
+func ConvertUserToUserReponseDTO(user *model.User) model.UserResponseDTO {
+	return model.UserResponseDTO{
 		Id:      user.Id,
 		Name:    user.Name,
 		City:    user.City,
 		State:   user.State,
 		Country: user.Country,
 	}
+}
+
+func (s *LocalUserService) getUserFromCache(id int) (*model.User, error) {
+	formatedId := fmt.Sprintf("user:%d", id)
+	ctx := context.Background()
+	user := new(model.User)
+	err := s.cache.HGetAll(ctx, formatedId).Scan(user)
+	if err != nil {
+		return nil, err
+	}
+
+	// lambda to add to cache
+	AddToCache := func() {
+		userFromDB, err := s.repo.GetById(id)
+		if err != nil {
+			return
+		}
+
+		s.cache.HSet(ctx, formatedId, userFromDB)
+	}
+
+	// Manual check for cache miss
+	// On cache miss - populate cache with data from db
+	if user.Id == 0 {
+		go AddToCache()
+		return nil, redis.Nil
+	}
+
+	zap.L().Debug("Cache hit", zap.Int("id", id))
+
+	return user, nil
 }

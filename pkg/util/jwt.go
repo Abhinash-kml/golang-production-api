@@ -9,7 +9,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func CreateJwtToken(secret, issuer, subject string, audience []string, expiry time.Duration) (string, error) {
+func CreateJwtToken(secret, issuer, subject string, audience []string, id string, expiry time.Duration) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, jwt.RegisteredClaims{
 		Issuer:    issuer,
 		Subject:   subject,
@@ -17,7 +17,7 @@ func CreateJwtToken(secret, issuer, subject string, audience []string, expiry ti
 		ExpiresAt: jwt.NewNumericDate(time.Now().Add(expiry)),
 		NotBefore: jwt.NewNumericDate(time.Now()),
 		IssuedAt:  jwt.NewNumericDate(time.Now()),
-		ID:        "meow",
+		ID:        id,
 	})
 
 	signedToken, err := token.SignedString([]byte(secret))

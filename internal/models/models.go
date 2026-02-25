@@ -3,11 +3,11 @@ package model
 import "time"
 
 type User struct {
-	Id      int    `json:"id"`
-	Name    string `json:"name"`
-	City    string `json:"city"`
-	State   string `json:"state"`
-	Country string `json:"country"`
+	Id      int    `json:"id" redis:"id"`
+	Name    string `json:"name" redis:"name"`
+	City    string `json:"city" redis:"city"`
+	State   string `json:"state" redis:"state"`
+	Country string `json:"country" redis:"country"`
 }
 
 type UserRequestDTO struct {
@@ -54,12 +54,12 @@ func NewUser(Id int, Name, City, State, Country string) *User {
 }
 
 type Post struct {
-	Id        int       `json:"id"`
-	Title     string    `json:"title"`
-	Body      string    `json:"body"`
-	Likes     int       `json:"likes"`
-	CreatorId int       `json:"creatorid"`
-	CreatedAt time.Time `json:"createdat"`
+	Id        int       `json:"id" redis:"id"`
+	Title     string    `json:"title" redis:"title"`
+	Body      string    `json:"body" redis:"body"`
+	Likes     int       `json:"likes" redis:"likes"`
+	CreatorId int       `json:"creatorid" redis:"creator_id"`
+	CreatedAt time.Time `json:"createdat" redis:"created_at"`
 }
 
 func NewPost(id int, title, body string, likes, creatorid int, createdat time.Time) *Post {
@@ -111,11 +111,11 @@ type PostReplaceDTO struct {
 }
 
 type Comment struct {
-	Id          int    `json:"id"`
-	CommenterId int    `json:"commenterid"`
-	PostId      int    `json:"postid"`
-	Body        string `json:"body"`
-	Likes       int    `json:"likes"`
+	Id          int    `json:"id" redis:"id"`
+	CommenterId int    `json:"commenterid" redis:"commenter_id"`
+	PostId      int    `json:"postid" redis:"postid"`
+	Body        string `json:"body" redis:"body"`
+	Likes       int    `json:"likes" redis:"likes"`
 }
 
 type CommentRequestDTO struct {

@@ -1,8 +1,14 @@
 package service
 
 import (
+	"context"
+	"errors"
+	"fmt"
+
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
+	"github.com/redis/go-redis/v9"
+	"go.uber.org/zap"
 )
 
 type CommentService interface {
@@ -15,12 +21,14 @@ type CommentService interface {
 }
 
 type LocalCommentService struct {
-	repo repository.CommentRepository
+	repo  repository.CommentRepository
+	cache *redis.Client
 }
 
-func NewLocalCommentService(repository repository.CommentRepository) *LocalCommentService {
+func NewLocalCommentService(repository repository.CommentRepository, cache *redis.Client) *LocalCommentService {
 	return &LocalCommentService{
-		repo: repository,
+		repo:  repository,
+		cache: cache,
 	}
 }
 
@@ -40,9 +48,14 @@ func (s *LocalCommentService) GetComments() ([]model.CommentResponseDTO, error) 
 }
 
 func (s *LocalCommentService) GetById(id int) (*model.CommentResponseDTO, error) {
-	comment, err := s.repo.GetById(id)
-	if err != nil {
-		return nil, err
+	comment, err := s.getCommentFromCache(id)
+	if err != nil && errors.Is(err, redis.Nil) {
+		zap.L().Debug("Cache miss", zap.Int("id", id))
+
+		comment, err = s.repo.GetById(id)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	commentResponse := ConvertCommentToCommentResponseDTO(comment)
@@ -109,4 +122,35 @@ func ConvertCommentToCommentResponseDTO(comment *model.Comment) model.CommentRes
 		Body:        comment.Body,
 		Likes:       comment.Likes,
 	}
+}
+
+func (s *LocalCommentService) getCommentFromCache(id int) (*model.Comment, error) {
+	formatedId := fmt.Sprintf("comment:%d", id)
+	ctx := context.Background()
+	comment := new(model.Comment)
+	err := s.cache.HGetAll(ctx, formatedId).Scan(comment)
+	if err != nil {
+		return nil, err
+	}
+
+	// lambda to add to cache
+	AddToCache := func() {
+		commentFromDB, err := s.repo.GetById(id)
+		if err != nil {
+			return
+		}
+
+		s.cache.HSet(ctx, formatedId, commentFromDB)
+	}
+
+	// Manual check for cache miss
+	// On cache miss - populate cache with data from db
+	if comment.Id == 0 {
+		go AddToCache() // Add to cache
+		return nil, redis.Nil
+	}
+
+	zap.L().Debug("Cache hit", zap.Int("id", id))
+
+	return comment, nil
 }

@@ -1,10 +1,14 @@
 package service
 
 import (
+	"context"
 	"errors"
+	"fmt"
 
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
+	"github.com/redis/go-redis/v9"
+	"go.uber.org/zap"
 )
 
 type PostsService interface {
@@ -17,12 +21,14 @@ type PostsService interface {
 }
 
 type LocalPostsService struct {
-	repo repository.PostsRepository
+	repo  repository.PostsRepository
+	cache *redis.Client
 }
 
-func NewLocalPostsService(repository repository.PostsRepository) *LocalPostsService {
+func NewLocalPostsService(repository repository.PostsRepository, cache *redis.Client) *LocalPostsService {
 	return &LocalPostsService{
-		repo: repository,
+		repo:  repository,
+		cache: cache,
 	}
 }
 
@@ -44,9 +50,14 @@ func (s *LocalPostsService) GetPosts() ([]model.PostResponseDTO, error) {
 }
 
 func (s *LocalPostsService) GetById(id int) (*model.PostResponseDTO, error) {
-	post, err := s.repo.GetById(id)
-	if err != nil {
-		return nil, err
+	post, err := s.getPostFromCache(id)
+	if err != nil && errors.Is(err, redis.Nil) {
+		zap.L().Debug("Cache miss", zap.Int("id", id))
+
+		post, err = s.repo.GetById(id) // Get from db in case of cache miss
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	postReponse := ConvertPostToPostResponseDTO(post)
@@ -117,4 +128,35 @@ func ConvertPostToPostResponseDTO(post *model.Post) model.PostResponseDTO {
 		Likes:    post.Likes,
 		Comments: 0, // TODO: Later
 	}
+}
+
+func (s *LocalPostsService) getPostFromCache(id int) (*model.Post, error) {
+	formatedId := fmt.Sprintf("post:%d", id)
+	ctx := context.Background()
+	post := new(model.Post)
+	err := s.cache.HGetAll(ctx, formatedId).Scan(post)
+	if err != nil {
+		return nil, err
+	}
+
+	// lambda to add to cache
+	AddToCache := func() {
+		postFromDB, err := s.repo.GetById(id)
+		if err != nil {
+			return
+		}
+
+		s.cache.HSet(ctx, formatedId, postFromDB)
+	}
+
+	// Manual check for cache miss
+	// On cache miss - populate cache with data from db
+	if post.Id == 0 {
+		go AddToCache() // Add to cache
+		return nil, redis.Nil
+	}
+
+	zap.L().Debug("Cache hit", zap.Int("id", id))
+
+	return post, nil
 }

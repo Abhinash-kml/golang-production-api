@@ -188,6 +188,7 @@ func (s *CustomHttpServer) SetupDefaultRoutes() error {
 			s.authConfig.AccessToken.Issuer,
 			"123", // This subject should be filled with real entity identifier
 			[]string{s.authConfig.AccessToken.Audience},
+			"testid",
 			accessTokenDuration,
 		)
 		if err != nil {
@@ -200,6 +201,7 @@ func (s *CustomHttpServer) SetupDefaultRoutes() error {
 			s.authConfig.RefreshToken.Issuer,
 			"123", // This subject should be filled with real entity identifier
 			[]string{s.authConfig.RefreshToken.Audience},
+			"testid",
 			refreshTokenDuration,
 		)
 		if err != nil {

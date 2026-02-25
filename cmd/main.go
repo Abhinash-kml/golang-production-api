@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -10,9 +11,11 @@ import (
 
 	"github.com/abhinash-kml/go-api-server/config"
 	controller "github.com/abhinash-kml/go-api-server/internal/controllers"
+	model "github.com/abhinash-kml/go-api-server/internal/models"
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
 	"github.com/abhinash-kml/go-api-server/internal/servers"
 	service "github.com/abhinash-kml/go-api-server/internal/services"
+	"github.com/redis/go-redis/v9"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -45,6 +48,31 @@ func main() {
 	zap.ReplaceGlobals(logger)
 	defer logger.Sync()
 
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "", // No password
+		DB:       0,  // Default db
+		OnConnect: func(ctx context.Context, cn *redis.Conn) error {
+			fmt.Println("Connected to redis")
+			return nil
+		},
+	})
+
+	data := map[string]string{
+		"id":      "100",
+		"name":    "neo",
+		"city":    "Kolkata",
+		"state":   "West Bengal",
+		"country": "India",
+	}
+	rdb.HSet(context.Background(), "user", data)
+	test := model.User{}
+	if err := rdb.HGetAll(context.Background(), "user").Scan(&test); err != nil {
+		fmt.Println("Error:", err.Error())
+	}
+	fmt.Printf("%+v", test)
+	// rdb.HDel(context.Background(), "user")
+
 	// Repository
 	userrepository := repository.NewInMemoryUsersRepository()
 	userrepository.Setup()
@@ -54,9 +82,9 @@ func main() {
 	commentrepository.Setup()
 
 	// Service
-	userservice := service.NewLocalUserService(userrepository)
-	postsservice := service.NewLocalPostsService(postsrepository)
-	commentservice := service.NewLocalCommentService(commentrepository)
+	userservice := service.NewLocalUserService(userrepository, rdb)
+	postsservice := service.NewLocalPostsService(postsrepository, rdb)
+	commentservice := service.NewLocalCommentService(commentrepository, rdb)
 
 	// Controllers
 	usercontroller := controller.NewUsersController(userservice, postsservice, commentservice, logger)
