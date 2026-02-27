@@ -24,27 +24,15 @@ func CreateJwtToken(secret, issuer, subject string, audience []string, id string
 	return signedToken, err
 }
 
-func VerifyJwtToken(c *config.AuthTokenConfig, tokenString string, tokenType string) (*jwt.Token, *jwt.RegisteredClaims, error) {
-	var tokenConfig *config.TokenConfig
-	switch tokenType {
-	case "access":
-		{
-			tokenConfig = &c.AccessToken
-		}
-	case "refresh":
-		{
-			tokenConfig = &c.RefreshToken
-		}
-	}
-
+func VerifyJwtToken(cfg *config.TokenConfig, tokenString string) (*jwt.Token, *jwt.RegisteredClaims, error) {
 	tempClaims := &jwt.RegisteredClaims{}
 	token, err := jwt.ParseWithClaims(tokenString, tempClaims, func(t *jwt.Token) (any, error) {
-		return []byte(tokenConfig.Secret), nil
+		return []byte(cfg.Secret), nil
 	},
-		jwt.WithIssuer(tokenConfig.Issuer),
+		jwt.WithIssuer(cfg.Issuer),
 		jwt.WithExpirationRequired(),
 		jwt.WithNotBeforeRequired(),
-		jwt.WithAllAudiences(tokenConfig.Audience))
+		jwt.WithAllAudiences(cfg.Audience))
 
 	if err != nil {
 		zap.L().Info("JWT Parse Error", zap.Error(err))

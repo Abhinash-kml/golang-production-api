@@ -2,8 +2,14 @@ package config
 
 import (
 	"log"
+	"sync"
 
 	"github.com/spf13/viper"
+)
+
+var (
+	instance *Config
+	once     sync.Once
 )
 
 type Config struct {
@@ -75,4 +81,12 @@ func SetDefaults() {
 	viper.SetDefault("server.http.readtimeout", 15)
 	viper.SetDefault("server.http.writetimeout", 15)
 	viper.SetDefault("server.http.maxheaderbytes", 1024)
+}
+
+func Get() *Config {
+	once.Do(func() {
+		instance = Initialize()
+	})
+
+	return instance
 }

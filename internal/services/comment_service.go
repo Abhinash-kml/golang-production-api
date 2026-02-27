@@ -56,6 +56,7 @@ func (s *LocalCommentService) GetById(id int) (*model.CommentResponseDTO, error)
 		if err != nil {
 			return nil, err
 		}
+		go s.addToCache(comment) // Add to cache on a separate goroutine asynchronously
 	}
 
 	commentResponse := ConvertCommentToCommentResponseDTO(comment)
@@ -124,6 +125,12 @@ func ConvertCommentToCommentResponseDTO(comment *model.Comment) model.CommentRes
 	}
 }
 
+func (s *LocalCommentService) addToCache(u *model.Comment) {
+	formatedId := fmt.Sprintf("comment:%d", u.Id)
+	ctx := context.Background()
+	s.cache.HSet(ctx, formatedId, u)
+}
+
 func (s *LocalCommentService) getCommentFromCache(id int) (*model.Comment, error) {
 	formatedId := fmt.Sprintf("comment:%d", id)
 	ctx := context.Background()
@@ -133,20 +140,9 @@ func (s *LocalCommentService) getCommentFromCache(id int) (*model.Comment, error
 		return nil, err
 	}
 
-	// lambda to add to cache
-	AddToCache := func() {
-		commentFromDB, err := s.repo.GetById(id)
-		if err != nil {
-			return
-		}
-
-		s.cache.HSet(ctx, formatedId, commentFromDB)
-	}
-
 	// Manual check for cache miss
-	// On cache miss - populate cache with data from db
+	// On cache miss - populate cache with data from db o nservice layer
 	if comment.Id == 0 {
-		go AddToCache() // Add to cache
 		return nil, redis.Nil
 	}
 

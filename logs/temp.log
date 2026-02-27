@@ -54,3 +54,45 @@
 {"level":"info","ts":"2026-02-25T19:58:58.831+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:59127","Method":"GET","Path":"GET /users"}
 {"level":"info","ts":"2026-02-25T19:59:12.532+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:59351","Method":"GET","Path":"GET /users/{id}"}
 {"level":"info","ts":"2026-02-25T19:59:22.704+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:59523","Method":"GET","Path":"GET /users"}
+{"level":"info","ts":"2026-02-25T22:56:55.702+0530","caller":"servers/http.go:324","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-02-25T22:57:07.802+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:56243","Method":"GET","Path":"GET /login"}
+{"level":"debug","ts":"2026-02-25T22:57:07.802+0530","caller":"servers/http.go:185","msg":"Access Token","Duration":600}
+{"level":"debug","ts":"2026-02-25T22:57:07.802+0530","caller":"servers/http.go:186","msg":"Refresh Token","Duration":604800}
+{"level":"debug","ts":"2026-02-25T22:57:07.802+0530","caller":"servers/http.go:222","msg":"Auth Response","Info":"{AccessToken:eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJteS1hcHAiLCJzdWIiOiIxMjMiLCJhdWQiOlsid3d3Lm15YXBwLmNvbSJdLCJleHAiOjE3NzIwNDEwMjcsIm5iZiI6MTc3MjA0MDQyNywiaWF0IjoxNzcyMDQwNDI3LCJqdGkiOiJ0ZXN0aWQifQ.odF-gQepOGwo9PpG3LQYumhO9FWy_lidMpN0WrTl-k3h_Km1eYFDQU2BtEdlRYjObMOOInUnbKX6dCs269cpkQ TokenType:Bearer ExpiresIn:10 RefreshToken:eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJteS1hcHAiLCJzdWIiOiIxMjMiLCJhdWQiOlsid3d3Lm15YXBwLmNvbSJdLCJleHAiOjE3NzI2NDUyMjcsIm5iZiI6MTc3MjA0MDQyNywiaWF0IjoxNzcyMDQwNDI3LCJqdGkiOiJ0ZXN0aWQifQ.OgbOIBVAHui5miCfh1bzuyLxWYkgaJ-6DdHL_4jniKoUX49IYjs4f4QYyKAyCU2fZHLDpT6ZAw1uVL6Pmz_3Bg Scope:null}"}
+{"level":"info","ts":"2026-02-25T22:59:55.378+0530","caller":"servers/http.go:324","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-02-25T23:00:01.227+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:50592","Method":"GET","Path":"GET /login"}
+{"level":"debug","ts":"2026-02-25T23:00:01.228+0530","caller":"servers/http.go:185","msg":"Access Token","Duration":10}
+{"level":"debug","ts":"2026-02-25T23:00:01.228+0530","caller":"servers/http.go:186","msg":"Refresh Token","Duration":10080}
+{"level":"debug","ts":"2026-02-25T23:00:01.229+0530","caller":"servers/http.go:222","msg":"Auth Response","Info":"{AccessToken:eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJteS1hcHAiLCJzdWIiOiIxMjMiLCJhdWQiOlsid3d3Lm15YXBwLmNvbSJdLCJleHAiOjE3NzIwNDEyMDEsIm5iZiI6MTc3MjA0MDYwMSwiaWF0IjoxNzcyMDQwNjAxLCJqdGkiOiJ0ZXN0aWQifQ.rbO-dAyIY_BtbhLeHm7IFpIvfHjuI29TLzUoJHn7_m-hL3EvxxJWgTS1h1w9mxNpK26XOBsMVSPXJnKgJfD0Kg TokenType:Bearer ExpiresIn:10 RefreshToken:eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJteS1hcHAiLCJzdWIiOiIxMjMiLCJhdWQiOlsid3d3Lm15YXBwLmNvbSJdLCJleHAiOjE3NzI2NDU0MDEsIm5iZiI6MTc3MjA0MDYwMSwiaWF0IjoxNzcyMDQwNjAxLCJqdGkiOiJ0ZXN0aWQifQ.7vR2WiNl-pYBi1hMUMerP5YP6ICMtNDfxvp_RHBGxbj-a57ipvf7Xn3JyoFQkUdsMFm2GQsL2-RczKdF9Ke0Tw Scope:null}"}
+{"level":"info","ts":"2026-02-25T23:00:08.565+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:50713","Method":"GET","Path":"GET /login"}
+{"level":"debug","ts":"2026-02-25T23:00:08.565+0530","caller":"servers/http.go:185","msg":"Access Token","Duration":10}
+{"level":"debug","ts":"2026-02-25T23:00:08.566+0530","caller":"servers/http.go:186","msg":"Refresh Token","Duration":10080}
+{"level":"debug","ts":"2026-02-25T23:00:08.566+0530","caller":"servers/http.go:222","msg":"Auth Response","Info":"{AccessToken:eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJteS1hcHAiLCJzdWIiOiIxMjMiLCJhdWQiOlsid3d3Lm15YXBwLmNvbSJdLCJleHAiOjE3NzIwNDEyMDgsIm5iZiI6MTc3MjA0MDYwOCwiaWF0IjoxNzcyMDQwNjA4LCJqdGkiOiJ0ZXN0aWQifQ.8V1X923tebf4M_4-MqqZ6iylXRR8EDf2QeyMeMngcvPd2BsE0dQQzE4fGNwHAdsaALQ1BXJ4hUICdNdwrVy1Yw TokenType:Bearer ExpiresIn:10 RefreshToken:eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJteS1hcHAiLCJzdWIiOiIxMjMiLCJhdWQiOlsid3d3Lm15YXBwLmNvbSJdLCJleHAiOjE3NzI2NDU0MDgsIm5iZiI6MTc3MjA0MDYwOCwiaWF0IjoxNzcyMDQwNjA4LCJqdGkiOiJ0ZXN0aWQifQ.ioJ8pdZJwIFcvUfAKysk9NedoNw4aA-mux6apTI6pJSRgRJePCLfNyoTIcSJizhZUDbKjXC7CXKJLGP-wLdkJw Scope:null}"}
+{"level":"info","ts":"2026-02-25T23:01:12.103+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:51808","Method":"GET","Path":"GET /users"}
+{"level":"info","ts":"2026-02-25T23:01:21.032+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:51953","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-02-25T23:01:21.034+0530","caller":"services/user_service.go:164","msg":"Cache hit","id":72}
+{"level":"info","ts":"2026-02-25T23:01:34.013+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:52165","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-02-25T23:01:34.015+0530","caller":"services/user_service.go:58","msg":"Cache miss","id":73}
+{"level":"info","ts":"2026-02-25T23:01:41.552+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:52288","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-02-25T23:01:41.554+0530","caller":"services/user_service.go:164","msg":"Cache hit","id":73}
+{"level":"info","ts":"2026-02-25T23:01:58.660+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:52567","Method":"GET","Path":"GET /posts/{id}"}
+{"level":"debug","ts":"2026-02-25T23:01:58.663+0530","caller":"services/post_service.go:55","msg":"Cache miss","id":73}
+{"level":"info","ts":"2026-02-25T23:02:02.614+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:52632","Method":"GET","Path":"GET /posts/{id}"}
+{"level":"debug","ts":"2026-02-25T23:02:02.615+0530","caller":"services/post_service.go:159","msg":"Cache hit","id":73}
+{"level":"info","ts":"2026-02-25T23:02:12.508+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:52793","Method":"GET","Path":"GET /comments/{id}"}
+{"level":"debug","ts":"2026-02-25T23:02:12.510+0530","caller":"services/comment_service.go:53","msg":"Cache miss","id":73}
+{"level":"info","ts":"2026-02-25T23:02:23.035+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:54233","Method":"GET","Path":"GET /comments/{id}"}
+{"level":"debug","ts":"2026-02-25T23:02:23.037+0530","caller":"services/comment_service.go:53","msg":"Cache miss","id":25}
+{"level":"info","ts":"2026-02-25T23:02:42.860+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:54558","Method":"GET","Path":"GET /comments/{id}"}
+{"level":"debug","ts":"2026-02-25T23:02:42.862+0530","caller":"services/comment_service.go:53","msg":"Cache miss","id":25}
+{"level":"info","ts":"2026-02-25T23:02:43.947+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:54578","Method":"GET","Path":"GET /comments/{id}"}
+{"level":"debug","ts":"2026-02-25T23:02:43.948+0530","caller":"services/comment_service.go:53","msg":"Cache miss","id":25}
+{"level":"info","ts":"2026-02-25T23:02:51.136+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:54699","Method":"GET","Path":"GET /comments/{id}"}
+{"level":"debug","ts":"2026-02-25T23:02:51.138+0530","caller":"services/comment_service.go:53","msg":"Cache miss","id":24}
+{"level":"info","ts":"2026-02-25T23:02:53.117+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:54733","Method":"GET","Path":"GET /comments/{id}"}
+{"level":"debug","ts":"2026-02-25T23:02:53.118+0530","caller":"services/comment_service.go:153","msg":"Cache hit","id":24}
+{"level":"info","ts":"2026-02-25T23:16:16.350+0530","caller":"servers/http.go:324","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-02-27T22:45:15.938+0530","caller":"servers/http.go:354","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-02-27T22:48:11.326+0530","caller":"servers/http.go:354","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-02-27T22:52:13.261+0530","caller":"servers/http.go:354","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-02-27T22:53:03.912+0530","caller":"servers/http.go:354","msg":"Server started successfully.","Address":":9000"}

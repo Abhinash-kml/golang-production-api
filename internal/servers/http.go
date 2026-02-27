@@ -182,6 +182,9 @@ func (s *CustomHttpServer) SetupDefaultRoutes() error {
 			log.Fatal("Failed to parse time duration for access token expiration")
 		}
 
+		s.logger.Debug("Access Token", zap.Float64("Duration", accessTokenDuration.Minutes()))
+		s.logger.Debug("Refresh Token", zap.Float64("Duration", refreshTokenDuration.Minutes()))
+
 		// Create access token
 		accessToken, err := util.CreateJwtToken(
 			s.authConfig.AccessToken.Secret,
@@ -227,7 +230,7 @@ func (s *CustomHttpServer) SetupDefaultRoutes() error {
 		json.NewDecoder(r.Body).Decode(&requestBody)
 
 		// Verify jwt using util function
-		_, claims, err := util.VerifyJwtToken(s.authConfig, requestBody.RefreshToken, "refresh")
+		_, claims, err := util.VerifyJwtToken(&s.authConfig.RefreshToken, requestBody.RefreshToken)
 		if err != nil {
 			s.logger.Info("Refresh token verfication failed", zap.Error(err))
 		}
@@ -243,6 +246,36 @@ func (s *CustomHttpServer) SetupDefaultRoutes() error {
 		// Else provide a new access token
 
 	}), m.RateLimit, m.Logger))
+
+	s.mux.Handle("GET /sse", m.CompileHandlers(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/event-stream")
+		w.Header().Set("Cache-Control", "no-cache")
+		w.Header().Set("Connection", "keep-alive")
+
+		flusher, ok := w.(http.Flusher)
+		if !ok {
+			http.Error(w, "Not supported", http.StatusInternalServerError)
+			return
+		}
+
+		ticker := time.NewTicker(time.Second * 2)
+
+		for {
+			select {
+			case <-r.Context().Done():
+				{
+					fmt.Println("Client Disconnected")
+					return
+				}
+			case <-ticker.C:
+				{
+					time := time.Now().Format("2006-01-02 15:04:05")
+					fmt.Fprintf(w, "data: Time: %s\n\n", time)
+					flusher.Flush()
+				}
+			}
+		}
+	})))
 
 	// Users routes
 	s.mux.Handle("GET /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.GetUsers), m.JwtAuthorization, m.RateLimit, m.Logger)) // On test

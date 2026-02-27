@@ -58,6 +58,7 @@ func (s *LocalPostsService) GetById(id int) (*model.PostResponseDTO, error) {
 		if err != nil {
 			return nil, err
 		}
+		go s.addToCache(post) // Add to cache on a separate goroutine asynchronously
 	}
 
 	postReponse := ConvertPostToPostResponseDTO(post)
@@ -130,6 +131,12 @@ func ConvertPostToPostResponseDTO(post *model.Post) model.PostResponseDTO {
 	}
 }
 
+func (s *LocalPostsService) addToCache(u *model.Post) {
+	formatedId := fmt.Sprintf("post:%d", u.Id)
+	ctx := context.Background()
+	s.cache.HSet(ctx, formatedId, u)
+}
+
 func (s *LocalPostsService) getPostFromCache(id int) (*model.Post, error) {
 	formatedId := fmt.Sprintf("post:%d", id)
 	ctx := context.Background()
@@ -139,20 +146,8 @@ func (s *LocalPostsService) getPostFromCache(id int) (*model.Post, error) {
 		return nil, err
 	}
 
-	// lambda to add to cache
-	AddToCache := func() {
-		postFromDB, err := s.repo.GetById(id)
-		if err != nil {
-			return
-		}
-
-		s.cache.HSet(ctx, formatedId, postFromDB)
-	}
-
-	// Manual check for cache miss
-	// On cache miss - populate cache with data from db
+	// On cache miss - populate cache with data from db o nservice layer
 	if post.Id == 0 {
-		go AddToCache() // Add to cache
 		return nil, redis.Nil
 	}
 

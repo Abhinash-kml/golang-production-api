@@ -8,13 +8,14 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/abhinash-kml/go-api-server/config"
 	controller "github.com/abhinash-kml/go-api-server/internal/controllers"
-	model "github.com/abhinash-kml/go-api-server/internal/models"
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
 	"github.com/abhinash-kml/go-api-server/internal/servers"
 	service "github.com/abhinash-kml/go-api-server/internal/services"
+	"github.com/r3labs/sse"
 	"github.com/redis/go-redis/v9"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -26,7 +27,7 @@ func main() {
 	signal.Notify(stopSig, syscall.SIGINT, syscall.SIGTERM)
 
 	// Config
-	config := config.Initialize()
+	config := config.Get()
 
 	// Log file
 	logFile, err := os.OpenFile("./logs/temp.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
@@ -38,7 +39,7 @@ func main() {
 	// Logger - stdout + file
 	fileSyncer := zapcore.AddSync(logFile)
 	stdoutSyncer := zapcore.AddSync(os.Stdout)
-	loglevel := zap.NewAtomicLevelAt(zap.DebugLevel)
+	loglevel := zap.NewAtomicLevelAt(zap.DebugLevel) // TODO: Parse and set log level from config
 	encoderConfig := zap.NewProductionEncoderConfig()
 	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 	fileCore := zapcore.NewCore(zapcore.NewJSONEncoder(encoderConfig), fileSyncer, loglevel)
@@ -48,6 +49,7 @@ func main() {
 	zap.ReplaceGlobals(logger)
 	defer logger.Sync()
 
+	// Redis
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "", // No password
@@ -57,21 +59,6 @@ func main() {
 			return nil
 		},
 	})
-
-	data := map[string]string{
-		"id":      "100",
-		"name":    "neo",
-		"city":    "Kolkata",
-		"state":   "West Bengal",
-		"country": "India",
-	}
-	rdb.HSet(context.Background(), "user", data)
-	test := model.User{}
-	if err := rdb.HGetAll(context.Background(), "user").Scan(&test); err != nil {
-		fmt.Println("Error:", err.Error())
-	}
-	fmt.Printf("%+v", test)
-	// rdb.HDel(context.Background(), "user")
 
 	// Repository
 	userrepository := repository.NewInMemoryUsersRepository()
@@ -155,6 +142,15 @@ func main() {
 	// 		}
 	// 	}
 	// }()
+
+	stream := sse.NewClient("http://localhost:9000/sse")
+	time.AfterFunc(time.Second*3, func() {
+		go func() {
+			stream.Subscribe("message", func(msg *sse.Event) {
+				fmt.Println(string(msg.Data))
+			})
+		}()
+	})
 
 	fmt.Println("Listening for termination syscall...")
 	fmt.Println("Got:", <-stopSig)

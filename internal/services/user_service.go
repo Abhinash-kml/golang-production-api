@@ -61,6 +61,7 @@ func (s *LocalUserService) GetById(id int) (*model.UserResponseDTO, error) {
 		if err != nil {
 			return nil, err
 		}
+		go s.addToCache(user) // Add to cache on a separate goroutine asynchronously
 	}
 
 	userResponse := ConvertUserToUserReponseDTO(user)
@@ -135,6 +136,12 @@ func ConvertUserToUserReponseDTO(user *model.User) model.UserResponseDTO {
 	}
 }
 
+func (s *LocalUserService) addToCache(u *model.User) {
+	formatedId := fmt.Sprintf("user:%d", u.Id)
+	ctx := context.Background()
+	s.cache.HSet(ctx, formatedId, u)
+}
+
 func (s *LocalUserService) getUserFromCache(id int) (*model.User, error) {
 	formatedId := fmt.Sprintf("user:%d", id)
 	ctx := context.Background()
@@ -144,20 +151,9 @@ func (s *LocalUserService) getUserFromCache(id int) (*model.User, error) {
 		return nil, err
 	}
 
-	// lambda to add to cache
-	AddToCache := func() {
-		userFromDB, err := s.repo.GetById(id)
-		if err != nil {
-			return
-		}
-
-		s.cache.HSet(ctx, formatedId, userFromDB)
-	}
-
 	// Manual check for cache miss
-	// On cache miss - populate cache with data from db
+	// On cache miss - populate cache with data from db on service layer
 	if user.Id == 0 {
-		go AddToCache()
 		return nil, redis.Nil
 	}
 
