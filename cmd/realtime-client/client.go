@@ -32,6 +32,7 @@ func main() {
 		log.Fatal("Error:", err.Error())
 	}
 
+	go ReadFromConnection(conn)
 	ReadFromStdIn(conn, from, to)
 }
 
@@ -49,5 +50,16 @@ func ReadFromStdIn(conn *websocket.Conn, from, to string) {
 		if err != nil {
 			log.Fatal("Error writing to websocket connection. Error:", err.Error())
 		}
+	}
+}
+
+func ReadFromConnection(conn *websocket.Conn) {
+	for {
+		var message Message
+		err := conn.ReadJSON(&message)
+		if err != nil {
+			log.Fatal("Error reading incoming message from connection")
+		}
+		fmt.Printf("%s: %s", message.From, message.Payload)
 	}
 }

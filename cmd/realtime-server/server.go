@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
 
 	"github.com/gorilla/websocket"
 	"github.com/redis/go-redis/v9"
@@ -45,6 +44,7 @@ func main() {
 
 		// Extract userid from header and subcribe to it in redis pub sub
 		subscribeString := fmt.Sprintf("user:%s", r.Header.Get("userid"))
+		fmt.Println("Subscribed to", subscribeString)
 		sub := rdb.Subscribe(context.Background(), subscribeString)
 		iface, err := sub.Receive(context.Background())
 		if err != nil {
@@ -63,11 +63,28 @@ func main() {
 		// Read incoming messages and write them to client's connection
 		incoming := sub.Channel()
 		go func() {
+			// Ensure the subscription is cleaned up when this goroutine exits
+			defer sub.Close()
+
 			for message := range incoming {
-				stringReader := strings.NewReader(message.Payload)
 				var custom Message
-				json.NewDecoder(stringReader).Decode(&custom)
-				conn.WriteJSON(custom)
+
+				// 1. Faster than NewDecoder for small-to-medium payloads
+				err := json.Unmarshal([]byte(message.Payload), &custom)
+				if err != nil {
+					log.Printf("Payload error: %v", err)
+					continue // Skip this message
+				}
+
+				// Debug
+				// fmt.Printf("%+v", message)
+
+				// 2. Check for connection errors
+				err = conn.WriteJSON(custom)
+				if err != nil {
+					log.Printf("Websocket error: %v", err)
+					return // Kill the goroutine if the client disconnected
+				}
 			}
 		}()
 
@@ -81,8 +98,8 @@ func main() {
 			}
 
 			formattedString := fmt.Sprintf("user:%s", networkMessage.To)
-			num, err := rdb.Publish(context.Background(), formattedString, networkMessage).Result()
-			if num != 1 || err != nil {
+			_, err = rdb.Publish(context.Background(), formattedString, networkMessage).Result()
+			if err != nil {
 				fmt.Println("Error publishing to user channel. Error:", err.Error())
 			}
 		}
