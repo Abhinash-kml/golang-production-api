@@ -277,6 +277,23 @@ func (s *CustomHttpServer) SetupDefaultRoutes() error {
 		}
 	})))
 
+	s.mux.Handle("GET /realtime", m.CompileHandlers(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// upgrader := websocket.Upgrader{
+		// 	CheckOrigin: func(r *http.Request) bool {
+		// 		return true
+		// 	},
+		// }
+
+		// connection, err := upgrader.Upgrade(w, r, nil)
+		// if err != nil {
+		// 	http.Error(w, "Failed to upgrade connection to websocket", http.StatusInternalServerError)
+		// 	return
+		// }
+
+		// Add the connection to realtime session store
+		// Then start read and write loop
+	})))
+
 	// Users routes
 	s.mux.Handle("GET /users", m.CompileHandlers(http.HandlerFunc(s.userscontroller.GetUsers), m.JwtAuthorization, m.RateLimit, m.Logger)) // On test
 	s.mux.Handle("GET /users/{id}", m.CompileHandlers(http.HandlerFunc(s.userscontroller.GetById), m.JwtAuthorization, m.RateLimit, m.Logger))
