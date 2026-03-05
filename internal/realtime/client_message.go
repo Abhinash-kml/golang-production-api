@@ -1,5 +1,7 @@
 package realtime
 
+import "encoding/json"
+
 type ClientMessage struct {
 	SenderID   string `json:"senderid"`
 	ReceiverID string `json:"receiverid"`
@@ -7,9 +9,9 @@ type ClientMessage struct {
 }
 
 func (m *ClientMessage) MarshalBinary() ([]byte, error) {
-
+	return json.Marshal(m)
 }
 
 func (m *ClientMessage) UnmarshalBinary(data []byte) error {
-
+	return json.Unmarshal(data, m)
 }

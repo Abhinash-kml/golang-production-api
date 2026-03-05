@@ -1,10 +1,22 @@
 package realtime
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/gorilla/websocket"
 	"go.uber.org/zap"
+)
+
+const (
+	// Maximum time to wait for a write operation
+	WriteWait = time.Second * 10
+	// Maxium time to wait for a pong response
+	PongWait = time.Second * 60
+	// Interval for sending ping message (must be less than pong wait)
+	PingInterval = (PongWait * 9) / 10
+	// Maximum message size
+	MaxMessageSize = 512 * 1024
 )
 
 type Client struct {
@@ -35,10 +47,10 @@ func (c *Client) ReadIncoming() {
 	}()
 
 	c.conn.SetReadLimit(1064)
-	c.conn.SetReadDeadline(time.Now().Add(PongDuration))
+	c.conn.SetReadDeadline(time.Now().Add(PongWait))
 
 	c.conn.SetPongHandler(func(appData string) error {
-		c.conn.SetReadDeadline(time.Now().Add(PongDuration))
+		c.conn.SetReadDeadline(time.Now().Add(PongWait))
 		return nil
 	})
 
@@ -76,11 +88,19 @@ func (c *Client) WriteOutgoing() {
 			if err != nil {
 				return
 			}
+			encoder := json.NewEncoder(writer)
+			err = encoder.Encode(message)
+			if err != nil {
+				zap.L().Warn("Json encoding failed", zap.Any("Message", message), zap.Error(err))
+			}
 
 			// Batch remaining messages in channel to save bandwidth
 			for value := range c.send {
 				writer.Write([]byte{'\n'})
-				writer.Write(value) // TODO: Fix this
+				err = encoder.Encode(value)
+				if err != nil {
+					break
+				}
 			}
 
 			if err := writer.Close(); err != nil {
