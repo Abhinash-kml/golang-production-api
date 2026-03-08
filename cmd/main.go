@@ -12,6 +12,7 @@ import (
 
 	"github.com/abhinash-kml/go-api-server/config"
 	controller "github.com/abhinash-kml/go-api-server/internal/controllers"
+	"github.com/abhinash-kml/go-api-server/internal/realtime"
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
 	"github.com/abhinash-kml/go-api-server/internal/servers"
 	service "github.com/abhinash-kml/go-api-server/internal/services"
@@ -78,6 +79,15 @@ func main() {
 	postscontroller := controller.NewPostsController(userservice, postsservice, commentservice, logger)
 	commentscontroller := controller.NewCommentsController(userservice, postsservice, commentservice, logger)
 
+	// Session store
+	sessionstore := realtime.NewInMemorySessionStore()
+
+	// Pub sub
+	redisPubSub := realtime.NewRedisPubSub(rdb)
+
+	// Hub
+	hub := realtime.NewHub(sessionstore, &redisPubSub, realtime.PubSubTypeMemory)
+
 	// server := servers.NewCustomCustomHttpServer(
 	// 	servers.WithAddress(":9000"),
 	// 	servers.WithIdleTimeout(time.Second*15),
@@ -94,7 +104,8 @@ func main() {
 		servers.WithLogger(*logger),
 		servers.WithUsersController(*usercontroller),
 		servers.WithPostsController(*postscontroller),
-		servers.WithCommentsController(*commentscontroller))
+		servers.WithCommentsController(*commentscontroller),
+		servers.WithHub(hub))
 
 	server.SetupDefaultRoutes()
 	server.AddRoute("GET /custom", func(w http.ResponseWriter, r *http.Request) {

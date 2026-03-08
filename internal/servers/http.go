@@ -13,8 +13,9 @@ import (
 	controller "github.com/abhinash-kml/go-api-server/internal/controllers"
 	m "github.com/abhinash-kml/go-api-server/internal/middlewares"
 	model "github.com/abhinash-kml/go-api-server/internal/models"
+	"github.com/abhinash-kml/go-api-server/internal/realtime"
 	"github.com/abhinash-kml/go-api-server/pkg/util"
-	"github.com/golang-jwt/jwt/v5"
+	"github.com/gorilla/websocket"
 	"go.uber.org/zap"
 )
 
@@ -33,6 +34,9 @@ type CustomHttpServer struct {
 
 	// Logger
 	logger zap.Logger
+
+	// Realtime hub for message exchange
+	hub *realtime.Hub
 
 	// Before start hooks
 	beforeStartHooks []Hook
@@ -164,10 +168,10 @@ func WithCommentsController(controller controller.CommentsController) Functional
 	}
 }
 
-type Myclaims struct {
-	jwt.RegisteredClaims
-	Myid string `json:"myid"`
-	Meow string `json:"meow"`
+func WithHub(hub *realtime.Hub) FunctionalOption {
+	return func(c *CustomHttpServer) {
+		c.hub = hub
+	}
 }
 
 func (s *CustomHttpServer) SetupDefaultRoutes() error {
@@ -247,6 +251,7 @@ func (s *CustomHttpServer) SetupDefaultRoutes() error {
 
 	}), m.RateLimit, m.Logger))
 
+	// INFO: SSE disconnects due to IdleTimeout, find solution for it
 	s.mux.Handle("GET /sse", m.CompileHandlers(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/event-stream")
 		w.Header().Set("Cache-Control", "no-cache")
@@ -278,20 +283,30 @@ func (s *CustomHttpServer) SetupDefaultRoutes() error {
 	})))
 
 	s.mux.Handle("GET /realtime", m.CompileHandlers(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// upgrader := websocket.Upgrader{
-		// 	CheckOrigin: func(r *http.Request) bool {
-		// 		return true
-		// 	},
-		// }
+		uid := r.Header.Get("uid")
 
-		// connection, err := upgrader.Upgrade(w, r, nil)
-		// if err != nil {
-		// 	http.Error(w, "Failed to upgrade connection to websocket", http.StatusInternalServerError)
-		// 	return
-		// }
+		upgrader := websocket.Upgrader{
+			ReadBufferSize:  1024,
+			WriteBufferSize: 1024,
+			CheckOrigin: func(r *http.Request) bool {
+				return true
+			},
+		}
 
-		// Add the connection to realtime session store
-		// Then start read and write loop
+		connection, err := upgrader.Upgrade(w, r, nil)
+		if err != nil {
+			s.logger.Warn("Websocket upgrade failed", zap.Error(err))
+			return
+		}
+
+		realtimeClient := realtime.NewClient(uid, connection, s.hub)
+		s.hub.Register(realtimeClient)
+
+		// Start incoming loop
+		go realtimeClient.ReadIncoming()
+
+		// Start outgoing loop
+		go realtimeClient.WriteOutgoing()
 	})))
 
 	// Users routes

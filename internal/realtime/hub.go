@@ -32,7 +32,7 @@ type Hub struct {
 	cancel context.CancelFunc
 }
 
-func NewHub(store *ISessionStore, pubsub *IPubSub, pubsubtype int) *Hub {
+func NewHub(store ISessionStore, pubsub IPubSub, pubsubtype int) *Hub {
 	ctx, cancel := context.WithCancel(context.Background())
 	hub := &Hub{
 		register:   make(chan *Client),
@@ -40,8 +40,8 @@ func NewHub(store *ISessionStore, pubsub *IPubSub, pubsubtype int) *Hub {
 		send:       make(chan *ClientMessage),
 		broadcast:  make(chan *ClientMessage),
 		subscribe:  make(chan string),
-		store:      *store,
-		pubsub:     *pubsub,
+		store:      store,
+		pubsub:     pubsub,
 		pubsubtype: pubsubtype,
 		ctx:        ctx,
 		cancel:     cancel,
@@ -105,6 +105,10 @@ func (h *Hub) ListenToSubscriptions() {
 			h.send <- internal
 		}
 	}
+}
+
+func (h *Hub) Broadcast(message *ClientMessage) {
+	h.broadcast <- message
 }
 
 func (h *Hub) Stop() {

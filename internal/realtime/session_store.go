@@ -16,6 +16,12 @@ type InMemorySessionStore struct {
 	mu          sync.RWMutex
 }
 
+func NewInMemorySessionStore() *InMemorySessionStore {
+	return &InMemorySessionStore{
+		connections: make(map[string]*Client),
+	}
+}
+
 func (s *InMemorySessionStore) Add(uid string, client *Client) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
