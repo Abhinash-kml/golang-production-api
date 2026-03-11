@@ -111,48 +111,48 @@ func (h *Hub) Subscribe(uid string) {
 
 func (h *Hub) HandleSubscribtionRequests(subscription string) {
 	h.pubsub.Subscribe(subscription)
-	h.once.Do(h.ListenToSubscriptions)
+	h.once.Do(func() {
+		go h.ListenToSubscriptions()
+	})
 }
 
 // TODO: Improve this
 func (h *Hub) ListenToSubscriptions() {
-	go func() {
-		incomingMessage := h.pubsub.ListenToSubscriptions()
-		for {
-			select {
-			case <-h.ctx.Done():
-				return // Graceful shutdown
-			case msg, ok := <-incomingMessage:
-				if !ok {
-					return // Channel closed
+	incomingMessage := h.pubsub.ListenToSubscriptions()
+	for {
+		select {
+		case <-h.ctx.Done():
+			return // Graceful shutdown
+		case msg, ok := <-incomingMessage:
+			if !ok {
+				return // Channel closed
+			}
+
+			fmt.Println(msg)
+
+			if redisMsg, ok := msg.(*redis.Message); ok {
+				internal := new(ClientMessage)
+				if err := json.Unmarshal([]byte(redisMsg.Payload), internal); err != nil {
+					zap.L().Error("Unmarshal failed", zap.Error(err))
+					continue
 				}
 
-				fmt.Println(msg)
+				zap.L().Debug("Redis channel message", zap.String("from", internal.SenderID), zap.String("to", internal.ReceiverID), zap.String("payload", internal.Payload))
 
-				if redisMsg, ok := msg.(*redis.Message); ok {
-					internal := new(ClientMessage)
-					if err := json.Unmarshal([]byte(redisMsg.Payload), internal); err != nil {
-						zap.L().Error("Unmarshal failed", zap.Error(err))
-						continue
-					}
-
-					zap.L().Debug("Redis channel message", zap.String("from", internal.SenderID), zap.String("to", internal.ReceiverID), zap.String("payload", internal.Payload))
-
-					// --- NON-BLOCKING SEND START ---
-					select {
-					case h.send <- internal:
-						// Success: Message sent to Hub
-					default:
-						// Failure: Hub's buffer is full.
-						// We drop the message to keep the Redis consumer alive.
-						zap.L().Warn("Hub busy: dropping Redis message",
-							zap.String("payload", redisMsg.Payload))
-					}
-					// --- NON-BLOCKING SEND END ---
+				// --- NON-BLOCKING SEND START ---
+				select {
+				case h.send <- internal:
+					// Success: Message sent to Hub
+				default:
+					// Failure: Hub's buffer is full.
+					// We drop the message to keep the Redis consumer alive.
+					zap.L().Warn("Hub busy: dropping Redis message",
+						zap.String("payload", redisMsg.Payload))
 				}
+				// --- NON-BLOCKING SEND END ---
 			}
 		}
-	}()
+	}
 }
 
 func (h *Hub) Broadcast(message *ClientMessage) {
