@@ -2,9 +2,9 @@ package realtime
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/redis/go-redis/v9"
+	"go.uber.org/zap"
 )
 
 type RedisPubSub struct {
@@ -20,22 +20,7 @@ func NewRedisPubSub(client *redis.Client) RedisPubSub {
 func (r *RedisPubSub) Initialize() error {
 	ctx := context.Background()
 	r.pubsub = r.rdb.Subscribe(ctx)
-	iface, err := r.pubsub.Receive(ctx)
-	if err != nil {
-		fmt.Println("Failed to recieve message from redis pubsub handle")
-		return err
-	}
 
-	switch iface.(type) {
-	case *redis.Subscription:
-		fmt.Println("Subscribtion message from pubsub")
-	case *redis.Message:
-		fmt.Println("Message from pubsub")
-	case *redis.Pong:
-		fmt.Println("Pong from redis pubsub")
-	}
-
-	r.incomingChan = r.pubsub.Channel()
 	return nil
 }
 
@@ -47,8 +32,23 @@ func (r *RedisPubSub) Publish(channel string, messsage *ClientMessage) error {
 }
 
 func (r *RedisPubSub) Subscribe(channel string) {
-	ctx := context.Background()
-	r.pubsub.Subscribe(ctx, channel)
+	if r.rdb == nil {
+		zap.L().Fatal("Redis pub-sub subcribe failed due to nil client pointer")
+	}
+
+	if r.pubsub == nil {
+		// zap.L().Fatal("Redis pub-sub subscribe failed due to nil pubsub pointer")
+		ctx := context.Background()
+		r.pubsub = r.rdb.Subscribe(ctx, channel)
+		r.incomingChan = r.pubsub.Channel()
+	} else {
+		ctx := context.Background()
+		err := r.pubsub.Subscribe(ctx, channel)
+		if err != nil {
+			zap.L().Warn("Subcribe to channel failed", zap.String("channel", channel), zap.Error(err))
+			return
+		}
+	}
 }
 
 // INFO: Subjected to improvement

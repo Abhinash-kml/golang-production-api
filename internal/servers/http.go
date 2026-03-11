@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/abhinash-kml/go-api-server/config"
@@ -53,7 +54,7 @@ type CustomHttpServer struct {
 
 func NewHttpWithConfig(config *config.HttpConfig, authConfig *config.AuthTokenConfig, options ...FunctionalOption) *CustomHttpServer {
 	internal := &http.Server{
-		Addr:           fmt.Sprintf(":%s", config.Port),
+		Addr:           fmt.Sprintf(":%s", os.Args[1]),
 		IdleTimeout:    time.Second * time.Duration(config.IdleTimeout),
 		ReadTimeout:    time.Second * time.Duration(config.ReadTimeout),
 		WriteTimeout:   time.Second * time.Duration(config.WriteTimeout),
@@ -301,6 +302,7 @@ func (s *CustomHttpServer) SetupDefaultRoutes() error {
 
 		realtimeClient := realtime.NewClient(uid, connection, s.hub)
 		s.hub.Register(realtimeClient)
+		s.hub.Subscribe(uid)
 
 		// Start incoming loop
 		go realtimeClient.ReadIncoming()
@@ -378,6 +380,9 @@ func (s *CustomHttpServer) Start() error {
 	go func() {
 		errChan <- s.server.ListenAndServe()
 	}()
+
+	// Start realtime hub
+	go s.hub.Run()
 
 	// Lets wait for an immediate failure within 2 sec and then execute after start hooks
 	select {

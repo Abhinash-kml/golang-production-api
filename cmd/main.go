@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/abhinash-kml/go-api-server/config"
 	controller "github.com/abhinash-kml/go-api-server/internal/controllers"
@@ -16,7 +15,6 @@ import (
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
 	"github.com/abhinash-kml/go-api-server/internal/servers"
 	service "github.com/abhinash-kml/go-api-server/internal/services"
-	"github.com/r3labs/sse"
 	"github.com/redis/go-redis/v9"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -154,14 +152,14 @@ func main() {
 	// 	}
 	// }()
 
-	stream := sse.NewClient("http://localhost:9000/sse")
-	time.AfterFunc(time.Second*3, func() {
-		go func() {
-			stream.Subscribe("message", func(msg *sse.Event) {
-				fmt.Println(string(msg.Data))
-			})
-		}()
-	})
+	// stream := sse.NewClient("http://localhost:9000/sse")
+	// time.AfterFunc(time.Second*3, func() {
+	// 	go func() {
+	// 		stream.Subscribe("message", func(msg *sse.Event) {
+	// 			fmt.Println(string(msg.Data))
+	// 		})
+	// 	}()
+	// })
 
 	fmt.Println("Listening for termination syscall...")
 	fmt.Println("Got:", <-stopSig)

@@ -30,7 +30,7 @@ func NewClient(uid string, conn *websocket.Conn, hub *Hub) *Client {
 	return &Client{
 		uid:  uid,
 		conn: conn,
-		send: make(chan *ClientMessage),
+		send: make(chan *ClientMessage, 100),
 		hub:  hub,
 	}
 }
@@ -56,7 +56,7 @@ func (c *Client) ReadIncoming() {
 
 	for {
 		message := new(ClientMessage)
-		err := c.conn.ReadJSON(&message)
+		err := c.conn.ReadJSON(message)
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err,
 				websocket.CloseGoingAway,
@@ -83,21 +83,25 @@ func (c *Client) WriteOutgoing() {
 				return
 			}
 
+			zap.L().Info("Client message", zap.String("connection uid", c.uid), zap.String("payload", message.Payload))
+
 			// Get a writer for next message
 			writer, err := c.conn.NextWriter(websocket.TextMessage)
 			if err != nil {
 				return
 			}
 			encoder := json.NewEncoder(writer)
-			err = encoder.Encode(message)
+			err = encoder.Encode(*message)
 			if err != nil {
 				zap.L().Warn("Json encoding failed", zap.Any("Message", message), zap.Error(err))
 			}
 
 			// Batch remaining messages in channel to save bandwidth
-			for value := range c.send {
+			n := len(c.send)
+			for range n {
+				value := <-c.send
 				writer.Write([]byte{'\n'})
-				err = encoder.Encode(value)
+				err = encoder.Encode(*value)
 				if err != nil {
 					break
 				}

@@ -3,8 +3,11 @@ package realtime
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"sync"
 
 	"github.com/redis/go-redis/v9"
+	"go.uber.org/zap"
 )
 
 const (
@@ -28,6 +31,7 @@ type Hub struct {
 
 	// Mutex only needed if store doesn't provide internal concurrency
 	// mu     sync.RWMutex
+	once   sync.Once
 	ctx    context.Context
 	cancel context.CancelFunc
 }
@@ -35,11 +39,11 @@ type Hub struct {
 func NewHub(store ISessionStore, pubsub IPubSub, pubsubtype int) *Hub {
 	ctx, cancel := context.WithCancel(context.Background())
 	hub := &Hub{
-		register:   make(chan *Client),
-		unregister: make(chan *Client),
-		send:       make(chan *ClientMessage),
-		broadcast:  make(chan *ClientMessage),
-		subscribe:  make(chan string),
+		register:   make(chan *Client, 100),
+		unregister: make(chan *Client, 100),
+		send:       make(chan *ClientMessage, 100),
+		broadcast:  make(chan *ClientMessage, 100),
+		subscribe:  make(chan string, 100),
 		store:      store,
 		pubsub:     pubsub,
 		pubsubtype: pubsubtype,
@@ -48,6 +52,13 @@ func NewHub(store ISessionStore, pubsub IPubSub, pubsubtype int) *Hub {
 	}
 
 	return hub
+}
+
+func (h *Hub) Initialize() {
+	err := h.pubsub.Initialize()
+	if err != nil {
+		zap.L().Fatal("Hub initialize failed", zap.Error(err))
+	}
 }
 
 func (h *Hub) Register(client *Client) {
@@ -59,6 +70,8 @@ func (h *Hub) Unregister(client *Client) {
 }
 
 func (h *Hub) Run() {
+	// go h.ListenToSubscriptions()
+
 	for {
 		select {
 		case client := <-h.register:
@@ -79,6 +92,8 @@ func (h *Hub) Run() {
 }
 
 func (h *Hub) HandleClientMessages(message *ClientMessage) {
+	zap.L().Info("Websocket Message", zap.String("from", message.SenderID), zap.String("to", message.ReceiverID), zap.String("payload", message.Payload))
+
 	// If reciever is present locally on this node send directly
 	if user := h.store.Get(message.ReceiverID); user != nil {
 		user.send <- message
@@ -90,21 +105,54 @@ func (h *Hub) HandleClientMessages(message *ClientMessage) {
 	h.pubsub.Publish(message.ReceiverID, message)
 }
 
+func (h *Hub) Subscribe(uid string) {
+	h.subscribe <- uid
+}
+
 func (h *Hub) HandleSubscribtionRequests(subscription string) {
 	h.pubsub.Subscribe(subscription)
+	h.once.Do(h.ListenToSubscriptions)
 }
 
 // TODO: Improve this
 func (h *Hub) ListenToSubscriptions() {
-	incomingMessage := h.pubsub.ListenToSubscriptions()
-	for message := range incomingMessage {
-		switch value := message.(type) {
-		case *redis.Message:
-			internal := new(ClientMessage)
-			json.Unmarshal([]byte(value.Payload), internal)
-			h.send <- internal
+	go func() {
+		incomingMessage := h.pubsub.ListenToSubscriptions()
+		for {
+			select {
+			case <-h.ctx.Done():
+				return // Graceful shutdown
+			case msg, ok := <-incomingMessage:
+				if !ok {
+					return // Channel closed
+				}
+
+				fmt.Println(msg)
+
+				if redisMsg, ok := msg.(*redis.Message); ok {
+					internal := new(ClientMessage)
+					if err := json.Unmarshal([]byte(redisMsg.Payload), internal); err != nil {
+						zap.L().Error("Unmarshal failed", zap.Error(err))
+						continue
+					}
+
+					zap.L().Debug("Redis channel message", zap.String("from", internal.SenderID), zap.String("to", internal.ReceiverID), zap.String("payload", internal.Payload))
+
+					// --- NON-BLOCKING SEND START ---
+					select {
+					case h.send <- internal:
+						// Success: Message sent to Hub
+					default:
+						// Failure: Hub's buffer is full.
+						// We drop the message to keep the Redis consumer alive.
+						zap.L().Warn("Hub busy: dropping Redis message",
+							zap.String("payload", redisMsg.Payload))
+					}
+					// --- NON-BLOCKING SEND END ---
+				}
+			}
 		}
-	}
+	}()
 }
 
 func (h *Hub) Broadcast(message *ClientMessage) {
