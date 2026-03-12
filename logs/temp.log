@@ -24755,3 +24755,287 @@
 {"level":"info","ts":"2026-03-12T01:35:40.328+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" ssss"}
 {"level":"debug","ts":"2026-03-12T01:35:40.331+0530","caller":"realtime/hub.go:139","msg":"Redis channel message","from":"1","to":"2","payload":" ssss"}
 {"level":"info","ts":"2026-03-12T01:35:40.331+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" ssss"}
+{"level":"info","ts":"2026-03-13T00:53:04.785+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-13T00:53:31.595+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":9001"}
+{"level":"info","ts":"2026-03-13T00:54:53.956+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" Hello 2"}
+{"level":"info","ts":"2026-03-13T00:54:53.956+0530","caller":"realtime/client.go:86","msg":"Client message","connection uid":"2","payload":" Hello 2"}
+{"level":"info","ts":"2026-03-13T00:55:09.098+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" Hello 1"}
+{"level":"info","ts":"2026-03-13T00:55:09.098+0530","caller":"realtime/client.go:86","msg":"Client message","connection uid":"1","payload":" Hello 1"}
+{"level":"info","ts":"2026-03-13T00:55:32.124+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" Hello 1"}
+{"level":"info","ts":"2026-03-13T00:55:38.959+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" Hellpop"}
+{"level":"info","ts":"2026-03-13T00:55:50.992+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"3","payload":" Hello 3"}
+{"level":"debug","ts":"2026-03-13T00:55:51.013+0530","caller":"realtime/hub.go:140","msg":"Redis channel message","from":"2","to":"3","payload":" Hello 3"}
+{"level":"info","ts":"2026-03-13T00:55:51.014+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"3","payload":" Hello 3"}
+{"level":"info","ts":"2026-03-13T00:55:51.014+0530","caller":"realtime/client.go:86","msg":"Client message","connection uid":"3","payload":" Hello 3"}
+{"level":"info","ts":"2026-03-13T01:13:08.824+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-13T01:15:37.754+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"1","payload":" Hello"}
+{"level":"info","ts":"2026-03-13T01:15:37.754+0530","caller":"realtime/client.go:86","msg":"Client message","connection uid":"1","payload":" Hello"}
+{"level":"info","ts":"2026-03-13T01:16:20.571+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"2","payload":" Hello"}
+{"level":"info","ts":"2026-03-13T01:16:20.571+0530","caller":"realtime/client.go:86","msg":"Client message","connection uid":"2","payload":" Hello"}
+{"level":"info","ts":"2026-03-13T01:16:24.300+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" Hi"}
+{"level":"info","ts":"2026-03-13T01:16:24.300+0530","caller":"realtime/client.go:86","msg":"Client message","connection uid":"1","payload":" Hi"}
+{"level":"info","ts":"2026-03-13T01:16:28.806+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" Meow"}
+{"level":"info","ts":"2026-03-13T01:16:28.807+0530","caller":"realtime/client.go:86","msg":"Client message","connection uid":"1","payload":" Meow"}
+{"level":"info","ts":"2026-03-13T01:16:32.931+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" dqwdqwd"}
+{"level":"info","ts":"2026-03-13T01:16:32.931+0530","caller":"realtime/client.go:86","msg":"Client message","connection uid":"1","payload":" dqwdqwd"}
+{"level":"info","ts":"2026-03-13T01:16:44.687+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" wdgqd"}
+{"level":"info","ts":"2026-03-13T01:17:01.488+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" llll"}
+{"level":"info","ts":"2026-03-13T01:36:53.787+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-13T01:37:38.611+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"1","payload":" Hello"}
+{"level":"info","ts":"2026-03-13T01:37:38.612+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" Hello"}
+{"level":"info","ts":"2026-03-13T01:37:45.263+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" Hello"}
+{"level":"info","ts":"2026-03-13T01:37:45.263+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" Hello"}
+{"level":"info","ts":"2026-03-13T01:38:04.895+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" Meow"}
+{"level":"info","ts":"2026-03-13T01:38:04.895+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" Meow"}
+{"level":"info","ts":"2026-03-13T01:38:09.542+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" Bhow"}
+{"level":"info","ts":"2026-03-13T01:38:09.542+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" Bhow"}
+{"level":"info","ts":"2026-03-13T01:38:13.308+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" hjjhhhh"}
+{"level":"info","ts":"2026-03-13T01:38:13.308+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" hjjhhhh"}
+{"level":"info","ts":"2026-03-13T01:38:16.823+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" sdwdqwdwqdqw"}
+{"level":"info","ts":"2026-03-13T01:38:16.823+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" sdwdqwdwqdqw"}
+{"level":"info","ts":"2026-03-13T01:38:23.458+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" wfqwdqdq"}
+{"level":"info","ts":"2026-03-13T01:38:23.458+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" wfqwdqdq"}
+{"level":"info","ts":"2026-03-13T01:38:27.168+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" fqdqwdqw"}
+{"level":"info","ts":"2026-03-13T01:38:27.168+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" fqdqwdqw"}
+{"level":"info","ts":"2026-03-13T01:38:31.996+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" e12e21s1q"}
+{"level":"info","ts":"2026-03-13T01:38:31.997+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" e12e21s1q"}
+{"level":"info","ts":"2026-03-13T01:38:36.314+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" qwedqdqw"}
+{"level":"info","ts":"2026-03-13T01:38:36.314+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" qwedqdqw"}
+{"level":"info","ts":"2026-03-13T01:38:51.478+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" qwdqsqswq\t"}
+{"level":"info","ts":"2026-03-13T01:38:51.479+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" qwdqsqswq\t"}
+{"level":"info","ts":"2026-03-13T01:38:56.941+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" dqwdqwdqd"}
+{"level":"info","ts":"2026-03-13T01:38:56.941+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" dqwdqwdqd"}
+{"level":"info","ts":"2026-03-13T01:39:01.724+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" qeqsqwgwefeddq"}
+{"level":"info","ts":"2026-03-13T01:39:01.724+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" qeqsqwgwefeddq"}
+{"level":"info","ts":"2026-03-13T01:39:07.509+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" r1eqdqwqwdqnwbedjb"}
+{"level":"info","ts":"2026-03-13T01:39:07.509+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" r1eqdqwqwdqnwbedjb"}
+{"level":"info","ts":"2026-03-13T01:42:51.415+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":9001"}
+{"level":"info","ts":"2026-03-13T01:43:16.852+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"3","to":"3","payload":" qwdwqsq"}
+{"level":"info","ts":"2026-03-13T01:43:16.852+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"3","payload":" qwdwqsq"}
+{"level":"info","ts":"2026-03-13T01:43:20.258+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"3","to":"1","payload":" qdqdq"}
+{"level":"debug","ts":"2026-03-13T01:43:20.277+0530","caller":"realtime/hub.go:140","msg":"Redis channel message","from":"3","to":"1","payload":" qdqdq"}
+{"level":"info","ts":"2026-03-13T01:43:20.277+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"3","to":"1","payload":" qdqdq"}
+{"level":"info","ts":"2026-03-13T01:43:20.278+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" qdqdq"}
+{"level":"info","ts":"2026-03-13T01:43:25.519+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"3","to":"1","payload":" qdqwdwqdq"}
+{"level":"debug","ts":"2026-03-13T01:43:25.522+0530","caller":"realtime/hub.go:140","msg":"Redis channel message","from":"3","to":"1","payload":" qdqwdwqdq"}
+{"level":"info","ts":"2026-03-13T01:43:25.522+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"3","to":"1","payload":" qdqwdwqdq"}
+{"level":"info","ts":"2026-03-13T01:43:25.522+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" qdqwdwqdq"}
+{"level":"info","ts":"2026-03-13T01:43:28.824+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"3","to":"1","payload":" wefewddgqjdq"}
+{"level":"debug","ts":"2026-03-13T01:43:28.825+0530","caller":"realtime/hub.go:140","msg":"Redis channel message","from":"3","to":"1","payload":" wefewddgqjdq"}
+{"level":"info","ts":"2026-03-13T01:43:28.825+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"3","to":"1","payload":" wefewddgqjdq"}
+{"level":"info","ts":"2026-03-13T01:43:28.825+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" wefewddgqjdq"}
+{"level":"info","ts":"2026-03-13T01:43:32.193+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"3","to":"1","payload":" fqedquidqwihdqwi"}
+{"level":"debug","ts":"2026-03-13T01:43:32.195+0530","caller":"realtime/hub.go:140","msg":"Redis channel message","from":"3","to":"1","payload":" fqedquidqwihdqwi"}
+{"level":"info","ts":"2026-03-13T01:43:32.195+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"3","to":"1","payload":" fqedquidqwihdqwi"}
+{"level":"info","ts":"2026-03-13T01:43:32.195+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" fqedquidqwihdqwi"}
+{"level":"info","ts":"2026-03-13T01:43:35.466+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"3","to":"1","payload":" euygeuegwqikdkq"}
+{"level":"debug","ts":"2026-03-13T01:43:35.467+0530","caller":"realtime/hub.go:140","msg":"Redis channel message","from":"3","to":"1","payload":" euygeuegwqikdkq"}
+{"level":"info","ts":"2026-03-13T01:43:35.468+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"3","to":"1","payload":" euygeuegwqikdkq"}
+{"level":"info","ts":"2026-03-13T01:43:35.468+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" euygeuegwqikdkq"}
+{"level":"info","ts":"2026-03-13T01:43:39.532+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"3","to":"2","payload":" qwjegdqidqidhqwkidq"}
+{"level":"debug","ts":"2026-03-13T01:43:39.534+0530","caller":"realtime/hub.go:140","msg":"Redis channel message","from":"3","to":"2","payload":" qwjegdqidqidhqwkidq"}
+{"level":"info","ts":"2026-03-13T01:43:39.534+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"3","to":"2","payload":" qwjegdqidqidhqwkidq"}
+{"level":"info","ts":"2026-03-13T01:43:39.535+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" qwjegdqidqidhqwkidq"}
+{"level":"info","ts":"2026-03-13T01:43:44.356+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"3","to":"2","payload":" iuydqidgqwiudwq,qwdhqwiu"}
+{"level":"debug","ts":"2026-03-13T01:43:44.358+0530","caller":"realtime/hub.go:140","msg":"Redis channel message","from":"3","to":"2","payload":" iuydqidgqwiudwq,qwdhqwiu"}
+{"level":"info","ts":"2026-03-13T01:43:44.358+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"3","to":"2","payload":" iuydqidgqwiudwq,qwdhqwiu"}
+{"level":"info","ts":"2026-03-13T01:43:44.358+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" iuydqidgqwiudwq,qwdhqwiu"}
+{"level":"info","ts":"2026-03-13T01:43:48.139+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"3","to":"2","payload":" qwkedgqiudgqkdhqk"}
+{"level":"debug","ts":"2026-03-13T01:43:48.140+0530","caller":"realtime/hub.go:140","msg":"Redis channel message","from":"3","to":"2","payload":" qwkedgqiudgqkdhqk"}
+{"level":"info","ts":"2026-03-13T01:43:48.140+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"3","to":"2","payload":" qwkedgqiudgqkdhqk"}
+{"level":"info","ts":"2026-03-13T01:43:48.140+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" qwkedgqiudgqkdhqk"}
+{"level":"info","ts":"2026-03-13T01:45:56.657+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-13T01:46:22.014+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" e1e1e"}
+{"level":"info","ts":"2026-03-13T01:46:22.015+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" e1e1e"}
+{"level":"info","ts":"2026-03-13T01:46:24.712+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" e1e1"}
+{"level":"info","ts":"2026-03-13T01:46:24.712+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" e1e1"}
+{"level":"info","ts":"2026-03-13T01:46:27.058+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" ff2qe2q"}
+{"level":"info","ts":"2026-03-13T01:46:27.058+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" ff2qe2q"}
+{"level":"info","ts":"2026-03-13T01:46:29.782+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" 3rq2de21qd21q"}
+{"level":"info","ts":"2026-03-13T01:46:29.782+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" 3rq2de21qd21q"}
+{"level":"info","ts":"2026-03-13T01:46:32.920+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" 3ehqejqegh"}
+{"level":"info","ts":"2026-03-13T01:46:32.920+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" 3ehqejqegh"}
+{"level":"info","ts":"2026-03-13T01:46:35.235+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" qiuegh12h2kq1"}
+{"level":"info","ts":"2026-03-13T01:46:35.235+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" qiuegh12h2kq1"}
+{"level":"info","ts":"2026-03-13T01:46:38.184+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" wqdqjwdbkqdhk"}
+{"level":"info","ts":"2026-03-13T01:46:38.184+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" wqdqjwdbkqdhk"}
+{"level":"info","ts":"2026-03-13T01:46:40.602+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" wqejhqbejhqb"}
+{"level":"info","ts":"2026-03-13T01:46:40.602+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" wqejhqbejhqb"}
+{"level":"info","ts":"2026-03-13T01:46:42.420+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" qwejhqwbdjkq"}
+{"level":"info","ts":"2026-03-13T01:46:42.420+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" qwejhqwbdjkq"}
+{"level":"info","ts":"2026-03-13T01:46:44.874+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" wedgqjbdqkn"}
+{"level":"info","ts":"2026-03-13T01:46:44.874+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" wedgqjbdqkn"}
+{"level":"info","ts":"2026-03-13T01:46:53.925+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" qedjjhq\ths"}
+{"level":"info","ts":"2026-03-13T01:46:53.925+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" qedjjhq\ths"}
+{"level":"info","ts":"2026-03-13T01:46:57.360+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" fqihhqkekq"}
+{"level":"info","ts":"2026-03-13T01:46:57.360+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" fqihhqkekq"}
+{"level":"info","ts":"2026-03-13T01:46:59.589+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" wefhjedejhq2"}
+{"level":"info","ts":"2026-03-13T01:46:59.589+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" wefhjedejhq2"}
+{"level":"info","ts":"2026-03-13T01:47:02.287+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" wefu3bde2q"}
+{"level":"info","ts":"2026-03-13T01:47:02.287+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" wefu3bde2q"}
+{"level":"info","ts":"2026-03-13T01:47:04.984+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" 3ejeku12hi"}
+{"level":"info","ts":"2026-03-13T01:47:04.984+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" 3ejeku12hi"}
+{"level":"info","ts":"2026-03-13T01:47:07.403+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" 3qe3jbe1eb1"}
+{"level":"info","ts":"2026-03-13T01:47:07.403+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" 3qe3jbe1eb1"}
+{"level":"info","ts":"2026-03-13T01:47:10.015+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" 23ekju1be1i2he1"}
+{"level":"info","ts":"2026-03-13T01:47:10.015+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" 23ekju1be1i2he1"}
+{"level":"info","ts":"2026-03-13T01:47:12.106+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" qweiu23hei12he1"}
+{"level":"info","ts":"2026-03-13T01:47:12.106+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" qweiu23hei12he1"}
+{"level":"info","ts":"2026-03-13T01:47:14.348+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" 3iu132he1iuhe12iu"}
+{"level":"info","ts":"2026-03-13T01:47:14.348+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" 3iu132he1iuhe12iu"}
+{"level":"info","ts":"2026-03-13T01:47:16.855+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" qe1jhbeu12hgei1he"}
+{"level":"info","ts":"2026-03-13T01:47:16.855+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" qe1jhbeu12hgei1he"}
+{"level":"info","ts":"2026-03-13T02:05:28.022+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-13T02:06:18.054+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" faeeawad"}
+{"level":"info","ts":"2026-03-13T02:06:18.054+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" faeeawad"}
+{"level":"info","ts":"2026-03-13T02:06:22.067+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" dfgdrgrg"}
+{"level":"info","ts":"2026-03-13T02:06:22.067+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" dfgdrgrg"}
+{"level":"info","ts":"2026-03-13T02:06:25.198+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" rtweewrew"}
+{"level":"info","ts":"2026-03-13T02:06:25.198+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" rtweewrew"}
+{"level":"info","ts":"2026-03-13T02:06:29.078+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" ertwtrwr"}
+{"level":"info","ts":"2026-03-13T02:06:29.079+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" ertwtrwr"}
+{"level":"info","ts":"2026-03-13T02:06:35.305+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" etwrefdsghjhgfdd"}
+{"level":"info","ts":"2026-03-13T02:06:35.306+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" etwrefdsghjhgfdd"}
+{"level":"info","ts":"2026-03-13T02:06:46.447+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" rgswgfng"}
+{"level":"info","ts":"2026-03-13T02:06:46.447+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" rgswgfng"}
+{"level":"info","ts":"2026-03-13T02:06:51.830+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" srgfhcgv"}
+{"level":"info","ts":"2026-03-13T02:06:51.830+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" srgfhcgv"}
+{"level":"info","ts":"2026-03-13T02:06:55.826+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" rstgdfhv"}
+{"level":"info","ts":"2026-03-13T02:06:55.826+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" rstgdfhv"}
+{"level":"info","ts":"2026-03-13T02:07:00.384+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":"westrdghft"}
+{"level":"info","ts":"2026-03-13T02:07:00.384+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":"westrdghft"}
+{"level":"info","ts":"2026-03-13T02:07:06.520+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" estrdfhcgvhn"}
+{"level":"info","ts":"2026-03-13T02:07:06.520+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" estrdfhcgvhn"}
+{"level":"info","ts":"2026-03-13T02:07:24.013+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" segdfhgvhb"}
+{"level":"info","ts":"2026-03-13T02:07:30.210+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" awsredfgch"}
+{"level":"info","ts":"2026-03-13T02:07:30.210+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" awsredfgch"}
+{"level":"info","ts":"2026-03-13T02:07:34.791+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" awsfdegchvnbmj"}
+{"level":"info","ts":"2026-03-13T02:07:34.791+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" awsfdegchvnbmj"}
+{"level":"info","ts":"2026-03-13T02:07:40.628+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" awsedxgfchvnbm"}
+{"level":"info","ts":"2026-03-13T02:07:40.628+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" awsedxgfchvnbm"}
+{"level":"info","ts":"2026-03-13T02:07:46.387+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" awsedgfchvbmnj"}
+{"level":"info","ts":"2026-03-13T02:09:48.007+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-13T02:10:08.955+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" swedrgfhvjbm"}
+{"level":"info","ts":"2026-03-13T02:10:08.955+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" swedrgfhvjbm"}
+{"level":"info","ts":"2026-03-13T02:10:14.705+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" sedgrfhvjbnmj,"}
+{"level":"info","ts":"2026-03-13T02:10:14.705+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" sedgrfhvjbnmj,"}
+{"level":"info","ts":"2026-03-13T02:10:18.788+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" sedgrfhvjnbm"}
+{"level":"info","ts":"2026-03-13T02:10:18.788+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" sedgrfhvjnbm"}
+{"level":"info","ts":"2026-03-13T02:10:22.650+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" sedgrfhjbnm"}
+{"level":"info","ts":"2026-03-13T02:10:22.650+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" sedgrfhjbnm"}
+{"level":"info","ts":"2026-03-13T02:10:26.028+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" sdfexgcvbhnm"}
+{"level":"info","ts":"2026-03-13T02:10:26.028+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" sdfexgcvbhnm"}
+{"level":"info","ts":"2026-03-13T02:10:30.493+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" wsedfrghjmbn,"}
+{"level":"info","ts":"2026-03-13T02:10:30.493+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" wsedfrghjmbn,"}
+{"level":"info","ts":"2026-03-13T02:10:34.004+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" wrsedgrfhvjbm"}
+{"level":"info","ts":"2026-03-13T02:10:34.005+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" wrsedgrfhvjbm"}
+{"level":"info","ts":"2026-03-13T02:10:41.374+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" wesrdfghnbmj"}
+{"level":"info","ts":"2026-03-13T02:10:41.374+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" wesrdfghnbmj"}
+{"level":"info","ts":"2026-03-13T02:10:46.377+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" rsedfghvbnm"}
+{"level":"info","ts":"2026-03-13T02:10:46.377+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" rsedfghvbnm"}
+{"level":"info","ts":"2026-03-13T02:10:50.036+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" warsedrgtfhj"}
+{"level":"info","ts":"2026-03-13T02:10:50.036+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" warsedrgtfhj"}
+{"level":"info","ts":"2026-03-13T02:10:54.131+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" resdfgthjb"}
+{"level":"info","ts":"2026-03-13T02:10:54.131+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" resdfgthjb"}
+{"level":"info","ts":"2026-03-13T02:11:13.019+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" erdsftghvjb"}
+{"level":"info","ts":"2026-03-13T02:11:13.019+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" erdsftghvjb"}
+{"level":"info","ts":"2026-03-13T02:11:17.973+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" wr3e4tyuio"}
+{"level":"info","ts":"2026-03-13T02:11:17.973+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" wr3e4tyuio"}
+{"level":"info","ts":"2026-03-13T02:11:25.011+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" qwertyuiop"}
+{"level":"info","ts":"2026-03-13T02:11:25.012+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" qwertyuiop"}
+{"level":"info","ts":"2026-03-13T02:11:31.988+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" awsdefghjnmb"}
+{"level":"info","ts":"2026-03-13T02:11:31.989+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" awsdefghjnmb"}
+{"level":"info","ts":"2026-03-13T02:11:36.020+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" awsdefgchbvnjmj"}
+{"level":"info","ts":"2026-03-13T02:11:36.020+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" awsdefgchbvnjmj"}
+{"level":"info","ts":"2026-03-13T02:11:39.604+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" easwdfxgchvjbnm"}
+{"level":"info","ts":"2026-03-13T02:11:39.604+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" easwdfxgchvjbnm"}
+{"level":"info","ts":"2026-03-13T02:11:43.594+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" awsdfgchvbjnmnk,n"}
+{"level":"info","ts":"2026-03-13T02:11:43.594+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" awsdfgchvbjnmnk,n"}
+{"level":"info","ts":"2026-03-13T02:11:48.590+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" 12345678"}
+{"level":"info","ts":"2026-03-13T02:11:48.590+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" 12345678"}
+{"level":"info","ts":"2026-03-13T02:11:54.372+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" 123456789"}
+{"level":"info","ts":"2026-03-13T02:11:54.373+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" 123456789"}
+{"level":"info","ts":"2026-03-13T02:12:02.460+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"1","to":"2","payload":" 1234567890"}
+{"level":"info","ts":"2026-03-13T02:12:02.461+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"2","payload":" 1234567890"}
+{"level":"info","ts":"2026-03-13T02:12:10.336+0530","caller":"realtime/hub.go:95","msg":"Websocket Message","from":"2","to":"1","payload":" 0987654321"}
+{"level":"info","ts":"2026-03-13T02:12:10.336+0530","caller":"realtime/client.go:87","msg":"Client message","connection uid":"1","payload":" 0987654321"}
+{"level":"info","ts":"2026-03-13T02:28:40.343+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":9000"}
+{"level":"debug","ts":"2026-03-13T02:28:52.995+0530","caller":"realtime/hub.go:65","msg":"Websocket client connected","uid":"1"}
+{"level":"debug","ts":"2026-03-13T02:28:58.681+0530","caller":"realtime/hub.go:65","msg":"Websocket client connected","uid":"2"}
+{"level":"info","ts":"2026-03-13T02:29:15.824+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"1","to":"2","payload":" qqeqe2q"}
+{"level":"info","ts":"2026-03-13T02:29:15.825+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"2","payload":" qqeqe2q"}
+{"level":"info","ts":"2026-03-13T02:29:18.846+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"1","to":"2","payload":" qeqdqdq"}
+{"level":"info","ts":"2026-03-13T02:29:18.847+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"2","payload":" qeqdqdq"}
+{"level":"info","ts":"2026-03-13T02:29:21.449+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"1","to":"2","payload":" qwdqwdwqd"}
+{"level":"info","ts":"2026-03-13T02:29:21.449+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"2","payload":" qwdqwdwqd"}
+{"level":"info","ts":"2026-03-13T02:29:23.765+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"1","to":"2","payload":" qwedqwadwq"}
+{"level":"info","ts":"2026-03-13T02:29:23.766+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"2","payload":" qwedqwadwq"}
+{"level":"info","ts":"2026-03-13T02:29:31.205+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"1","to":"2","payload":" qewqeqe"}
+{"level":"info","ts":"2026-03-13T02:29:31.205+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"2","payload":" qewqeqe"}
+{"level":"info","ts":"2026-03-13T02:29:35.936+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"2","to":"1","payload":" qweqdqw"}
+{"level":"info","ts":"2026-03-13T02:29:35.936+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"1","payload":" qweqdqw"}
+{"level":"info","ts":"2026-03-13T02:29:38.594+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"2","to":"1","payload":" q2e2qddqw"}
+{"level":"info","ts":"2026-03-13T02:29:38.594+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"1","payload":" q2e2qddqw"}
+{"level":"info","ts":"2026-03-13T02:29:42.616+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"2","to":"1","payload":" 2e2qdwafqwe"}
+{"level":"info","ts":"2026-03-13T02:29:42.617+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"1","payload":" 2e2qdwafqwe"}
+{"level":"info","ts":"2026-03-13T02:29:47.694+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"2","to":"1","payload":" qqqwdwqdqw"}
+{"level":"info","ts":"2026-03-13T02:29:47.694+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"1","payload":" qqqwdwqdqw"}
+{"level":"info","ts":"2026-03-13T02:29:50.545+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"2","to":"1","payload":" qwrqwqwq"}
+{"level":"info","ts":"2026-03-13T02:29:50.545+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"1","payload":" qwrqwqwq"}
+{"level":"info","ts":"2026-03-13T02:29:53.041+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"2","to":"1","payload":" qrqwoijfhqe"}
+{"level":"info","ts":"2026-03-13T02:29:53.041+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"1","payload":" qrqwoijfhqe"}
+{"level":"info","ts":"2026-03-13T02:29:57.942+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"1","to":"2","payload":" qrwjhbqwkdq"}
+{"level":"info","ts":"2026-03-13T02:29:57.942+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"2","payload":" qrwjhbqwkdq"}
+{"level":"info","ts":"2026-03-13T02:30:01.121+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"1","to":"2","payload":" 2ejqbdwbqjkb"}
+{"level":"info","ts":"2026-03-13T02:30:01.121+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"2","payload":" 2ejqbdwbqjkb"}
+{"level":"info","ts":"2026-03-13T02:30:03.945+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"1","to":"2","payload":" 2eiuhqdkqdqw"}
+{"level":"info","ts":"2026-03-13T02:30:03.945+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"2","payload":" 2eiuhqdkqdqw"}
+{"level":"info","ts":"2026-03-13T02:30:03.946+0530","caller":"realtime/client.go:113","msg":"Websocket write failed","error":"write tcp [::1]:9000->[::1]:56671: i/o timeout"}
+{"level":"info","ts":"2026-03-13T02:30:09.438+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"1","to":"2","payload":" 2qbdqdqb"}
+{"level":"info","ts":"2026-03-13T02:30:15.388+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"2","to":"1","payload":" 2eqfqew2q"}
+{"level":"info","ts":"2026-03-13T02:30:15.388+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"1","payload":" 2eqfqew2q"}
+{"level":"info","ts":"2026-03-13T02:30:15.388+0530","caller":"realtime/client.go:113","msg":"Websocket write failed","error":"write tcp [::1]:9000->[::1]:56577: i/o timeout"}
+{"level":"info","ts":"2026-03-13T02:30:19.662+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"2","to":"1","payload":" wefwefefe"}
+{"level":"info","ts":"2026-03-13T02:36:32.181+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":9000"}
+{"level":"debug","ts":"2026-03-13T02:36:35.372+0530","caller":"realtime/hub.go:65","msg":"Websocket client connected","uid":"1"}
+{"level":"debug","ts":"2026-03-13T02:36:41.434+0530","caller":"realtime/hub.go:65","msg":"Websocket client connected","uid":"2"}
+{"level":"info","ts":"2026-03-13T02:36:48.116+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"2","to":"1","payload":" q3q3dqqd"}
+{"level":"info","ts":"2026-03-13T02:36:48.116+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"1","payload":" q3q3dqqd"}
+{"level":"info","ts":"2026-03-13T02:36:50.439+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"2","to":"1","payload":" \t2ewqdsfb"}
+{"level":"info","ts":"2026-03-13T02:36:50.439+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"1","payload":" \t2ewqdsfb"}
+{"level":"info","ts":"2026-03-13T02:36:52.834+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"2","to":"1","payload":" eqwesfdrgg"}
+{"level":"info","ts":"2026-03-13T02:36:52.834+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"1","payload":" eqwesfdrgg"}
+{"level":"info","ts":"2026-03-13T02:36:54.568+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"2","to":"1","payload":"w2qedfsdrg"}
+{"level":"info","ts":"2026-03-13T02:36:54.568+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"1","payload":"w2qedfsdrg"}
+{"level":"info","ts":"2026-03-13T02:37:18.498+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"1","to":"2","payload":" qwaedfsrgb"}
+{"level":"info","ts":"2026-03-13T02:37:18.498+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"2","payload":" qwaedfsrgb"}
+{"level":"info","ts":"2026-03-13T02:37:22.590+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"1","to":"1","payload":" qewdfsr"}
+{"level":"info","ts":"2026-03-13T02:37:22.590+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"1","payload":" qewdfsr"}
+{"level":"info","ts":"2026-03-13T02:37:24.849+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"1","to":"2","payload":" 2qewefrdgg"}
+{"level":"info","ts":"2026-03-13T02:37:24.849+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"2","payload":" 2qewefrdgg"}
+{"level":"info","ts":"2026-03-13T02:37:27.066+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"1","to":"2","payload":" 2qwedfsrg"}
+{"level":"info","ts":"2026-03-13T02:37:27.066+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"2","payload":" 2qwedfsrg"}
+{"level":"info","ts":"2026-03-13T02:37:29.006+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"1","to":"2","payload":"qew2edsfr"}
+{"level":"info","ts":"2026-03-13T02:37:29.007+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"2","payload":"qew2edsfr"}
+{"level":"info","ts":"2026-03-13T02:37:32.405+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"1","to":"2","payload":" qewrfdg"}
+{"level":"info","ts":"2026-03-13T02:37:32.405+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"2","payload":" qewrfdg"}
+{"level":"info","ts":"2026-03-13T02:37:36.220+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"1","to":"2","payload":" qwerft"}
+{"level":"info","ts":"2026-03-13T02:37:36.220+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"2","payload":" qwerft"}
+{"level":"info","ts":"2026-03-13T02:37:39.211+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"1","to":"2","payload":" 2w3erdfg"}
+{"level":"info","ts":"2026-03-13T02:37:39.212+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"2","payload":" 2w3erdfg"}
+{"level":"info","ts":"2026-03-13T02:37:41.335+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"1","to":"2","payload":"wsdfc"}
+{"level":"info","ts":"2026-03-13T02:37:41.336+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"2","payload":"wsdfc"}
+{"level":"info","ts":"2026-03-13T02:37:44.962+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"1","to":"2","payload":"2wedesfv"}
+{"level":"info","ts":"2026-03-13T02:37:44.962+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"2","payload":"2wedesfv"}
+{"level":"info","ts":"2026-03-13T02:37:48.617+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"1","to":"2","payload":" waqsedfghtyt"}
+{"level":"info","ts":"2026-03-13T02:37:48.617+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"2","payload":" waqsedfghtyt"}
+{"level":"info","ts":"2026-03-13T02:37:48.617+0530","caller":"realtime/client.go:113","msg":"Websocket write failed","error":"write tcp [::1]:9000->[::1]:64192: i/o timeout"}
+{"level":"info","ts":"2026-03-13T02:37:51.484+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"1","to":"2","payload":" awfesrdgvb"}
+{"level":"info","ts":"2026-03-13T02:37:56.258+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"2","to":"1","payload":" 2qwedsfrdg"}
+{"level":"info","ts":"2026-03-13T02:37:56.259+0530","caller":"realtime/client.go:88","msg":"Client message","connection uid":"1","payload":" 2qwedsfrdg"}
+{"level":"info","ts":"2026-03-13T02:37:56.259+0530","caller":"realtime/client.go:113","msg":"Websocket write failed","error":"write tcp [::1]:9000->[::1]:64089: i/o timeout"}
+{"level":"info","ts":"2026-03-13T02:37:58.751+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"2","to":"1","payload":" 2qwedfsrg"}
+{"level":"info","ts":"2026-03-13T02:38:20.457+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"1","to":"2","payload":" weqdafsrg"}
+{"level":"info","ts":"2026-03-13T02:38:25.700+0530","caller":"realtime/hub.go:97","msg":"Websocket Message","from":"2","to":"1","payload":" 2qewfr"}
+{"level":"debug","ts":"2026-03-13T02:38:29.373+0530","caller":"realtime/hub.go:70","msg":"Websocket client disconnected","uid":"1"}
+{"level":"debug","ts":"2026-03-13T02:38:35.435+0530","caller":"realtime/hub.go:70","msg":"Websocket client disconnected","uid":"2"}

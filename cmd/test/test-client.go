@@ -8,6 +8,7 @@ import (
 	"os"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -43,8 +44,20 @@ func main() {
 	go ReadFromStdIn(conn, &wg, uid)
 	wg.Add(1)
 	go ReadFromConnection(conn, &wg)
+	//go SendPeriodicHeartbeat(conn)
 
 	wg.Wait()
+}
+
+func SendPeriodicHeartbeat(conn *websocket.Conn) {
+	ticker := time.NewTicker(time.Second * 30)
+
+	for range ticker.C {
+		err := conn.WriteMessage(websocket.PongMessage, nil)
+		if err != nil {
+			log.Fatal("Failed to write pong message to server. Error:", err.Error())
+		}
+	}
 }
 
 func ReadFromStdIn(conn *websocket.Conn, wg *sync.WaitGroup, senderid string) {

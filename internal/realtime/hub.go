@@ -62,10 +62,12 @@ func (h *Hub) Initialize() {
 }
 
 func (h *Hub) Register(client *Client) {
+	zap.L().Debug("Websocket client connected", zap.String("uid", client.uid))
 	h.register <- client
 }
 
 func (h *Hub) Unregister(client *Client) {
+	zap.L().Debug("Websocket client disconnected", zap.String("uid", client.uid))
 	h.unregister <- client
 }
 

@@ -2,6 +2,7 @@ package realtime
 
 import (
 	"encoding/json"
+	"sync/atomic"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -19,11 +20,22 @@ const (
 	MaxMessageSize = 512 * 1024
 )
 
+type ConnectionStats struct {
+	ConnectedAt      time.Time
+	LastPingAt       time.Time
+	LastPongAt       time.Time
+	MessagesSend     int64
+	MessagesReceived int64
+	PingsSent        int64
+	PongsReceived    int64
+}
+
 type Client struct {
-	uid  string
-	conn *websocket.Conn
-	send chan *ClientMessage
-	hub  *Hub
+	uid   string
+	conn  *websocket.Conn
+	send  chan *ClientMessage
+	hub   *Hub
+	stats ConnectionStats
 }
 
 func NewClient(uid string, conn *websocket.Conn, hub *Hub) *Client {
@@ -32,6 +44,9 @@ func NewClient(uid string, conn *websocket.Conn, hub *Hub) *Client {
 		conn: conn,
 		send: make(chan *ClientMessage, 100),
 		hub:  hub,
+		stats: ConnectionStats{
+			ConnectedAt: time.Now(),
+		},
 	}
 }
 
@@ -42,7 +57,7 @@ func (c *Client) ReadIncoming() {
 
 	// Unregister from hub and close connection after read finishes
 	defer func() {
-		c.hub.unregister <- c
+		c.hub.Unregister(c)
 		c.conn.Close()
 	}()
 
@@ -51,6 +66,7 @@ func (c *Client) ReadIncoming() {
 
 	c.conn.SetPongHandler(func(appData string) error {
 		c.conn.SetReadDeadline(time.Now().Add(PongWait))
+		c.RecordLastPong()
 		return nil
 	})
 
@@ -74,6 +90,7 @@ func (c *Client) ReadIncoming() {
 func (c *Client) WriteOutgoing() {
 	// Ticker for periodic ping message
 	ticker := time.NewTicker(PingInterval)
+	defer ticker.Stop()
 
 	for {
 		select {
@@ -83,7 +100,8 @@ func (c *Client) WriteOutgoing() {
 				return
 			}
 
-			zap.L().Info("Client message", zap.String("connection uid", c.uid), zap.String("payload", message.Payload))
+			c.conn.SetWriteDeadline(time.Now().Add(WriteWait)) // Failing to set this will make the connection currupt
+			zap.L().Debug("Client message", zap.String("connection uid", c.uid), zap.String("payload", message.Payload))
 
 			// Get a writer for next message
 			writer, err := c.conn.NextWriter(websocket.TextMessage)
@@ -91,7 +109,7 @@ func (c *Client) WriteOutgoing() {
 				return
 			}
 			encoder := json.NewEncoder(writer)
-			err = encoder.Encode(*message)
+			err = encoder.Encode(message)
 			if err != nil {
 				zap.L().Warn("Json encoding failed", zap.Any("Message", message), zap.Error(err))
 			}
@@ -101,20 +119,61 @@ func (c *Client) WriteOutgoing() {
 			for range n {
 				value := <-c.send
 				writer.Write([]byte{'\n'})
-				err = encoder.Encode(*value)
+				err = encoder.Encode(value)
 				if err != nil {
 					break
 				}
 			}
 
 			if err := writer.Close(); err != nil {
+				zap.L().Info("Websocket write failed", zap.Error(err))
 				return
 			}
 		case <-ticker.C:
 			c.conn.SetWriteDeadline(time.Now().Add(WriteWait))
 			if err := c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+				zap.L().Info("Websocket write failed in ticker", zap.Error(err))
 				return
 			}
+			c.RecordLastPing()
 		}
 	}
+}
+
+func (c *Client) RecordMessageSent() {
+	atomic.AddInt64(&c.stats.MessagesSend, 1)
+}
+
+func (c *Client) RecordMessageReceived() {
+	atomic.AddInt64(&c.stats.MessagesReceived, 1)
+}
+
+func (c *Client) RecordLastPong() {
+	atomic.AddInt64(&c.stats.PongsReceived, 1)
+	c.stats.LastPongAt = time.Now()
+}
+
+func (c *Client) RecordLastPing() {
+	atomic.AddInt64(&c.stats.PingsSent, 1)
+	c.stats.LastPingAt = time.Now()
+}
+
+func (c *Client) GetStats() ConnectionStats {
+	return ConnectionStats{
+		ConnectedAt:      c.stats.ConnectedAt,
+		LastPingAt:       c.stats.LastPingAt,
+		LastPongAt:       c.stats.LastPongAt,
+		MessagesSend:     atomic.LoadInt64(&c.stats.MessagesSend),
+		MessagesReceived: atomic.LoadInt64(&c.stats.MessagesReceived),
+		PingsSent:        atomic.LoadInt64(&c.stats.PingsSent),
+		PongsReceived:    atomic.LoadInt64(&c.stats.PongsReceived),
+	}
+}
+
+func (c *Client) Latency() time.Duration {
+	if c.stats.LastPongAt.IsZero() || c.stats.LastPingAt.IsZero() {
+		return 0
+	}
+
+	return c.stats.LastPongAt.Sub(c.stats.LastPingAt)
 }
