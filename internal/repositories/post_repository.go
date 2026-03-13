@@ -73,7 +73,7 @@ func (e *InMemoryPostsRepository) GetById(id int) (*model.Post, error) {
 func (e *InMemoryPostsRepository) GetPostsOfUser(id int) ([]model.Post, error) {
 	var posts []model.Post
 	for _, value := range e.posts {
-		if value.CreatorId == id {
+		if value.AuthorID == id {
 			posts = append(posts, value)
 		}
 	}

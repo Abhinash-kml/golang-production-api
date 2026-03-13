@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/abhinash-kml/go-api-server/internal/connections"
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
 	"github.com/redis/go-redis/v9"
@@ -25,10 +26,10 @@ type LocalCommentService struct {
 	cache *redis.Client
 }
 
-func NewLocalCommentService(repository repository.CommentRepository, cache *redis.Client) *LocalCommentService {
+func NewLocalCommentService(repository repository.CommentRepository, conn *connections.RedisConnection) *LocalCommentService {
 	return &LocalCommentService{
 		repo:  repository,
-		cache: cache,
+		cache: conn.Client,
 	}
 }
 
@@ -79,10 +80,10 @@ func (s *LocalCommentService) GetCommentsOfPost(id int) ([]model.CommentResponse
 
 func (s *LocalCommentService) InsertComment(comment model.CommentCreateDTO) error {
 	newcomment := model.Comment{
-		Id:          s.repo.Count() + 1,
-		CommenterId: comment.Authorid,
-		PostId:      comment.Postid,
-		Body:        comment.Body,
+		Id:       s.repo.Count() + 1,
+		AuthorID: comment.Authorid,
+		PostId:   comment.Postid,
+		Body:     comment.Body,
 	}
 	err := s.repo.InsertComment(newcomment)
 	if err != nil {
@@ -117,11 +118,11 @@ func (s *LocalCommentService) UpdateComment(id int, comment model.CommentUpdateD
 
 func ConvertCommentToCommentResponseDTO(comment *model.Comment) model.CommentResponseDTO {
 	return model.CommentResponseDTO{
-		Id:          comment.Id,
-		PostID:      comment.PostId,
-		CommenterId: comment.CommenterId,
-		Body:        comment.Body,
-		Likes:       comment.Likes,
+		Id:       comment.Id,
+		PostID:   comment.PostId,
+		AuthorID: comment.AuthorID,
+		Body:     comment.Body,
+		Likes:    comment.Likes,
 	}
 }
 

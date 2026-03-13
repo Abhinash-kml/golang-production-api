@@ -62,17 +62,17 @@ type Post struct {
 	Title     string    `json:"title" redis:"title"`
 	Body      string    `json:"body" redis:"body"`
 	Likes     int       `json:"likes" redis:"likes"`
-	CreatorId int       `json:"creatorid" redis:"creator_id"`
-	CreatedAt time.Time `json:"createdat" redis:"created_at"`
+	AuthorID  int       `json:"author_id" redis:"author_id"`
+	CreatedAt time.Time `json:"created_at" redis:"created_at"`
 }
 
-func NewPost(id int, title, body string, likes, creatorid int, createdat time.Time) *Post {
+func NewPost(id int, title, body string, likes, authorid int, createdat time.Time) *Post {
 	return &Post{
 		Id:        id,
 		Title:     title,
 		Body:      body,
 		Likes:     likes,
-		CreatorId: creatorid,
+		AuthorID:  authorid,
 		CreatedAt: createdat,
 	}
 }
@@ -92,7 +92,7 @@ type PostResponseDTO struct {
 }
 
 type PostCreateDTO struct {
-	Authorid int    `json:"authorid"`
+	AuthorID int    `json:"author_id"`
 	Title    string `json:"title"`
 	Body     string `json:"body"`
 }
@@ -115,11 +115,11 @@ type PostReplaceDTO struct {
 }
 
 type Comment struct {
-	Id          int    `json:"id" redis:"id"`
-	CommenterId int    `json:"commenterid" redis:"commenter_id"`
-	PostId      int    `json:"postid" redis:"postid"`
-	Body        string `json:"body" redis:"body"`
-	Likes       int    `json:"likes" redis:"likes"`
+	Id       int    `json:"id" redis:"id"`
+	AuthorID int    `json:"author_id" redis:"author_id"`
+	PostId   int    `json:"postid" redis:"postid"`
+	Body     string `json:"body" redis:"body"`
+	Likes    int    `json:"likes" redis:"likes"`
 }
 
 type CommentRequestDTO struct {
@@ -127,16 +127,16 @@ type CommentRequestDTO struct {
 }
 
 type CommentResponseDTO struct {
-	Id          int    `json:"id"`
-	CommenterId int    `json:"commenterid"`
-	PostID      int    `json:"postid"`
-	Body        string `json:"body"`
-	Likes       int    `json:"likes"`
+	Id       int    `json:"id"`
+	AuthorID int    `json:"author_id"`
+	PostID   int    `json:"post_id"`
+	Body     string `json:"body"`
+	Likes    int    `json:"likes"`
 }
 
 type CommentCreateDTO struct {
-	Postid   int    `json:"postid"`
-	Authorid int    `json:"authorid"`
+	Postid   int    `json:"post_id"`
+	Authorid int    `json:"author_id"`
 	Body     string `json:"body"`
 }
 
@@ -149,13 +149,13 @@ type CommentUpdateDTO struct {
 	Body string `json:"body"`
 }
 
-func NewComment(id, commenterid, postid int, body string, likes int) *Comment {
+func NewComment(id, authorid, postid int, body string, likes int) *Comment {
 	return &Comment{
-		Id:          id,
-		CommenterId: commenterid,
-		PostId:      postid,
-		Body:        body,
-		Likes:       likes,
+		Id:       id,
+		AuthorID: authorid,
+		PostId:   postid,
+		Body:     body,
+		Likes:    likes,
 	}
 }
 

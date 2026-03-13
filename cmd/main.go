@@ -1,7 +1,7 @@
 package main
 
 import (
-	"context"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -10,11 +10,15 @@ import (
 	"syscall"
 
 	"github.com/abhinash-kml/go-api-server/config"
+	"github.com/abhinash-kml/go-api-server/internal/connections"
 	controller "github.com/abhinash-kml/go-api-server/internal/controllers"
 	"github.com/abhinash-kml/go-api-server/internal/realtime"
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
 	"github.com/abhinash-kml/go-api-server/internal/servers"
 	service "github.com/abhinash-kml/go-api-server/internal/services"
+	"github.com/golang-migrate/migrate"
+	_ "github.com/golang-migrate/migrate/database/postgres"
+	_ "github.com/golang-migrate/migrate/source/file"
 	"github.com/redis/go-redis/v9"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -48,29 +52,51 @@ func main() {
 	zap.ReplaceGlobals(logger)
 	defer logger.Sync()
 
-	// Redis
-	rdb := redis.NewClient(&redis.Options{
+	// Connections
+	postgresdsn := "postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"
+	postgresConnection := connections.NewPostgresConnection(postgresdsn)
+	redisConnection := connections.NewRedisConnection(&redis.Options{
 		Addr:     "localhost:6379",
-		Password: "", // No password
-		DB:       0,  // Default db
-		OnConnect: func(ctx context.Context, cn *redis.Conn) error {
-			fmt.Println("Connected to redis")
-			return nil
-		},
+		DB:       0,
+		Password: "",
 	})
 
+	// Migrations
+	migrateFlag := flag.String("migrate", "none", "Usage: up, down, none (default)")
+	flag.Parse()
+	m, err := migrate.New(
+		"file://db/migrations",
+		postgresdsn,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Perform schema migration as per action
+	switch *migrateFlag {
+	case "up":
+		if err := m.Up(); err != nil {
+			logger.Fatal("Migrate up failed", zap.Error(err))
+		}
+	case "down":
+		if err := m.Down(); err != nil {
+			logger.Fatal("Migrate down failed", zap.Error(err))
+		}
+	case "none": // Default case do nothing
+	}
+
 	// Repository
-	userrepository := repository.NewInMemoryUsersRepository()
+	userrepository := repository.NewPostgresUserRepository(postgresConnection)
 	userrepository.Setup()
-	postsrepository := repository.NewInMemoryPostsRepository()
+	postsrepository := repository.NewPostgresPostRepository(postgresConnection)
 	postsrepository.Setup()
-	commentrepository := repository.NewInMemoryCommentsRepository()
+	commentrepository := repository.NewPostgresCommentRepository(postgresConnection)
 	commentrepository.Setup()
 
 	// Service
-	userservice := service.NewLocalUserService(userrepository, rdb)
-	postsservice := service.NewLocalPostsService(postsrepository, rdb)
-	commentservice := service.NewLocalCommentService(commentrepository, rdb)
+	userservice := service.NewLocalUserService(userrepository, redisConnection)
+	postsservice := service.NewLocalPostsService(postsrepository, redisConnection)
+	commentservice := service.NewLocalCommentService(commentrepository, redisConnection)
 
 	// Controllers
 	usercontroller := controller.NewUsersController(userservice, postsservice, commentservice, logger)
@@ -81,7 +107,7 @@ func main() {
 	sessionstore := realtime.NewInMemorySessionStore()
 
 	// Pub sub
-	redisPubSub := realtime.NewRedisPubSub(rdb)
+	redisPubSub := realtime.NewRedisPubSub(redisConnection)
 
 	// Hub
 	hub := realtime.NewHub(sessionstore, &redisPubSub, realtime.PubSubTypeMemory)
@@ -97,6 +123,7 @@ func main() {
 	// 	servers.WithPostsController(*postscontroller),
 	// 	servers.WithCommentsController(*commentscontroller))
 
+	// Main http server
 	server := servers.NewHttpWithConfig(&config.Server.Http,
 		&config.Auth,
 		servers.WithLogger(*logger),

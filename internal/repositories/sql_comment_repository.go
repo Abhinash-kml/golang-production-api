@@ -11,7 +11,7 @@ type PostgresCommentRepository struct {
 	db *sql.DB
 }
 
-func NewPostgresCommentRepository(connection connections.PostgresConnection) *PostgresCommentRepository {
+func NewPostgresCommentRepository(connection *connections.PostgresConnection) *PostgresCommentRepository {
 	return &PostgresCommentRepository{db: connection.DB}
 }
 
@@ -31,7 +31,7 @@ func (r *PostgresCommentRepository) GetComments() ([]model.Comment, error) {
 	var comment model.Comment
 
 	for rows.Next() {
-		rows.Scan(&comment.Id, &comment.CommenterId, &comment.PostId, &comment.Body, &comment.Likes)
+		rows.Scan(&comment.Id, &comment.AuthorID, &comment.PostId, &comment.Body, &comment.Likes)
 		comments = append(comments, comment)
 	}
 
@@ -41,7 +41,7 @@ func (r *PostgresCommentRepository) GetComments() ([]model.Comment, error) {
 func (r *PostgresCommentRepository) GetById(id int) (*model.Comment, error) {
 	query := `SELECT * FROM comments WHERE id = $1;`
 	var comment model.Comment
-	if err := r.db.QueryRow(query, id).Scan(&comment.Id, &comment.CommenterId, &comment.PostId, &comment.Body, &comment.Likes); err != nil {
+	if err := r.db.QueryRow(query, id).Scan(&comment.Id, &comment.AuthorID, &comment.PostId, &comment.Body, &comment.Likes); err != nil {
 		return nil, ErrNoRecord
 	}
 
@@ -60,7 +60,7 @@ func (r *PostgresCommentRepository) GetCommentsOfPost(id int) ([]model.Comment, 
 	var comment model.Comment
 
 	for rows.Next() {
-		rows.Scan(&comment.Id, &comment.CommenterId, &comment.PostId, &comment.Body, &comment.Likes)
+		rows.Scan(&comment.Id, &comment.AuthorID, &comment.PostId, &comment.Body, &comment.Likes)
 		comments = append(comments, comment)
 	}
 
@@ -69,7 +69,7 @@ func (r *PostgresCommentRepository) GetCommentsOfPost(id int) ([]model.Comment, 
 
 func (r *PostgresCommentRepository) InsertComment(comment model.Comment) error {
 	query := `INSERT INTO comments(commenterid, postid, body, likes) VALUES($1, $2, $3, $4);`
-	if _, err := r.db.Exec(query, comment.CommenterId, comment.PostId, comment.Body, comment.Likes); err != nil {
+	if _, err := r.db.Exec(query, comment.AuthorID, comment.PostId, comment.Body, comment.Likes); err != nil {
 		return err
 	}
 

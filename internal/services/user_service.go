@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/abhinash-kml/go-api-server/internal/connections"
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
 	"github.com/redis/go-redis/v9"
@@ -28,10 +29,10 @@ type LocalUserService struct {
 	cache *redis.Client
 }
 
-func NewLocalUserService(repository repository.UserRepository, cache *redis.Client) *LocalUserService {
+func NewLocalUserService(repository repository.UserRepository, conn *connections.RedisConnection) *LocalUserService {
 	return &LocalUserService{
 		repo:  repository,
-		cache: cache,
+		cache: conn.Client,
 	}
 }
 

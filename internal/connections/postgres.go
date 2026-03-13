@@ -5,14 +5,27 @@ import (
 	"database/sql"
 
 	_ "github.com/lib/pq"
+	"go.uber.org/zap"
 )
 
 type PostgresConnection struct {
-	DB *sql.DB
+	connectionString string
+	DB               *sql.DB
 }
 
-func (c *PostgresConnection) Connect(connectionString string) error {
-	db, err := sql.Open("postgres", connectionString)
+func NewPostgresConnection(connectionString string) *PostgresConnection {
+	connection := &PostgresConnection{connectionString: connectionString}
+	err := connection.Connect()
+	if err != nil {
+		zap.L().Fatal("Postgres connection failed", zap.Error(err))
+		return nil
+	}
+
+	return connection
+}
+
+func (c *PostgresConnection) Connect() error {
+	db, err := sql.Open("postgres", c.connectionString)
 	if err != nil {
 		return err
 	}
@@ -24,7 +37,13 @@ func (c *PostgresConnection) Connect(connectionString string) error {
 
 	c.DB = db
 
+	c.onConnnect()
+
 	return nil
+}
+
+func (c *PostgresConnection) onConnnect() {
+	zap.L().Info("Connected to postgresql database", zap.String("dsn", c.connectionString))
 }
 
 func (c *PostgresConnection) HealthCheck() bool {

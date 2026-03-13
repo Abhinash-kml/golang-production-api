@@ -13,7 +13,7 @@ type PostgresUserRepository struct {
 	db *sql.DB
 }
 
-func NewPostgresUserRepository(connection connections.PostgresConnection) *PostgresUserRepository {
+func NewPostgresUserRepository(connection *connections.PostgresConnection) *PostgresUserRepository {
 	return &PostgresUserRepository{db: connection.DB}
 }
 

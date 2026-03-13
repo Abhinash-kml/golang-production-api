@@ -11,7 +11,7 @@ type PostgresPostRepository struct {
 	db *sql.DB
 }
 
-func NewPostgresPostRepository(connection connections.PostgresConnection) *PostgresPostRepository {
+func NewPostgresPostRepository(connection *connections.PostgresConnection) *PostgresPostRepository {
 	return &PostgresPostRepository{db: connection.DB}
 }
 
@@ -31,7 +31,7 @@ func (r *PostgresPostRepository) GetPosts() ([]model.Post, error) {
 	var post model.Post
 
 	for rows.Next() {
-		rows.Scan(&post.Id, &post.Title, &post.Body, &post.CreatorId, &post.CreatedAt, &post.Likes)
+		rows.Scan(&post.Id, &post.Title, &post.Body, &post.AuthorID, &post.CreatedAt, &post.Likes)
 		posts = append(posts, post)
 	}
 
@@ -41,7 +41,7 @@ func (r *PostgresPostRepository) GetPosts() ([]model.Post, error) {
 func (r *PostgresPostRepository) GetById(id int) (*model.Post, error) {
 	query := `SELECT * FROM posts WHERE id = $1;`
 	var post model.Post
-	if err := r.db.QueryRow(query, id).Scan(&post.Id, &post.Title, &post.Body, &post.CreatorId, &post.CreatedAt, &post.Likes); err != nil {
+	if err := r.db.QueryRow(query, id).Scan(&post.Id, &post.Title, &post.Body, &post.AuthorID, &post.CreatedAt, &post.Likes); err != nil {
 		return nil, ErrNoRecord
 	}
 
@@ -60,7 +60,7 @@ func (r *PostgresPostRepository) GetPostsOfUser(id int) ([]model.Post, error) {
 	var post model.Post
 
 	for rows.Next() {
-		rows.Scan(&post.Id, &post.Title, &post.Body, &post.CreatorId, &post.CreatedAt, &post.Likes)
+		rows.Scan(&post.Id, &post.Title, &post.Body, &post.AuthorID, &post.CreatedAt, &post.Likes)
 		posts = append(posts, post)
 	}
 
@@ -69,7 +69,7 @@ func (r *PostgresPostRepository) GetPostsOfUser(id int) ([]model.Post, error) {
 
 func (r *PostgresPostRepository) InsertPost(post model.Post) error {
 	query := `INSERT INTO posts(title, body, creatorid, createdat, likes) VALUES($1, $2, $3, $4, $5);`
-	if _, err := r.db.Exec(query, post.Title, post.Body, post.CreatorId, post.CreatedAt, post.Likes); err != nil {
+	if _, err := r.db.Exec(query, post.Title, post.Body, post.AuthorID, post.CreatedAt, post.Likes); err != nil {
 		return err
 	}
 

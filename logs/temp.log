@@ -452,3 +452,42 @@
 {"level":"debug","ts":"2026-03-14T01:54:10.728+0530","caller":"realtime/hub.go:206","msg":"Dropped broadcast echo","messsageID":"019ce8de-f0e5-712d-b6db-6b41443831ca"}
 {"level":"debug","ts":"2026-03-14T01:54:19.897+0530","caller":"realtime/hub.go:127","msg":"Websocket client disconnected","uid":"2"}
 {"level":"debug","ts":"2026-03-14T01:54:22.710+0530","caller":"realtime/hub.go:127","msg":"Websocket client disconnected","uid":"1"}
+{"level":"info","ts":"2026-03-14T04:53:13.119+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"fatal","ts":"2026-03-14T04:53:13.134+0530","caller":"connections/redis.go:20","msg":"Redis connection failed","error":"Redis Ping failed"}
+{"level":"info","ts":"2026-03-14T04:55:06.614+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"info","ts":"2026-03-14T04:55:06.624+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-14T04:55:08.748+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-14T05:02:15.989+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"info","ts":"2026-03-14T05:02:15.998+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-14T05:15:19.543+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"info","ts":"2026-03-14T05:15:19.553+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-14T05:15:34.674+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"info","ts":"2026-03-14T05:15:34.683+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-14T05:17:47.585+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"info","ts":"2026-03-14T05:17:47.593+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-14T05:18:07.796+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"info","ts":"2026-03-14T05:18:07.807+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-14T05:18:35.518+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"info","ts":"2026-03-14T05:18:35.527+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-14T05:18:52.653+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"info","ts":"2026-03-14T05:18:52.662+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-14T05:23:35.715+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"info","ts":"2026-03-14T05:23:35.724+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-14T05:23:37.749+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-14T05:23:50.089+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"info","ts":"2026-03-14T05:23:50.097+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-14T05:23:52.123+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-14T05:24:05.583+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"info","ts":"2026-03-14T05:24:05.592+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-14T05:24:07.725+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":9000"}
+{"level":"debug","ts":"2026-03-14T05:24:19.983+0530","caller":"realtime/hub.go:121","msg":"Websocket client connected","uid":"1"}
+{"level":"debug","ts":"2026-03-14T05:24:30.841+0530","caller":"realtime/hub.go:121","msg":"Websocket client connected","uid":"2"}
+{"level":"debug","ts":"2026-03-14T05:24:34.846+0530","caller":"realtime/hub.go:127","msg":"Websocket client disconnected","uid":"2"}
+{"level":"debug","ts":"2026-03-14T05:24:52.437+0530","caller":"realtime/hub.go:121","msg":"Websocket client connected","uid":"2"}
+{"level":"debug","ts":"2026-03-14T05:24:58.398+0530","caller":"realtime/hub.go:131","msg":"Websocket Message","from":"2","to":"@","payload":"\" Broadcast\""}
+{"level":"debug","ts":"2026-03-14T05:24:58.399+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" Broadcast\""}
+{"level":"debug","ts":"2026-03-14T05:24:58.399+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" Broadcast\""}
+{"level":"debug","ts":"2026-03-14T05:24:58.401+0530","caller":"realtime/hub.go:229","msg":"Redis channel message","from":"019ce99f-201d-7064-9afc-feea6d17dd23","to":"@","payload":"\" Broadcast\""}
+{"level":"debug","ts":"2026-03-14T05:24:58.401+0530","caller":"realtime/hub.go:206","msg":"Dropped broadcast echo","messsageID":"019ce99f-eddd-725c-b534-d6fe2f66a3a3"}
+{"level":"debug","ts":"2026-03-14T05:25:04.061+0530","caller":"realtime/hub.go:127","msg":"Websocket client disconnected","uid":"2"}
+{"level":"debug","ts":"2026-03-14T05:25:05.541+0530","caller":"realtime/hub.go:127","msg":"Websocket client disconnected","uid":"1"}

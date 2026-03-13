@@ -3,6 +3,7 @@ package realtime
 import (
 	"context"
 
+	"github.com/abhinash-kml/go-api-server/internal/connections"
 	"github.com/redis/go-redis/v9"
 	"go.uber.org/zap"
 )
@@ -13,8 +14,8 @@ type RedisPubSub struct {
 	incomingChan <-chan *redis.Message
 }
 
-func NewRedisPubSub(client *redis.Client) RedisPubSub {
-	return RedisPubSub{rdb: client}
+func NewRedisPubSub(conn *connections.RedisConnection) RedisPubSub {
+	return RedisPubSub{rdb: conn.Client}
 }
 
 func (r *RedisPubSub) Initialize() error {

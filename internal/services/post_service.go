@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/abhinash-kml/go-api-server/internal/connections"
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
 	"github.com/redis/go-redis/v9"
@@ -25,10 +26,10 @@ type LocalPostsService struct {
 	cache *redis.Client
 }
 
-func NewLocalPostsService(repository repository.PostsRepository, cache *redis.Client) *LocalPostsService {
+func NewLocalPostsService(repository repository.PostsRepository, conn *connections.RedisConnection) *LocalPostsService {
 	return &LocalPostsService{
 		repo:  repository,
-		cache: cache,
+		cache: conn.Client,
 	}
 }
 
@@ -82,11 +83,11 @@ func (s *LocalPostsService) GetPostsOfUser(id int) ([]model.PostResponseDTO, err
 
 func (s *LocalPostsService) InsertPost(post model.PostCreateDTO) error {
 	newpost := model.Post{
-		Id:        s.repo.Count() + 1,
-		Title:     post.Title,
-		Body:      post.Body,
-		CreatorId: post.Authorid,
-		Likes:     0,
+		Id:       s.repo.Count() + 1,
+		Title:    post.Title,
+		Body:     post.Body,
+		AuthorID: post.AuthorID,
+		Likes:    0,
 	}
 	err := s.repo.InsertPost(newpost)
 	if err != nil {
@@ -123,7 +124,7 @@ func (s *LocalPostsService) DeletePost(id int) error {
 func ConvertPostToPostResponseDTO(post *model.Post) model.PostResponseDTO {
 	return model.PostResponseDTO{
 		Id:       post.Id,
-		AuthorId: post.CreatorId,
+		AuthorId: post.AuthorID,
 		Title:    post.Title,
 		Body:     post.Body,
 		Likes:    post.Likes,
