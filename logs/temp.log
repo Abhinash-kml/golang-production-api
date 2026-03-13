@@ -1,34 +1,454 @@
-{"level":"info","ts":"2026-03-13T05:30:05.430+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":9000"}
-{"level":"debug","ts":"2026-03-13T05:30:21.349+0530","caller":"realtime/hub.go:109","msg":"Websocket client connected","uid":"1"}
-{"level":"debug","ts":"2026-03-13T05:30:39.901+0530","caller":"realtime/hub.go:109","msg":"Websocket client connected","uid":"2"}
-{"level":"debug","ts":"2026-03-13T05:30:52.233+0530","caller":"realtime/hub.go:71","msg":"Websocket client disconnected","uid":"1"}
-{"level":"debug","ts":"2026-03-13T05:30:52.233+0530","caller":"realtime/hub.go:115","msg":"Websocket client disconnected","uid":"1"}
-{"level":"debug","ts":"2026-03-13T05:31:14.993+0530","caller":"realtime/hub.go:71","msg":"Websocket client disconnected","uid":"2"}
-{"level":"debug","ts":"2026-03-13T05:31:14.998+0530","caller":"realtime/hub.go:115","msg":"Websocket client disconnected","uid":"2"}
-{"level":"debug","ts":"2026-03-13T05:34:53.756+0530","caller":"realtime/hub.go:109","msg":"Websocket client connected","uid":"1"}
-{"level":"debug","ts":"2026-03-13T05:34:57.699+0530","caller":"realtime/hub.go:71","msg":"Websocket client disconnected","uid":"1"}
-{"level":"debug","ts":"2026-03-13T05:34:57.700+0530","caller":"realtime/hub.go:115","msg":"Websocket client disconnected","uid":"1"}
-{"level":"debug","ts":"2026-03-13T05:41:23.718+0530","caller":"realtime/hub.go:109","msg":"Websocket client connected","uid":"1"}
-{"level":"debug","ts":"2026-03-13T05:41:25.794+0530","caller":"realtime/hub.go:119","msg":"Websocket Message","from":"1","to":"1","payload":"\" Hello\""}
-{"level":"debug","ts":"2026-03-13T05:41:25.794+0530","caller":"realtime/client.go:104","msg":"Client message","connection uid":"1","payload":"\" Hello\""}
-{"level":"debug","ts":"2026-03-13T05:41:32.173+0530","caller":"realtime/hub.go:119","msg":"Websocket Message","from":"1","to":"1","payload":"\" Meow meow\""}
-{"level":"debug","ts":"2026-03-13T05:41:32.173+0530","caller":"realtime/client.go:104","msg":"Client message","connection uid":"1","payload":"\" Meow meow\""}
-{"level":"debug","ts":"2026-03-13T05:41:39.342+0530","caller":"realtime/hub.go:71","msg":"Websocket client disconnected","uid":"1"}
-{"level":"debug","ts":"2026-03-13T05:41:39.342+0530","caller":"realtime/hub.go:115","msg":"Websocket client disconnected","uid":"1"}
-{"level":"debug","ts":"2026-03-13T05:47:13.798+0530","caller":"realtime/hub.go:109","msg":"Websocket client connected","uid":"1"}
-{"level":"debug","ts":"2026-03-13T05:47:17.122+0530","caller":"realtime/hub.go:71","msg":"Websocket client disconnected","uid":"1"}
-{"level":"debug","ts":"2026-03-13T05:47:17.123+0530","caller":"realtime/hub.go:115","msg":"Websocket client disconnected","uid":"1"}
-{"level":"debug","ts":"2026-03-13T05:48:33.471+0530","caller":"realtime/hub.go:109","msg":"Websocket client connected","uid":"1"}
-{"level":"debug","ts":"2026-03-13T05:48:34.937+0530","caller":"realtime/hub.go:119","msg":"Websocket Message","from":"1","to":"1","payload":"\" meow\""}
-{"level":"debug","ts":"2026-03-13T05:48:34.938+0530","caller":"realtime/client.go:104","msg":"Client message","connection uid":"1","payload":"\" meow\""}
-{"level":"debug","ts":"2026-03-13T05:49:22.050+0530","caller":"realtime/hub.go:119","msg":"Websocket Message","from":"1","to":"1","payload":"\" Hello ladies\""}
-{"level":"debug","ts":"2026-03-13T05:49:22.051+0530","caller":"realtime/client.go:104","msg":"Client message","connection uid":"1","payload":"\" Hello ladies\""}
-{"level":"debug","ts":"2026-03-13T05:49:45.208+0530","caller":"realtime/hub.go:71","msg":"Websocket client disconnected","uid":"1"}
-{"level":"debug","ts":"2026-03-13T05:49:45.208+0530","caller":"realtime/hub.go:115","msg":"Websocket client disconnected","uid":"1"}
-{"level":"debug","ts":"2026-03-13T05:50:58.475+0530","caller":"realtime/hub.go:109","msg":"Websocket client connected","uid":"1"}
-{"level":"debug","ts":"2026-03-13T05:51:00.122+0530","caller":"realtime/hub.go:119","msg":"Websocket Message","from":"1","to":"1","payload":"\" meow\""}
-{"level":"debug","ts":"2026-03-13T05:51:00.122+0530","caller":"realtime/client.go:104","msg":"Client message","connection uid":"1","payload":"\" meow\""}
-{"level":"debug","ts":"2026-03-13T05:51:07.135+0530","caller":"realtime/hub.go:119","msg":"Websocket Message","from":"1","to":"1","payload":"\" bhow bhow\""}
-{"level":"debug","ts":"2026-03-13T05:51:07.136+0530","caller":"realtime/client.go:104","msg":"Client message","connection uid":"1","payload":"\" bhow bhow\""}
-{"level":"debug","ts":"2026-03-13T05:51:16.333+0530","caller":"realtime/hub.go:71","msg":"Websocket client disconnected","uid":"1"}
-{"level":"debug","ts":"2026-03-13T05:51:16.333+0530","caller":"realtime/hub.go:115","msg":"Websocket client disconnected","uid":"1"}
+{"level":"info","ts":"2026-03-14T00:40:19.784+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-14T00:40:29.868+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":9001"}
+{"level":"debug","ts":"2026-03-14T00:40:51.206+0530","caller":"realtime/hub.go:113","msg":"Websocket client connected","uid":"1"}
+{"level":"debug","ts":"2026-03-14T00:41:03.046+0530","caller":"realtime/hub.go:113","msg":"Websocket client connected","uid":"2"}
+{"level":"debug","ts":"2026-03-14T00:41:26.165+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"1","to":"2","payload":"\" Hi\""}
+{"level":"debug","ts":"2026-03-14T00:41:26.185+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce89b-4cb8-7865-b859-34fb8f2b9bdc","to":"2","payload":"\" Hi\""}
+{"level":"debug","ts":"2026-03-14T00:41:26.244+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce89b-4cb8-7865-b859-34fb8f2b9bdc","to":"2","payload":"\" Hi\""}
+{"level":"debug","ts":"2026-03-14T00:41:26.244+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" Hi\""}
+{"level":"debug","ts":"2026-03-14T00:41:30.600+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"2","to":"1","payload":"\" Hello\""}
+{"level":"debug","ts":"2026-03-14T00:41:30.621+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce89b-741b-70a4-b37e-a23c5c5561df","to":"1","payload":"\" Hello\""}
+{"level":"debug","ts":"2026-03-14T00:41:30.621+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce89b-741b-70a4-b37e-a23c5c5561df","to":"1","payload":"\" Hello\""}
+{"level":"debug","ts":"2026-03-14T00:41:30.621+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" Hello\""}
+{"level":"debug","ts":"2026-03-14T00:41:42.435+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"2","to":"@","payload":"\" Broadcast\""}
+{"level":"debug","ts":"2026-03-14T00:41:42.436+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" Broadcast\""}
+{"level":"debug","ts":"2026-03-14T00:41:42.437+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce89c-9763-7b90-9990-f2b6a0aa18a6"}
+{"level":"debug","ts":"2026-03-14T00:41:42.437+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce89b-741b-70a4-b37e-a23c5c5561df","to":"@","payload":"\" Broadcast\""}
+{"level":"debug","ts":"2026-03-14T00:41:42.438+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce89b-741b-70a4-b37e-a23c5c5561df","to":"@","payload":"\" Broadcast\""}
+{"level":"debug","ts":"2026-03-14T00:41:42.438+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" Broadcast\""}
+{"level":"debug","ts":"2026-03-14T00:41:42.439+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce89c-9763-7b90-9990-f2b6a0aa18a6"}
+{"level":"debug","ts":"2026-03-14T00:41:42.439+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce89b-4cb8-7865-b859-34fb8f2b9bdc","to":"@","payload":"\" Broadcast\""}
+{"level":"debug","ts":"2026-03-14T00:41:42.439+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce89b-4cb8-7865-b859-34fb8f2b9bdc","to":"@","payload":"\" Broadcast\""}
+{"level":"debug","ts":"2026-03-14T00:41:42.439+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" Broadcast\""}
+{"level":"debug","ts":"2026-03-14T00:41:42.441+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce89c-9763-7b90-9990-f2b6a0aa18a6"}
+{"level":"debug","ts":"2026-03-14T00:41:42.441+0530","caller":"realtime/hub.go:197","msg":"Dropped broadcast echo due to hops","messsageID":"019ce89c-9763-7b90-9990-f2b6a0aa18a6","hops":3}
+{"level":"info","ts":"2026-03-14T00:48:35.035+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-14T00:48:42.828+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":9001"}
+{"level":"debug","ts":"2026-03-14T00:48:46.527+0530","caller":"realtime/hub.go:113","msg":"Websocket client connected","uid":"1"}
+{"level":"debug","ts":"2026-03-14T00:48:52.131+0530","caller":"realtime/hub.go:113","msg":"Websocket client connected","uid":"2"}
+{"level":"debug","ts":"2026-03-14T00:48:58.114+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"2","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.115+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.129+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.129+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.129+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.129+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.141+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.141+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.141+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.141+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.142+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.142+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.142+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.142+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.143+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.143+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.143+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.143+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.143+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.143+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.143+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.143+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.144+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.144+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.144+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.144+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.145+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.145+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.146+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.146+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.146+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.146+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.146+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.147+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.147+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.147+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.147+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.147+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.148+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.148+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.148+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.148+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.148+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.148+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.149+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.149+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.149+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.149+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.149+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.149+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.150+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.150+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.150+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.150+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.151+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.151+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.151+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.151+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.152+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.152+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.152+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.152+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.153+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.153+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.153+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.153+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.153+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.153+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.154+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.154+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.154+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.154+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.154+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.154+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.155+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.155+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.155+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.155+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.155+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.155+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.155+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.156+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.156+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.156+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.156+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.156+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.157+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.157+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.157+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.157+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.157+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.157+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.157+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.157+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.158+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.158+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.158+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.159+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.159+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.159+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.159+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.159+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.159+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.159+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.160+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.160+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.160+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.160+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.160+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.160+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.161+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.161+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.161+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.161+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.161+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.161+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.161+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.161+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.162+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.162+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.162+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.162+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.162+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.162+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.162+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.162+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.163+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.163+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.163+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.163+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.163+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.163+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.163+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.164+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.164+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.164+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.165+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.165+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.165+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.165+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.165+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.165+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.166+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.166+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.166+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.166+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.166+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.166+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.166+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.166+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.167+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.167+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.167+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.167+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.167+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.167+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.167+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.167+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.168+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.168+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.168+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.168+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.169+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.169+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.169+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.169+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.170+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.170+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.170+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.170+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.170+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.170+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.170+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.170+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.171+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.171+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.171+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.171+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.171+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.171+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.171+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.171+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.172+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.172+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.172+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.172+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.172+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.172+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.172+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.173+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.173+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.173+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.173+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.173+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.173+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.173+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.173+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.174+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.174+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.174+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.174+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.174+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.175+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.175+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.175+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.175+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.176+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.176+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.176+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.176+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.176+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.176+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.177+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.177+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.177+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.177+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.177+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.177+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.178+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.178+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.178+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.178+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.178+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.178+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.178+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.178+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.179+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.179+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.179+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.179+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.179+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.179+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.179+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.179+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.180+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.180+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.180+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.180+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.180+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.180+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.180+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.180+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.181+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.181+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.182+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.182+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.182+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.182+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.182+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.182+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.182+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.183+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.183+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.183+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.183+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.183+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.183+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.183+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.184+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.184+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.184+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.184+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.184+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.184+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.184+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.184+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.185+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.185+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.185+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.185+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.185+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.185+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.185+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.185+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.186+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.186+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.186+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.186+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.186+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.186+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.186+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.186+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.187+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.187+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.187+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.187+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.188+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.188+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.188+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.188+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.188+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.188+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.188+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.188+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.189+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.189+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.189+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.189+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.189+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.190+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.190+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.190+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.190+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.190+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.190+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.190+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.190+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.191+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.191+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.191+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.191+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.191+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.191+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.191+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.192+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.192+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.192+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.192+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.192+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.192+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.192+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.192+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.193+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.193+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.193+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.193+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.193+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.193+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.193+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.194+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.194+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.194+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.194+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.194+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.195+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.195+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.195+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.195+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.196+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.196+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.196+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.196+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.196+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.196+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.196+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.196+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.197+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.197+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.197+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.197+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.197+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.197+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.197+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.197+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.198+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.198+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.198+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.198+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.198+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.198+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.198+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.198+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.199+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.199+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.199+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.199+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.199+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.199+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.199+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.199+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.200+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.200+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.200+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.200+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.201+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.201+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.201+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.201+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.201+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.201+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.201+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.201+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.202+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.202+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.202+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.202+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.202+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.202+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.202+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.203+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.203+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.203+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.203+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-db4a-78c9-ad18-61c3aef47123","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.203+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.203+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"debug","ts":"2026-03-14T00:48:58.203+0530","caller":"realtime/hub.go:201","msg":"Redis channel message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.204+0530","caller":"realtime/hub.go:123","msg":"Websocket Message","from":"019ce8a2-f9bc-72f8-907d-6df46377b959","to":"@","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.204+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" 100\""}
+{"level":"debug","ts":"2026-03-14T00:48:58.204+0530","caller":"realtime/hub.go:197","msg":"Dropped broadcast echo due to hops","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8","hops":100}
+{"level":"debug","ts":"2026-03-14T00:48:58.204+0530","caller":"realtime/hub.go:191","msg":"Dropped broadcast echo","messsageID":"019ce8a3-3d42-72ca-90c3-d8bdf827b5d8"}
+{"level":"info","ts":"2026-03-14T01:52:05.358+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-14T01:52:12.376+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":9001"}
+{"level":"debug","ts":"2026-03-14T01:52:23.285+0530","caller":"realtime/hub.go:121","msg":"Websocket client connected","uid":"1"}
+{"level":"debug","ts":"2026-03-14T01:52:25.592+0530","caller":"realtime/hub.go:121","msg":"Websocket client connected","uid":"2"}
+{"level":"debug","ts":"2026-03-14T01:52:31.802+0530","caller":"realtime/hub.go:131","msg":"Websocket Message","from":"1","to":"2","payload":"\" Hello\""}
+{"level":"debug","ts":"2026-03-14T01:52:31.821+0530","caller":"realtime/hub.go:229","msg":"Redis channel message","from":"019ce8dc-ff5e-7013-8027-1e63dda5de60","to":"2","payload":"\" Hello\""}
+{"level":"debug","ts":"2026-03-14T01:52:31.821+0530","caller":"realtime/hub.go:131","msg":"Websocket Message","from":"019ce8dc-ff5e-7013-8027-1e63dda5de60","to":"2","payload":"\" Hello\""}
+{"level":"debug","ts":"2026-03-14T01:52:31.822+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" Hello\""}
+{"level":"debug","ts":"2026-03-14T01:52:37.942+0530","caller":"realtime/hub.go:131","msg":"Websocket Message","from":"2","to":"1","payload":"\" Hi\""}
+{"level":"debug","ts":"2026-03-14T01:52:37.957+0530","caller":"realtime/hub.go:229","msg":"Redis channel message","from":"019ce8dd-1ac8-7161-ae36-3fc43c79d7ac","to":"1","payload":"\" Hi\""}
+{"level":"debug","ts":"2026-03-14T01:52:37.957+0530","caller":"realtime/hub.go:131","msg":"Websocket Message","from":"019ce8dd-1ac8-7161-ae36-3fc43c79d7ac","to":"1","payload":"\" Hi\""}
+{"level":"debug","ts":"2026-03-14T01:52:37.957+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" Hi\""}
+{"level":"debug","ts":"2026-03-14T01:53:14.346+0530","caller":"realtime/hub.go:131","msg":"Websocket Message","from":"2","to":"@","payload":"\" Broadcast 1\""}
+{"level":"debug","ts":"2026-03-14T01:53:14.346+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" Broadcast 1\""}
+{"level":"debug","ts":"2026-03-14T01:53:14.347+0530","caller":"realtime/hub.go:229","msg":"Redis channel message","from":"019ce8dd-1ac8-7161-ae36-3fc43c79d7ac","to":"@","payload":"\" Broadcast 1\""}
+{"level":"debug","ts":"2026-03-14T01:53:14.348+0530","caller":"realtime/hub.go:206","msg":"Dropped broadcast echo","messsageID":"019ce8de-14a9-7163-a345-630a193e451e"}
+{"level":"debug","ts":"2026-03-14T01:53:14.348+0530","caller":"realtime/hub.go:229","msg":"Redis channel message","from":"019ce8dd-1ac8-7161-ae36-3fc43c79d7ac","to":"@","payload":"\" Broadcast 1\""}
+{"level":"debug","ts":"2026-03-14T01:53:14.348+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" Broadcast 1\""}
+{"level":"debug","ts":"2026-03-14T01:54:10.726+0530","caller":"realtime/hub.go:131","msg":"Websocket Message","from":"1","to":"@","payload":"\" Broadcast 2\""}
+{"level":"debug","ts":"2026-03-14T01:54:10.726+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"1","payload":"\" Broadcast 2\""}
+{"level":"debug","ts":"2026-03-14T01:54:10.727+0530","caller":"realtime/hub.go:229","msg":"Redis channel message","from":"019ce8dc-ff5e-7013-8027-1e63dda5de60","to":"@","payload":"\" Broadcast 2\""}
+{"level":"debug","ts":"2026-03-14T01:54:10.728+0530","caller":"realtime/hub.go:229","msg":"Redis channel message","from":"019ce8dc-ff5e-7013-8027-1e63dda5de60","to":"@","payload":"\" Broadcast 2\""}
+{"level":"debug","ts":"2026-03-14T01:54:10.728+0530","caller":"realtime/client.go:106","msg":"Client message","connection uid":"2","payload":"\" Broadcast 2\""}
+{"level":"debug","ts":"2026-03-14T01:54:10.728+0530","caller":"realtime/hub.go:206","msg":"Dropped broadcast echo","messsageID":"019ce8de-f0e5-712d-b6db-6b41443831ca"}
+{"level":"debug","ts":"2026-03-14T01:54:19.897+0530","caller":"realtime/hub.go:127","msg":"Websocket client disconnected","uid":"2"}
+{"level":"debug","ts":"2026-03-14T01:54:22.710+0530","caller":"realtime/hub.go:127","msg":"Websocket client disconnected","uid":"1"}

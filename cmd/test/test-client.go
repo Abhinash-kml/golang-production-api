@@ -11,6 +11,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
 
@@ -18,6 +19,7 @@ type MessageCategory int
 
 const (
 	CategoryMessage MessageCategory = iota + 1
+	CategoryBroadcast
 	CategoryNotification
 	CategorySystem
 )
@@ -35,6 +37,7 @@ type Header struct {
 	RecieverID    string `json:"rid"`
 	CorrelationID string `json:"cid"`
 	Category      int    `json:"cat"`
+	Hops          int    `json:"hops"`
 }
 
 type Envelope struct {
@@ -42,6 +45,22 @@ type Envelope struct {
 	Type      int             `json:"type"`
 	Data      json.RawMessage `json:"data"`
 	Timestamp time.Time       `json:"ts"`
+}
+
+func NewEnvelope(sourceid, senderid, receiverid, correlationid string, category, messagetype int, data json.RawMessage, timestamp time.Time) Envelope {
+	return Envelope{
+		Header: Header{
+			SourceID:      sourceid,
+			SenderID:      senderid,
+			RecieverID:    receiverid,
+			CorrelationID: correlationid,
+			Category:      category,
+			Hops:          1,
+		},
+		Type:      messagetype,
+		Data:      data,
+		Timestamp: timestamp,
+	}
 }
 
 func (e *Envelope) MarshalBinary() ([]byte, error) {
@@ -125,16 +144,23 @@ func ReadFromStdIn(conn *websocket.Conn, wg *sync.WaitGroup, senderid string) {
 		receiverid := parts[0]
 		payload := parts[1]
 		payloadbytes, _ := json.Marshal(payload)
+		correlationID, _ := uuid.NewV7()
+
 		message := Envelope{
 			Header: Header{
+				SourceID:      senderid,
 				SenderID:      senderid,
 				RecieverID:    receiverid,
-				CorrelationID: "aaaaaa",
+				CorrelationID: correlationID.String(),
 				Category:      int(CategoryMessage),
 			},
 			Type:      TypeMessage,
 			Data:      json.RawMessage(payloadbytes),
 			Timestamp: time.Now(),
+		}
+
+		if receiverid == "@" {
+			message.Header.Category = int(CategoryBroadcast)
 		}
 
 		err := conn.WriteJSON(message)
@@ -156,6 +182,6 @@ func ReadFromConnection(conn *websocket.Conn, wg *sync.WaitGroup) {
 
 		var message string
 		json.Unmarshal(envelope.Data, &message)
-		fmt.Printf("%s - %s: %s\n", envelope.Timestamp.Format(time.DateTime), envelope.Header.SenderID, message)
+		fmt.Printf("%s - %s: %s\n", envelope.Timestamp.Format(time.DateTime), envelope.Header.SourceID, message)
 	}
 }

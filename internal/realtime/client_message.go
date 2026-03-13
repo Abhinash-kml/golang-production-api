@@ -6,9 +6,12 @@ import (
 )
 
 type MessageCategory int
+type MessageType int
+type ReceiptStatus int
 
 const (
 	CategoryMessage MessageCategory = iota + 1
+	CategoryBroadcast
 	CategoryNotification
 	CategorySystem
 )
@@ -20,19 +23,42 @@ const (
 	TypeMessageReact
 )
 
+const (
+	StatusSent ReceiptStatus = iota + 1
+	StatusDelivered
+	StatusRead
+)
+
 type Header struct {
-	SourceID      string `json:"src"`
-	SenderID      string `json:"sid"`
-	RecieverID    string `json:"rid"`
-	CorrelationID string `json:"cid"`
-	Category      int    `json:"cat"`
+	SourceID      string          `json:"src"`
+	SenderID      string          `json:"sid"` // Set by client
+	RecieverID    string          `json:"rid"` // Set by client
+	CorrelationID string          `json:"cid"` // Set by client
+	Category      MessageCategory `json:"cat"` // For server side routing & processing
+	Hops          int             `json:"hops"`
 }
 
 type Envelope struct {
 	Header    Header          `json:"header"`
-	Type      int             `json:"type"`
-	Data      json.RawMessage `json:"data"`
-	Timestamp time.Time       `json:"ts"`
+	Type      MessageType     `json:"type"` // For client side processing
+	Data      json.RawMessage `json:"data"` // Set by client
+	Timestamp time.Time       `json:"ts"`   // Set by client
+}
+
+func NewEnvelope(sourceid, senderid, receiverid, correlationid string, category MessageCategory, messagetype MessageType, data json.RawMessage, timestamp time.Time) Envelope {
+	return Envelope{
+		Header: Header{
+			SourceID:      sourceid,
+			SenderID:      senderid,
+			RecieverID:    receiverid,
+			CorrelationID: correlationid,
+			Category:      category,
+			Hops:          1,
+		},
+		Type:      messagetype,
+		Data:      data,
+		Timestamp: timestamp,
+	}
 }
 
 func (e *Envelope) MarshalBinary() ([]byte, error) {
@@ -63,4 +89,9 @@ type Notification struct {
 	Icon  int    `json:"icon"`
 	Level int    `json:"level"`
 	Body  int    `json:"body"`
+}
+
+type ReadReceipt struct {
+	CorrelationID string        `json:"cid"`
+	Status        ReceiptStatus `json:"status"`
 }

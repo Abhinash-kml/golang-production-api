@@ -72,6 +72,8 @@ func (c *Client) ReadIncoming() {
 
 	for {
 		message := new(Envelope)
+		message.Header.SourceID = c.uid
+
 		err := c.conn.ReadJSON(message)
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err,
