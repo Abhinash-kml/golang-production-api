@@ -18,11 +18,13 @@ const (
 	PubSubTypeRabbitMQ
 )
 
+const broadcastChannelString = "@"
+
 type Hub struct {
 	register   chan *Client
 	unregister chan *Client
-	send       chan *ClientMessage
-	broadcast  chan *ClientMessage
+	send       chan *Envelope
+	broadcast  chan *Envelope
 	subscribe  chan string
 
 	store      ISessionStore
@@ -41,8 +43,8 @@ func NewHub(store ISessionStore, pubsub IPubSub, pubsubtype int) *Hub {
 	hub := &Hub{
 		register:   make(chan *Client, 100),
 		unregister: make(chan *Client, 100),
-		send:       make(chan *ClientMessage, 100),
-		broadcast:  make(chan *ClientMessage, 100),
+		send:       make(chan *Envelope, 100),
+		broadcast:  make(chan *Envelope, 100),
 		subscribe:  make(chan string, 100),
 		store:      store,
 		pubsub:     pubsub,
@@ -62,29 +64,37 @@ func (h *Hub) Initialize() {
 }
 
 func (h *Hub) Register(client *Client) {
-	zap.L().Debug("Websocket client connected", zap.String("uid", client.uid))
 	h.register <- client
 }
 
 func (h *Hub) Unregister(client *Client) {
-	zap.L().Debug("Websocket client disconnected", zap.String("uid", client.uid))
 	h.unregister <- client
 }
 
+func (h *Hub) Subscribe(uid string) {
+	h.subscribe <- uid
+}
+
+func (h *Hub) Broadcast(message *Envelope) {
+	h.broadcast <- message
+}
+
+func (h *Hub) Stop() {
+	h.cancel()
+}
+
 func (h *Hub) Run() {
-	// go h.ListenToSubscriptions()
+	// Subscribe to special uid - @, for internode broadcast message
+	h.Subscribe(broadcastChannelString)
 
 	for {
 		select {
 		case client := <-h.register:
-			h.store.Add(client.uid, client)
+			h.HandleRegistration(client)
 		case client := <-h.unregister:
-			close(client.send)
-			h.store.Remove(client.uid)
+			h.HandleUnregistration(client)
 		case broadcastMessage := <-h.broadcast:
-			h.store.ForEach(func(client *Client) {
-				client.send <- broadcastMessage
-			})
+			h.HandleBroadcast(broadcastMessage)
 		case message := <-h.send: // TODO: Use worker pool here
 			h.HandleClientMessages(message)
 		case subscription := <-h.subscribe:
@@ -93,22 +103,48 @@ func (h *Hub) Run() {
 	}
 }
 
-func (h *Hub) HandleClientMessages(message *ClientMessage) {
-	zap.L().Info("Websocket Message", zap.String("from", message.SenderID), zap.String("to", message.ReceiverID), zap.String("payload", message.Payload))
+func (h *Hub) HandleRegistration(c *Client) {
+	h.store.Add(c.uid, c)
+	zap.L().Debug("Websocket client connected", zap.String("uid", c.uid))
+}
+
+func (h *Hub) HandleUnregistration(c *Client) {
+	close(c.send)
+	h.store.Remove(c.uid)
+	zap.L().Debug("Websocket client disconnected", zap.String("uid", c.uid))
+}
+
+func (h *Hub) HandleClientMessages(message *Envelope) {
+	zap.L().Debug("Websocket Message", zap.String("from", message.Header.SenderID), zap.String("to", message.Header.RecieverID), zap.String("payload", string(message.Data)))
+
+	// If the message is broadcast then send it to broadcast channel
+	if message.Header.RecieverID == broadcastChannelString {
+		h.broadcast <- message
+		return
+	}
 
 	// If reciever is present locally on this node send directly
-	if user := h.store.Get(message.ReceiverID); user != nil {
+	if user := h.store.Get(message.Header.RecieverID); user != nil {
 		user.send <- message
 		return
 	}
 
 	// Else
 	// Publish to Pub Sub so other nodes can handle from there
-	h.pubsub.Publish(message.ReceiverID, message)
+	h.pubsub.Publish(message.Header.RecieverID, message)
 }
 
-func (h *Hub) Subscribe(uid string) {
-	h.subscribe <- uid
+func (h *Hub) HandleBroadcast(message *Envelope) {
+	// Send to local clients
+	h.store.ForEach(func(c *Client) {
+		c.send <- message
+	})
+
+	// Send to pub-sub broadcast channel
+	err := h.pubsub.Publish(broadcastChannelString, message)
+	if err != nil {
+		zap.L().Info("PubSub broadcast failed", zap.Error(err))
+	}
 }
 
 func (h *Hub) HandleSubscribtionRequests(subscription string) {
@@ -133,13 +169,13 @@ func (h *Hub) ListenToSubscriptions() {
 			fmt.Println(msg)
 
 			if redisMsg, ok := msg.(*redis.Message); ok {
-				internal := new(ClientMessage)
+				internal := new(Envelope)
 				if err := json.Unmarshal([]byte(redisMsg.Payload), internal); err != nil {
 					zap.L().Error("Unmarshal failed", zap.Error(err))
 					continue
 				}
 
-				zap.L().Debug("Redis channel message", zap.String("from", internal.SenderID), zap.String("to", internal.ReceiverID), zap.String("payload", internal.Payload))
+				zap.L().Debug("Redis channel message", zap.String("from", internal.Header.SenderID), zap.String("to", internal.Header.RecieverID), zap.String("payload", string(internal.Data)))
 
 				// --- NON-BLOCKING SEND START ---
 				select {
@@ -155,12 +191,4 @@ func (h *Hub) ListenToSubscriptions() {
 			}
 		}
 	}
-}
-
-func (h *Hub) Broadcast(message *ClientMessage) {
-	h.broadcast <- message
-}
-
-func (h *Hub) Stop() {
-	h.cancel()
 }

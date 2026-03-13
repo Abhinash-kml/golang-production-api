@@ -33,7 +33,7 @@ type ConnectionStats struct {
 type Client struct {
 	uid   string
 	conn  *websocket.Conn
-	send  chan *ClientMessage
+	send  chan *Envelope
 	hub   *Hub
 	stats ConnectionStats
 }
@@ -42,7 +42,7 @@ func NewClient(uid string, conn *websocket.Conn, hub *Hub) *Client {
 	return &Client{
 		uid:  uid,
 		conn: conn,
-		send: make(chan *ClientMessage, 100),
+		send: make(chan *Envelope, 100),
 		hub:  hub,
 		stats: ConnectionStats{
 			ConnectedAt: time.Now(),
@@ -71,7 +71,7 @@ func (c *Client) ReadIncoming() {
 	})
 
 	for {
-		message := new(ClientMessage)
+		message := new(Envelope)
 		err := c.conn.ReadJSON(message)
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err,
@@ -101,7 +101,7 @@ func (c *Client) WriteOutgoing() {
 			}
 
 			c.conn.SetWriteDeadline(time.Now().Add(WriteWait)) // Failing to set this will make the connection currupt
-			zap.L().Debug("Client message", zap.String("connection uid", c.uid), zap.String("payload", message.Payload))
+			zap.L().Debug("Client message", zap.String("connection uid", c.uid), zap.String("payload", string(message.Data)))
 
 			// Get a writer for next message
 			writer, err := c.conn.NextWriter(websocket.TextMessage)

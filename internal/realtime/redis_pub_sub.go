@@ -25,7 +25,7 @@ func (r *RedisPubSub) Initialize() error {
 }
 
 // TODO: Check for failed publish
-func (r *RedisPubSub) Publish(channel string, messsage *ClientMessage) error {
+func (r *RedisPubSub) Publish(channel string, messsage *Envelope) error {
 	ctx := context.Background()
 	r.rdb.Publish(ctx, channel, messsage)
 	return nil

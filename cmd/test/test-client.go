@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -13,10 +14,64 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-type ClientMessage struct {
-	SenderID   string `json:"senderid"`
-	ReceiverID string `json:"receiverid"`
-	Payload    string `json:"payload"`
+type MessageCategory int
+
+const (
+	CategoryMessage MessageCategory = iota + 1
+	CategoryNotification
+	CategorySystem
+)
+
+const (
+	TypeMessage = iota + 1
+	TypeMessageReply
+	TypeMessageFwd
+	TypeMessageReact
+)
+
+type Header struct {
+	SourceID      string `json:"src"`
+	SenderID      string `json:"sid"`
+	RecieverID    string `json:"rid"`
+	CorrelationID string `json:"cid"`
+	Category      int    `json:"cat"`
+}
+
+type Envelope struct {
+	Header    Header          `json:"header"`
+	Type      int             `json:"type"`
+	Data      json.RawMessage `json:"data"`
+	Timestamp time.Time       `json:"ts"`
+}
+
+func (e *Envelope) MarshalBinary() ([]byte, error) {
+	return json.Marshal(e)
+}
+
+func (e *Envelope) UnmarshalBinary(data []byte) error {
+	return json.Unmarshal(data, e)
+}
+
+type ChatMessage struct {
+	Body string `json:"body"`
+}
+
+type MessageReply struct {
+	Body     string `json:"body"`
+	ParentID string `json:"ref_id"`
+}
+
+type MessageForward struct {
+	OriginID string `json:"org_id"`
+	ParentID string `json:"ref_id"`
+	Body     string `json:"body"`
+}
+
+type Notification struct {
+	Title string `json:"title"`
+	Icon  int    `json:"icon"`
+	Level int    `json:"level"`
+	Body  int    `json:"body"`
 }
 
 func main() {
@@ -69,10 +124,17 @@ func ReadFromStdIn(conn *websocket.Conn, wg *sync.WaitGroup, senderid string) {
 		parts := strings.Split(input, ":") // Format = receiverid: Payload. Example - 111: Hi bye
 		receiverid := parts[0]
 		payload := parts[1]
-		message := ClientMessage{
-			SenderID:   senderid,
-			ReceiverID: receiverid,
-			Payload:    payload,
+		payloadbytes, _ := json.Marshal(payload)
+		message := Envelope{
+			Header: Header{
+				SenderID:      senderid,
+				RecieverID:    receiverid,
+				CorrelationID: "aaaaaa",
+				Category:      int(CategoryMessage),
+			},
+			Type:      TypeMessage,
+			Data:      json.RawMessage(payloadbytes),
+			Timestamp: time.Now(),
 		}
 
 		err := conn.WriteJSON(message)
@@ -86,12 +148,14 @@ func ReadFromConnection(conn *websocket.Conn, wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	for {
-		var message ClientMessage
-		err := conn.ReadJSON(&message)
+		var envelope Envelope
+		err := conn.ReadJSON(&envelope)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		fmt.Printf("%s: %s\n", message.SenderID, message.Payload)
+		var message string
+		json.Unmarshal(envelope.Data, &message)
+		fmt.Printf("%s - %s: %s\n", envelope.Timestamp.Format(time.DateTime), envelope.Header.SenderID, message)
 	}
 }
