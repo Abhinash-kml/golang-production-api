@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"context"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -12,6 +13,7 @@ import (
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
 	service "github.com/abhinash-kml/go-api-server/internal/services"
+	oteltracer "go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 )
 
@@ -31,18 +33,23 @@ type UsersController struct {
 	commentservice service.CommentService
 
 	logger *zap.Logger
+	tracer oteltracer.Tracer
 }
 
-func NewUsersController(userService service.UserService, postService service.PostsService, commentService service.CommentService, logger *zap.Logger) *UsersController {
+func NewUsersController(userService service.UserService, postService service.PostsService, commentService service.CommentService, logger *zap.Logger, tracer oteltracer.Tracer) *UsersController {
 	return &UsersController{
 		userservice:    userService,
 		postservice:    postService,
 		commentservice: commentService,
 		logger:         logger,
+		tracer:         tracer,
 	}
 }
 
 func (c *UsersController) GetUsers(w http.ResponseWriter, r *http.Request) {
+	_, span := c.tracer.Start(context.Background(), "GetUsers.Controller")
+	defer span.End()
+
 	cursor := r.URL.Query().Get("cursor")
 	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
 	if err != nil {

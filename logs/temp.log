@@ -491,3 +491,16 @@
 {"level":"debug","ts":"2026-03-14T05:24:58.401+0530","caller":"realtime/hub.go:206","msg":"Dropped broadcast echo","messsageID":"019ce99f-eddd-725c-b534-d6fe2f66a3a3"}
 {"level":"debug","ts":"2026-03-14T05:25:04.061+0530","caller":"realtime/hub.go:127","msg":"Websocket client disconnected","uid":"2"}
 {"level":"debug","ts":"2026-03-14T05:25:05.541+0530","caller":"realtime/hub.go:127","msg":"Websocket client disconnected","uid":"1"}
+{"level":"info","ts":"2026-03-15T02:53:34.562+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-15T02:53:36.620+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":"}
+{"level":"info","ts":"2026-03-15T02:55:38.017+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-15T02:55:40.019+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":"}
+{"level":"info","ts":"2026-03-15T02:57:10.450+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-15T02:57:12.452+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":"}
+{"level":"info","ts":"2026-03-15T02:58:03.522+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-15T02:58:05.525+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-15T02:59:08.799+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:52734","Method":"GET","Path":"GET /login"}
+{"level":"debug","ts":"2026-03-15T02:59:08.800+0530","caller":"servers/http.go:190","msg":"Access Token","Duration":10}
+{"level":"debug","ts":"2026-03-15T02:59:08.800+0530","caller":"servers/http.go:191","msg":"Refresh Token","Duration":10080}
+{"level":"debug","ts":"2026-03-15T02:59:08.800+0530","caller":"servers/http.go:227","msg":"Auth Response","Info":"{AccessToken:eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJteS1hcHAiLCJzdWIiOiIxMjMiLCJhdWQiOlsid3d3Lm15YXBwLmNvbSJdLCJleHAiOjE3NzM1MjQzNDgsIm5iZiI6MTc3MzUyMzc0OCwiaWF0IjoxNzczNTIzNzQ4LCJqdGkiOiJ0ZXN0aWQifQ.o4d5qGbp5F0GLzBXqlrp0FGyYrnUBnGd1pK7wKG2WvW5bGMqhMNHGWiFW42qfLT9ArmrbPzBKOvB-ZG04st2Iw TokenType:Bearer ExpiresIn:10 RefreshToken:eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJteS1hcHAiLCJzdWIiOiIxMjMiLCJhdWQiOlsid3d3Lm15YXBwLmNvbSJdLCJleHAiOjE3NzQxMjg1NDgsIm5iZiI6MTc3MzUyMzc0OCwiaWF0IjoxNzczNTIzNzQ4LCJqdGkiOiJ0ZXN0aWQifQ.6tnEekVAC8sPyFWNmNGeWk4emIJ6y8R1OhGv-az_0_tBbSg0PeUPisDthMGrjH_XIUD6X0DmOAL8h-m2CPPtyg Scope:null}"}
+{"level":"info","ts":"2026-03-15T03:00:03.931+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:50128","Method":"GET","Path":"GET /users"}

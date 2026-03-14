@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"log"
@@ -12,14 +14,15 @@ import (
 	"github.com/abhinash-kml/go-api-server/config"
 	"github.com/abhinash-kml/go-api-server/internal/connections"
 	controller "github.com/abhinash-kml/go-api-server/internal/controllers"
+	"github.com/abhinash-kml/go-api-server/internal/observability"
 	"github.com/abhinash-kml/go-api-server/internal/realtime"
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
 	"github.com/abhinash-kml/go-api-server/internal/servers"
 	service "github.com/abhinash-kml/go-api-server/internal/services"
-	"github.com/golang-migrate/migrate"
 	_ "github.com/golang-migrate/migrate/database/postgres"
 	_ "github.com/golang-migrate/migrate/source/file"
 	"github.com/redis/go-redis/v9"
+	"go.opentelemetry.io/otel"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -52,9 +55,25 @@ func main() {
 	zap.ReplaceGlobals(logger)
 	defer logger.Sync()
 
+	// Set up OpenTelemetry.
+	otelShutdown, err := observability.SetupOTelSDK(context.Background())
+	if err != nil {
+		logger.Fatal("Failed setting up observability", zap.Error(err))
+	}
+
+	// Handle shutdown properly so nothing leaks.
+	defer func() {
+		err = errors.Join(err, otelShutdown(context.Background()))
+	}()
+
+	// Create tracers per domain
+	usersTracer := otel.Tracer("users")
+	postsTracer := otel.Tracer("posts")
+	commentsTracer := otel.Tracer("comments")
+
 	// Connections
-	postgresdsn := "postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"
-	postgresConnection := connections.NewPostgresConnection(postgresdsn)
+	// postgresdsn := "postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"
+	// postgresConnection := connections.NewPostgresConnection(postgresdsn)
 	redisConnection := connections.NewRedisConnection(&redis.Options{
 		Addr:     "localhost:6379",
 		DB:       0,
@@ -64,44 +83,45 @@ func main() {
 	// Migrations
 	migrateFlag := flag.String("migrate", "none", "Usage: up, down, none (default)")
 	flag.Parse()
-	m, err := migrate.New(
-		"file://db/migrations",
-		postgresdsn,
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
+	fmt.Println(migrateFlag) // Dummy
+	// m, err := migrate.New(
+	// 	"file://db/migrations",
+	// 	postgresdsn,
+	// )
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	// Perform schema migration as per action
-	switch *migrateFlag {
-	case "up":
-		if err := m.Up(); err != nil {
-			logger.Fatal("Migrate up failed", zap.Error(err))
-		}
-	case "down":
-		if err := m.Down(); err != nil {
-			logger.Fatal("Migrate down failed", zap.Error(err))
-		}
-	case "none": // Default case do nothing
-	}
+	// // Perform schema migration as per action
+	// switch *migrateFlag {
+	// case "up":
+	// 	if err := m.Up(); err != nil {
+	// 		logger.Fatal("Migrate up failed", zap.Error(err))
+	// 	}
+	// case "down":
+	// 	if err := m.Down(); err != nil {
+	// 		logger.Fatal("Migrate down failed", zap.Error(err))
+	// 	}
+	// case "none": // Default case do nothing
+	// }
 
 	// Repository
-	userrepository := repository.NewPostgresUserRepository(postgresConnection)
+	userrepository := repository.NewInMemoryUsersRepository(usersTracer)
 	userrepository.Setup()
-	postsrepository := repository.NewPostgresPostRepository(postgresConnection)
+	postsrepository := repository.NewInMemoryPostsRepository(postsTracer)
 	postsrepository.Setup()
-	commentrepository := repository.NewPostgresCommentRepository(postgresConnection)
+	commentrepository := repository.NewInMemoryCommentsRepository(commentsTracer)
 	commentrepository.Setup()
 
 	// Service
-	userservice := service.NewLocalUserService(userrepository, redisConnection)
-	postsservice := service.NewLocalPostsService(postsrepository, redisConnection)
-	commentservice := service.NewLocalCommentService(commentrepository, redisConnection)
+	userservice := service.NewLocalUserService(userrepository, redisConnection, usersTracer)
+	postsservice := service.NewLocalPostsService(postsrepository, redisConnection, postsTracer)
+	commentservice := service.NewLocalCommentService(commentrepository, redisConnection, commentsTracer)
 
 	// Controllers
-	usercontroller := controller.NewUsersController(userservice, postsservice, commentservice, logger)
-	postscontroller := controller.NewPostsController(userservice, postsservice, commentservice, logger)
-	commentscontroller := controller.NewCommentsController(userservice, postsservice, commentservice, logger)
+	usercontroller := controller.NewUsersController(userservice, postsservice, commentservice, logger, usersTracer)
+	postscontroller := controller.NewPostsController(userservice, postsservice, commentservice, logger, postsTracer)
+	commentscontroller := controller.NewCommentsController(userservice, postsservice, commentservice, logger, commentsTracer)
 
 	// Session store
 	sessionstore := realtime.NewInMemorySessionStore()

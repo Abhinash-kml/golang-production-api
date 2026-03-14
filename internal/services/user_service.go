@@ -10,6 +10,7 @@ import (
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
 	"github.com/redis/go-redis/v9"
+	oteltracer "go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 )
 
@@ -26,14 +27,16 @@ type UserService interface {
 }
 
 type LocalUserService struct {
-	repo  repository.UserRepository
-	cache *redis.Client
+	repo   repository.UserRepository
+	cache  *redis.Client
+	tracer oteltracer.Tracer
 }
 
-func NewLocalUserService(repository repository.UserRepository, conn *connections.RedisConnection) *LocalUserService {
+func NewLocalUserService(repository repository.UserRepository, conn *connections.RedisConnection, tracer oteltracer.Tracer) *LocalUserService {
 	return &LocalUserService{
-		repo:  repository,
-		cache: conn.Client,
+		repo:   repository,
+		cache:  conn.Client,
+		tracer: tracer,
 	}
 }
 

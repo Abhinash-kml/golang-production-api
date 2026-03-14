@@ -5,14 +5,16 @@ import (
 
 	"github.com/abhinash-kml/go-api-server/internal/connections"
 	model "github.com/abhinash-kml/go-api-server/internal/models"
+	oteltracer "go.opentelemetry.io/otel/trace"
 )
 
 type PostgresPostRepository struct {
-	db *sql.DB
+	db     *sql.DB
+	tracer oteltracer.Tracer
 }
 
-func NewPostgresPostRepository(connection *connections.PostgresConnection) *PostgresPostRepository {
-	return &PostgresPostRepository{db: connection.DB}
+func NewPostgresPostRepository(connection *connections.PostgresConnection, tracer oteltracer.Tracer) *PostgresPostRepository {
+	return &PostgresPostRepository{db: connection.DB, tracer: tracer}
 }
 
 func (r *PostgresPostRepository) Setup() error {

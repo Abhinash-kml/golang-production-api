@@ -10,6 +10,7 @@ import (
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
 	"github.com/redis/go-redis/v9"
+	oteltracer "go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 )
 
@@ -23,14 +24,16 @@ type CommentService interface {
 }
 
 type LocalCommentService struct {
-	repo  repository.CommentRepository
-	cache *redis.Client
+	repo   repository.CommentRepository
+	cache  *redis.Client
+	tracer oteltracer.Tracer
 }
 
-func NewLocalCommentService(repository repository.CommentRepository, conn *connections.RedisConnection) *LocalCommentService {
+func NewLocalCommentService(repository repository.CommentRepository, conn *connections.RedisConnection, tracer oteltracer.Tracer) *LocalCommentService {
 	return &LocalCommentService{
-		repo:  repository,
-		cache: conn.Client,
+		repo:   repository,
+		cache:  conn.Client,
+		tracer: tracer,
 	}
 }
 

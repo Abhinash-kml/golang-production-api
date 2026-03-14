@@ -9,6 +9,7 @@ import (
 	"slices"
 
 	model "github.com/abhinash-kml/go-api-server/internal/models"
+	oteltracer "go.opentelemetry.io/otel/trace"
 )
 
 var ErrNoPosts = errors.New("No posts in repository")
@@ -26,11 +27,12 @@ type PostsRepository interface {
 }
 
 type InMemoryPostsRepository struct {
-	posts []model.Post
+	posts  []model.Post
+	tracer oteltracer.Tracer
 }
 
-func NewInMemoryPostsRepository() *InMemoryPostsRepository {
-	return &InMemoryPostsRepository{}
+func NewInMemoryPostsRepository(tracer oteltracer.Tracer) *InMemoryPostsRepository {
+	return &InMemoryPostsRepository{tracer: tracer}
 }
 
 func (e *InMemoryPostsRepository) Setup() error {

@@ -9,6 +9,7 @@ import (
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
 	service "github.com/abhinash-kml/go-api-server/internal/services"
+	oteltracer "go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 )
 
@@ -17,14 +18,16 @@ type PostsController struct {
 	postservice    service.PostsService
 	commentservice service.CommentService
 	logger         *zap.Logger
+	tracer         oteltracer.Tracer
 }
 
-func NewPostsController(userService service.UserService, postService service.PostsService, commentService service.CommentService, logger *zap.Logger) *PostsController {
+func NewPostsController(userService service.UserService, postService service.PostsService, commentService service.CommentService, logger *zap.Logger, tracer oteltracer.Tracer) *PostsController {
 	return &PostsController{
 		userservice:    userService,
 		postservice:    postService,
 		commentservice: commentService,
 		logger:         logger,
+		tracer:         tracer,
 	}
 }
 

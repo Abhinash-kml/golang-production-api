@@ -6,15 +6,17 @@ import (
 	"github.com/abhinash-kml/go-api-server/internal/connections"
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	_ "github.com/lib/pq"
+	oteltracer "go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 )
 
 type PostgresUserRepository struct {
-	db *sql.DB
+	db     *sql.DB
+	tracer oteltracer.Tracer
 }
 
-func NewPostgresUserRepository(connection *connections.PostgresConnection) *PostgresUserRepository {
-	return &PostgresUserRepository{db: connection.DB}
+func NewPostgresUserRepository(connection *connections.PostgresConnection, tracer oteltracer.Tracer) *PostgresUserRepository {
+	return &PostgresUserRepository{db: connection.DB, tracer: tracer}
 }
 
 func (r *PostgresUserRepository) Setup() error {

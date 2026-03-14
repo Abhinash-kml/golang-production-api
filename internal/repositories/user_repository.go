@@ -9,6 +9,7 @@ import (
 	"slices"
 
 	model "github.com/abhinash-kml/go-api-server/internal/models"
+	oteltracer "go.opentelemetry.io/otel/trace"
 )
 
 var (
@@ -34,11 +35,12 @@ type UserRepository interface {
 }
 
 type InMemoryUsersRepository struct {
-	users []model.User
+	users  []model.User
+	tracer oteltracer.Tracer
 }
 
-func NewInMemoryUsersRepository() *InMemoryUsersRepository {
-	return &InMemoryUsersRepository{}
+func NewInMemoryUsersRepository(tracer oteltracer.Tracer) *InMemoryUsersRepository {
+	return &InMemoryUsersRepository{tracer: tracer}
 }
 
 func (e *InMemoryUsersRepository) Setup() error {
