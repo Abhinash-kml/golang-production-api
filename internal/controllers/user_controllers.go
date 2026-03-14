@@ -15,6 +15,16 @@ import (
 	"go.uber.org/zap"
 )
 
+type ProblemType int
+
+const (
+	ProblemNotFound ProblemType = iota
+	ProblemValidationError
+	ProblemError
+	ProblemForbidden
+	ProblemUnauthorized
+)
+
 type UsersController struct {
 	userservice    service.UserService
 	postservice    service.PostsService
@@ -36,7 +46,7 @@ func (c *UsersController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	cursor := r.URL.Query().Get("cursor")
 	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
 	if err != nil {
-		SendProblemDetails(w, "ValidationError", []model.ProblemDetailsError{
+		SendProblemDetails(w, ProblemValidationError, []model.ProblemDetailsError{
 			{
 				Field:   "limit",
 				Message: "Provided limit cannot be converted to internal representation",
@@ -46,7 +56,7 @@ func (c *UsersController) GetUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if limit < 1 || limit > 10 {
-		SendProblemDetails(w, "ValidationError", []model.ProblemDetailsError{
+		SendProblemDetails(w, ProblemValidationError, []model.ProblemDetailsError{
 			{
 				Field:   "limit",
 				Message: "Provided limit is out of range. Valid: 1-10",
@@ -67,7 +77,7 @@ func (c *UsersController) GetById(w http.ResponseWriter, r *http.Request) {
 	idString := r.PathValue("id")
 	id, err := strconv.Atoi(idString)
 	if err != nil {
-		SendProblemDetails(w, "ValidationError", []model.ProblemDetailsError{
+		SendProblemDetails(w, ProblemValidationError, []model.ProblemDetailsError{
 			{
 				Field:   "id",
 				Message: "Provided id is malformed",
@@ -80,7 +90,7 @@ func (c *UsersController) GetById(w http.ResponseWriter, r *http.Request) {
 	user, err := c.userservice.GetById(id)
 	if err != nil {
 		if errors.Is(err, repository.ErrNoRecord) {
-			SendProblemDetails(w, "NotFound", nil, r.URL.String())
+			SendProblemDetails(w, ProblemNotFound, nil, r.URL.String())
 			return
 		}
 	}
@@ -107,7 +117,7 @@ func (c *UsersController) PostUser(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&user)
 	err := c.userservice.InsertUser(user)
 	if err != nil {
-		SendProblemDetails(w, "Error", nil, r.URL.String())
+		SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		return
 	}
 
@@ -122,7 +132,7 @@ func (c *UsersController) PatchUser(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&patch)
 	err := c.userservice.UpdateUser(patch.Id, patch)
 	if err != nil {
-		SendProblemDetails(w, "Error", nil, r.URL.String())
+		SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		return
 	}
 
@@ -145,7 +155,7 @@ func (c *UsersController) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&deleteuser)
 	err := c.userservice.DeleteUser(deleteuser.Id)
 	if err != nil {
-		SendProblemDetails(w, "NotFound", nil, r.URL.String())
+		SendProblemDetails(w, ProblemNotFound, nil, r.URL.String())
 		return
 	}
 
@@ -232,25 +242,25 @@ func Paginate[T any](data []T, currentCursorstring string, limit int, route, bas
 	return response
 }
 
-func SendProblemDetails(w http.ResponseWriter, problemType string, errors []model.ProblemDetailsError, route string) {
-	switch problemType {
-	case "NotFound":
+func SendProblemDetails(w http.ResponseWriter, ptype ProblemType, errors []model.ProblemDetailsError, route string) {
+	switch ptype {
+	case ProblemNotFound:
 		{
 			SendProblemDetailsCustom(w, "https://api.example.com/docs/error-not-found", "Resource not found", "The requested resource was not found", route, errors, http.StatusNotFound)
 		}
-	case "ValidationError":
+	case ProblemValidationError:
 		{
 			SendProblemDetailsCustom(w, "https://api.example.com/docs/malformed-parameter", "Validation error", "There's validation error", route, errors, http.StatusBadRequest)
 		}
-	case "Error":
+	case ProblemError:
 		{
 			SendProblemDetailsCustom(w, "https://api.example.com/docs/internal-error", "Internal error", "The requested operation failed due to internal server error", route, errors, http.StatusInternalServerError)
 		}
-	case "Forbidden":
+	case ProblemForbidden:
 		{
 			SendProblemDetailsCustom(w, "https://api.example.com/docs/forbidden", "Access denied", "Access to requested resource denied", route, errors, http.StatusForbidden)
 		}
-	case "Unauthorised":
+	case ProblemUnauthorized:
 		{
 			SendProblemDetailsCustom(w, "https://api.example.com/docs/unauthorized", "Unauthorized", "Authorization is required", route, errors, http.StatusUnauthorized)
 		}

@@ -32,7 +32,7 @@ func (c *PostsController) GetPosts(w http.ResponseWriter, r *http.Request) {
 	cursor := r.URL.Query().Get("cursor")
 	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
 	if err != nil {
-		SendProblemDetails(w, "ValidationError", []model.ProblemDetailsError{
+		SendProblemDetails(w, ProblemValidationError, []model.ProblemDetailsError{
 			{
 				Field:   "limit",
 				Message: "Provided limit cannot be converted to internal representation",
@@ -42,7 +42,7 @@ func (c *PostsController) GetPosts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if limit < 1 || limit > 100 {
-		SendProblemDetails(w, "ValidationError", []model.ProblemDetailsError{
+		SendProblemDetails(w, ProblemValidationError, []model.ProblemDetailsError{
 			{
 				Field:   "limit",
 				Message: "Provided limit is out of range. Valid: 1-10",
@@ -63,7 +63,7 @@ func (c *PostsController) GetById(w http.ResponseWriter, r *http.Request) {
 	idString := r.PathValue("id")
 	id, err := strconv.Atoi(idString)
 	if err != nil {
-		SendProblemDetails(w, "ValidationError", []model.ProblemDetailsError{
+		SendProblemDetails(w, ProblemValidationError, []model.ProblemDetailsError{
 			{
 				Field:   "id",
 				Message: "Provided id is malformed",
@@ -76,7 +76,7 @@ func (c *PostsController) GetById(w http.ResponseWriter, r *http.Request) {
 	post, err := c.postservice.GetById(id)
 	if err != nil {
 		if errors.Is(err, repository.ErrNoRecord) {
-			SendProblemDetails(w, "NotFound", nil, r.URL.String())
+			SendProblemDetails(w, ProblemNotFound, nil, r.URL.String())
 			return
 		}
 	}
@@ -89,7 +89,7 @@ func (c *PostsController) GetCommentsOfPost(w http.ResponseWriter, r *http.Reque
 	postIdString := r.PathValue("id")
 	postId, err := strconv.Atoi(postIdString)
 	if err != nil {
-		SendProblemDetails(w, "ValidationError", []model.ProblemDetailsError{
+		SendProblemDetails(w, ProblemValidationError, []model.ProblemDetailsError{
 			{
 				Field:   "id",
 				Message: "Provided id is malformed",
@@ -109,7 +109,7 @@ func (c *PostsController) PostPost(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&incoming)
 	err := c.postservice.InsertPost(incoming)
 	if err != nil {
-		SendProblemDetails(w, "Error", nil, r.URL.String())
+		SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		return
 	}
 
@@ -121,7 +121,7 @@ func (c *PostsController) PutPost(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&incoming)
 	err := c.postservice.UpdatePost(incoming.Id, incoming)
 	if err != nil {
-		SendProblemDetails(w, "Error", nil, r.URL.String())
+		SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		return
 	}
 
@@ -133,7 +133,7 @@ func (c *PostsController) PatchPost(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&incoming)
 	err := c.postservice.UpdatePost(incoming.Id, incoming)
 	if err != nil {
-		SendProblemDetails(w, "Error", nil, r.URL.String())
+		SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		return
 	}
 
@@ -146,7 +146,7 @@ func (c *PostsController) DeletePost(w http.ResponseWriter, r *http.Request) {
 	err := c.postservice.DeletePost(incoming.Id)
 	if err != nil {
 		if errors.Is(err, repository.ErrNoRecord) {
-			SendProblemDetails(w, "NotFound", nil, r.URL.String())
+			SendProblemDetails(w, ProblemNotFound, nil, r.URL.String())
 			return
 		}
 	}
