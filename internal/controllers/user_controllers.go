@@ -102,10 +102,20 @@ func (c *UsersController) GetPostsOfUser(w http.ResponseWriter, r *http.Request)
 	userString := r.PathValue("id")
 	userId, err := strconv.Atoi(userString)
 	if err != nil {
-		http.Error(w, "Malformed id string", http.StatusBadRequest)
+		SendProblemDetails(w, ProblemValidationError, []model.ProblemDetailsError{
+			{
+				Field:   "id",
+				Message: "Provided id string is malformed",
+				Code:    "PARAMTER_MALFORMED",
+			},
+		}, r.URL.String())
 	}
 
 	postResponse, err := c.postservice.GetPostsOfUser(userId)
+	if err != nil {
+		SendProblemDetails(w, ProblemError, nil, r.URL.String())
+		return
+	}
 	paginatedResponse := Paginate(postResponse, "", 10, "users", "http://localhost:9000")
 	json.NewEncoder(w).Encode(paginatedResponse)
 }

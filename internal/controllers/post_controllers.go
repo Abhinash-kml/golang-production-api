@@ -100,6 +100,10 @@ func (c *PostsController) GetCommentsOfPost(w http.ResponseWriter, r *http.Reque
 	}
 
 	commentResponse, err := c.commentservice.GetCommentsOfPost(postId)
+	if err != nil {
+		SendProblemDetails(w, ProblemError, nil, r.URL.String())
+		return
+	}
 	paginatedResponse := Paginate(commentResponse, "", 10, "users", "http://localhost:9000")
 	json.NewEncoder(w).Encode(paginatedResponse)
 }
