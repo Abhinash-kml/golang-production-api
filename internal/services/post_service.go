@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"fmt"
 
@@ -36,7 +37,7 @@ func NewLocalPostsService(repository repository.PostsRepository, conn *connectio
 func (s *LocalPostsService) GetPosts() ([]model.PostResponseDTO, error) {
 	posts, err := s.repo.GetPosts()
 	if err != nil {
-		if errors.Is(err, repository.ErrNoPosts) {
+		if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrOpFailed
 		}
 	}
@@ -57,7 +58,9 @@ func (s *LocalPostsService) GetById(id int) (*model.PostResponseDTO, error) {
 
 		post, err = s.repo.GetById(id) // Get from db in case of cache miss
 		if err != nil {
-			return nil, err
+			if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
+				return nil, ErrOpFailed
+			}
 		}
 		go s.addToCache(post) // Add to cache on a separate goroutine asynchronously
 	}
@@ -69,7 +72,9 @@ func (s *LocalPostsService) GetById(id int) (*model.PostResponseDTO, error) {
 func (s *LocalPostsService) GetPostsOfUser(id int) ([]model.PostResponseDTO, error) {
 	posts, err := s.repo.GetPostsOfUser(id)
 	if err != nil {
-		return nil, err
+		if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrOpFailed
+		}
 	}
 
 	dtos := make([]model.PostResponseDTO, len(posts))

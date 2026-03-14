@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"fmt"
 
@@ -36,7 +37,9 @@ func NewLocalCommentService(repository repository.CommentRepository, conn *conne
 func (s *LocalCommentService) GetComments() ([]model.CommentResponseDTO, error) {
 	comments, err := s.repo.GetComments()
 	if err != nil {
-		return nil, ErrOpFailed
+		if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrOpFailed
+		}
 	}
 
 	dtos := make([]model.CommentResponseDTO, len(comments))
@@ -55,7 +58,9 @@ func (s *LocalCommentService) GetById(id int) (*model.CommentResponseDTO, error)
 
 		comment, err = s.repo.GetById(id)
 		if err != nil {
-			return nil, err
+			if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
+				return nil, ErrOpFailed
+			}
 		}
 		go s.addToCache(comment) // Add to cache on a separate goroutine asynchronously
 	}
@@ -67,7 +72,9 @@ func (s *LocalCommentService) GetById(id int) (*model.CommentResponseDTO, error)
 func (s *LocalCommentService) GetCommentsOfPost(id int) ([]model.CommentResponseDTO, error) {
 	comments, err := s.repo.GetCommentsOfPost(id)
 	if err != nil {
-		return nil, err
+		if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrOpFailed
+		}
 	}
 
 	dtos := make([]model.CommentResponseDTO, len(comments))

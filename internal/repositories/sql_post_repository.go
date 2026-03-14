@@ -23,7 +23,7 @@ func (r *PostgresPostRepository) GetPosts() ([]model.Post, error) {
 	query := `SELECT * FROM posts;`
 	rows, err := r.db.Query(query)
 	if err != nil {
-		return nil, ErrNoRecord
+		return nil, err
 	}
 	defer rows.Close()
 
@@ -42,7 +42,7 @@ func (r *PostgresPostRepository) GetById(id int) (*model.Post, error) {
 	query := `SELECT * FROM posts WHERE id = $1;`
 	var post model.Post
 	if err := r.db.QueryRow(query, id).Scan(&post.Id, &post.Title, &post.Body, &post.AuthorID, &post.CreatedAt, &post.Likes); err != nil {
-		return nil, ErrNoRecord
+		return nil, err
 	}
 
 	return &post, nil
@@ -52,7 +52,7 @@ func (r *PostgresPostRepository) GetPostsOfUser(id int) ([]model.Post, error) {
 	query := `SELECT * FROM posts WHERE creatorid = $1;`
 	rows, err := r.db.Query(query, id)
 	if err != nil {
-		return nil, ErrNoRecord
+		return nil, err
 	}
 	defer rows.Close()
 

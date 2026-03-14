@@ -23,7 +23,7 @@ func (r *PostgresCommentRepository) GetComments() ([]model.Comment, error) {
 	query := `SELECT * FROM comments;`
 	rows, err := r.db.Query(query)
 	if err != nil {
-		return nil, ErrNoRecord
+		return nil, err
 	}
 	defer rows.Close()
 
@@ -42,7 +42,7 @@ func (r *PostgresCommentRepository) GetById(id int) (*model.Comment, error) {
 	query := `SELECT * FROM comments WHERE id = $1;`
 	var comment model.Comment
 	if err := r.db.QueryRow(query, id).Scan(&comment.Id, &comment.AuthorID, &comment.PostId, &comment.Body, &comment.Likes); err != nil {
-		return nil, ErrNoRecord
+		return nil, err
 	}
 
 	return &comment, nil
@@ -52,7 +52,7 @@ func (r *PostgresCommentRepository) GetCommentsOfPost(id int) ([]model.Comment, 
 	query := `SELECT * FROM comments WHERE postid = $1;`
 	rows, err := r.db.Query(query, id)
 	if err != nil {
-		return nil, ErrNoRecord
+		return nil, err
 	}
 	defer rows.Close()
 

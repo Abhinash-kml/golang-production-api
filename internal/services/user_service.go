@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"fmt"
 
@@ -39,7 +40,7 @@ func NewLocalUserService(repository repository.UserRepository, conn *connections
 func (s *LocalUserService) GetUsers() ([]model.UserResponseDTO, error) {
 	users, err := s.repo.GetUsers()
 	if err != nil {
-		if errors.Is(err, repository.ErrNoUsers) {
+		if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrOpFailed
 		}
 	}
@@ -59,8 +60,8 @@ func (s *LocalUserService) GetById(id int) (*model.UserResponseDTO, error) {
 		zap.L().Debug("Cache miss", zap.Int("id", id))
 
 		user, err = s.repo.GetById(id) // Get from db in case of case miss
-		if err != nil {
-			return nil, err
+		if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrOpFailed
 		}
 		go s.addToCache(user) // Add to cache on a separate goroutine asynchronously
 	}
