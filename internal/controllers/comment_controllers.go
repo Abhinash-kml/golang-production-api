@@ -32,7 +32,7 @@ func (c *CommentsController) GetComments(w http.ResponseWriter, r *http.Request)
 	cursor := r.URL.Query().Get("cursor")
 	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
 	if err != nil {
-		SendProblemDetails(w, "ValidationError", []model.ProblemDetailsError{
+		SendProblemDetails(w, ProblemValidationError, []model.ProblemDetailsError{
 			{
 				Field:   "limit",
 				Message: "Provided limit cannot be converted to internal representation",
@@ -43,7 +43,7 @@ func (c *CommentsController) GetComments(w http.ResponseWriter, r *http.Request)
 	}
 	if limit < 1 || limit > 10 {
 		// limit = 10
-		SendProblemDetails(w, "ValidationError", []model.ProblemDetailsError{
+		SendProblemDetails(w, ProblemValidationError, []model.ProblemDetailsError{
 			{
 				Field:   "limit",
 				Message: "Provided limit is out of range. Valid: 1-10",
@@ -64,7 +64,7 @@ func (c *CommentsController) GetById(w http.ResponseWriter, r *http.Request) {
 	idString := r.PathValue("id")
 	id, err := strconv.Atoi(idString)
 	if err != nil {
-		SendProblemDetails(w, "ValidationError", []model.ProblemDetailsError{
+		SendProblemDetails(w, ProblemValidationError, []model.ProblemDetailsError{
 			{
 				Field:   "id",
 				Message: "Provided id is malformed",
@@ -77,7 +77,7 @@ func (c *CommentsController) GetById(w http.ResponseWriter, r *http.Request) {
 	comment, err := c.commentservice.GetById(id)
 	if err != nil {
 		if errors.Is(err, repository.ErrNoRecord) {
-			SendProblemDetails(w, "NotFound", nil, r.URL.String())
+			SendProblemDetails(w, ProblemNotFound, nil, r.URL.String())
 			return
 		}
 	}
@@ -89,7 +89,7 @@ func (c *CommentsController) PostComment(w http.ResponseWriter, r *http.Request)
 	json.NewDecoder(r.Body).Decode(&incoming)
 	err := c.commentservice.InsertComment(incoming)
 	if err != nil {
-		SendProblemDetails(w, "Error", nil, r.URL.String())
+		SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		return
 	}
 
@@ -101,7 +101,7 @@ func (c *CommentsController) PatchComment(w http.ResponseWriter, r *http.Request
 	json.NewDecoder(r.Body).Decode(&incoming)
 	err := c.commentservice.UpdateComment(incoming.Id, incoming)
 	if err != nil {
-		SendProblemDetails(w, "Error", nil, r.URL.String())
+		SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		return
 	}
 
@@ -113,7 +113,7 @@ func (c *CommentsController) PutComment(w http.ResponseWriter, r *http.Request) 
 	json.NewDecoder(r.Body).Decode(&incoming)
 	err := c.commentservice.UpdateComment(incoming.Id, incoming)
 	if err != nil {
-		SendProblemDetails(w, "Error", nil, r.URL.String())
+		SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		return
 	}
 
@@ -126,7 +126,7 @@ func (c *CommentsController) DeleteComment(w http.ResponseWriter, r *http.Reques
 	err := c.commentservice.DeleteComment(incoming.Id)
 	if err != nil {
 		if errors.Is(err, repository.ErrNoRecord) {
-			SendProblemDetails(w, "NotFound", nil, r.URL.String())
+			SendProblemDetails(w, ProblemError, nil, r.URL.String())
 			return
 		}
 	}
