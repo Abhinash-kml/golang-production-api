@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -26,11 +27,11 @@ type UserRepository interface {
 	Setup() error
 
 	// CRUD logics
-	GetUsers() ([]model.User, error)
-	GetById(int) (*model.User, error)
-	InsertUser(model.User) error
-	UpdateUser(int, model.User) error
-	DeleteUser(int) error
+	GetUsers(context.Context) ([]model.User, error)
+	GetById(context.Context, int) (*model.User, error)
+	InsertUser(context.Context, model.User) error
+	UpdateUser(context.Context, int, model.User) error
+	DeleteUser(context.Context, int) error
 	Count() int
 }
 
@@ -65,7 +66,10 @@ func (e *InMemoryUsersRepository) Setup() error {
 	return nil
 }
 
-func (e *InMemoryUsersRepository) GetUsers() ([]model.User, error) {
+func (e *InMemoryUsersRepository) GetUsers(ctx context.Context) ([]model.User, error) {
+	ctx, span := e.tracer.Start(ctx, "GetUsers.Repository")
+	defer span.End()
+
 	if len(e.users) <= 0 {
 		return nil, ErrNoUsers
 	}
@@ -73,7 +77,10 @@ func (e *InMemoryUsersRepository) GetUsers() ([]model.User, error) {
 	return e.users, nil
 }
 
-func (e *InMemoryUsersRepository) GetById(id int) (*model.User, error) {
+func (e *InMemoryUsersRepository) GetById(ctx context.Context, id int) (*model.User, error) {
+	ctx, span := e.tracer.Start(ctx, "GetById.Repository")
+	defer span.End()
+
 	for _, value := range e.users {
 		if value.Id == id {
 			return &value, nil
@@ -83,13 +90,19 @@ func (e *InMemoryUsersRepository) GetById(id int) (*model.User, error) {
 	return nil, ErrNoRecord
 }
 
-func (e *InMemoryUsersRepository) InsertUser(user model.User) error {
+func (e *InMemoryUsersRepository) InsertUser(ctx context.Context, user model.User) error {
+	ctx, span := e.tracer.Start(ctx, "InsertUser.Repository")
+	defer span.End()
+
 	e.users = append(e.users, user)
 
 	return nil
 }
 
-func (e *InMemoryUsersRepository) UpdateUser(id int, user model.User) error {
+func (e *InMemoryUsersRepository) UpdateUser(ctx context.Context, id int, user model.User) error {
+	ctx, span := e.tracer.Start(ctx, "UpdateUser.Repository")
+	defer span.End()
+
 	for index := range e.users {
 		if e.users[index].Id == id {
 			e.users[index] = user
@@ -100,7 +113,9 @@ func (e *InMemoryUsersRepository) UpdateUser(id int, user model.User) error {
 	return nil
 }
 
-func (e *InMemoryUsersRepository) DeleteUser(id int) error {
+func (e *InMemoryUsersRepository) DeleteUser(ctx context.Context, id int) error {
+	ctx, span := e.tracer.Start(ctx, "DeleteUser.Repository")
+	defer span.End()
 
 	users := slices.DeleteFunc(e.users, func(u model.User) bool {
 		if u.Id == id {

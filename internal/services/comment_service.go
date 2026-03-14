@@ -15,12 +15,12 @@ import (
 )
 
 type CommentService interface {
-	GetComments() ([]model.CommentResponseDTO, error)
-	GetById(int) (*model.CommentResponseDTO, error)
-	GetCommentsOfPost(int) ([]model.CommentResponseDTO, error)
-	InsertComment(model.CommentCreateDTO) error
-	DeleteComment(int) error
-	UpdateComment(int, model.CommentUpdateDTO) error
+	GetComments(context.Context) ([]model.CommentResponseDTO, error)
+	GetById(context.Context, int) (*model.CommentResponseDTO, error)
+	GetCommentsOfPost(context.Context, int) ([]model.CommentResponseDTO, error)
+	InsertComment(context.Context, model.CommentCreateDTO) error
+	DeleteComment(context.Context, int) error
+	UpdateComment(context.Context, int, model.CommentUpdateDTO) error
 }
 
 type LocalCommentService struct {
@@ -37,8 +37,11 @@ func NewLocalCommentService(repository repository.CommentRepository, conn *conne
 	}
 }
 
-func (s *LocalCommentService) GetComments() ([]model.CommentResponseDTO, error) {
-	comments, err := s.repo.GetComments()
+func (s *LocalCommentService) GetComments(ctx context.Context) ([]model.CommentResponseDTO, error) {
+	ctx, span := s.tracer.Start(ctx, "GetComments.Service")
+	defer span.End()
+
+	comments, err := s.repo.GetComments(ctx)
 	if err != nil {
 		if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrOpFailed
@@ -54,12 +57,15 @@ func (s *LocalCommentService) GetComments() ([]model.CommentResponseDTO, error) 
 	return dtos, nil
 }
 
-func (s *LocalCommentService) GetById(id int) (*model.CommentResponseDTO, error) {
+func (s *LocalCommentService) GetById(ctx context.Context, id int) (*model.CommentResponseDTO, error) {
+	ctx, span := s.tracer.Start(ctx, "GetById.Service")
+	defer span.End()
+
 	comment, err := s.getCommentFromCache(id)
 	if err != nil && errors.Is(err, redis.Nil) {
 		zap.L().Debug("Cache miss", zap.Int("id", id))
 
-		comment, err = s.repo.GetById(id)
+		comment, err = s.repo.GetById(ctx, id)
 		if err != nil {
 			if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
 				return nil, ErrOpFailed
@@ -72,8 +78,11 @@ func (s *LocalCommentService) GetById(id int) (*model.CommentResponseDTO, error)
 	return &commentResponse, nil
 }
 
-func (s *LocalCommentService) GetCommentsOfPost(id int) ([]model.CommentResponseDTO, error) {
-	comments, err := s.repo.GetCommentsOfPost(id)
+func (s *LocalCommentService) GetCommentsOfPost(ctx context.Context, id int) ([]model.CommentResponseDTO, error) {
+	ctx, span := s.tracer.Start(ctx, "GetCommentsOfPost.Service")
+	defer span.End()
+
+	comments, err := s.repo.GetCommentsOfPost(ctx, id)
 	if err != nil {
 		if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrOpFailed
@@ -88,14 +97,17 @@ func (s *LocalCommentService) GetCommentsOfPost(id int) ([]model.CommentResponse
 	return dtos, nil
 }
 
-func (s *LocalCommentService) InsertComment(comment model.CommentCreateDTO) error {
+func (s *LocalCommentService) InsertComment(ctx context.Context, comment model.CommentCreateDTO) error {
+	ctx, span := s.tracer.Start(ctx, "InsertComment.Service")
+	defer span.End()
+
 	newcomment := model.Comment{
 		Id:       s.repo.Count() + 1,
 		AuthorID: comment.Authorid,
 		PostId:   comment.Postid,
 		Body:     comment.Body,
 	}
-	err := s.repo.InsertComment(newcomment)
+	err := s.repo.InsertComment(ctx, newcomment)
 	if err != nil {
 		return err
 	}
@@ -103,8 +115,11 @@ func (s *LocalCommentService) InsertComment(comment model.CommentCreateDTO) erro
 	return nil
 }
 
-func (s *LocalCommentService) DeleteComment(id int) error {
-	err := s.repo.DeleteComment(id)
+func (s *LocalCommentService) DeleteComment(ctx context.Context, id int) error {
+	ctx, span := s.tracer.Start(ctx, "DeleteComment.Service")
+	defer span.End()
+
+	err := s.repo.DeleteComment(ctx, id)
 	if err != nil {
 		return err
 	}
@@ -112,13 +127,16 @@ func (s *LocalCommentService) DeleteComment(id int) error {
 	return nil
 }
 
-func (s *LocalCommentService) UpdateComment(id int, comment model.CommentUpdateDTO) error {
+func (s *LocalCommentService) UpdateComment(ctx context.Context, id int, comment model.CommentUpdateDTO) error {
+	ctx, span := s.tracer.Start(ctx, "UpdateComment.Service")
+	defer span.End()
+
 	// TODO: Fetch and replace old values of unmodifed attributes
 	updatedcomment := model.Comment{
 		Id:   comment.Id,
 		Body: comment.Body,
 	}
-	err := s.repo.UpdateComment(id, updatedcomment)
+	err := s.repo.UpdateComment(ctx, id, updatedcomment)
 	if err != nil {
 		return err
 	}

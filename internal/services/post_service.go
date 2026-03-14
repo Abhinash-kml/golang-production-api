@@ -15,12 +15,12 @@ import (
 )
 
 type PostsService interface {
-	GetPosts() ([]model.PostResponseDTO, error)
-	GetById(int) (*model.PostResponseDTO, error)
-	GetPostsOfUser(int) ([]model.PostResponseDTO, error)
-	InsertPost(model.PostCreateDTO) error
-	UpdatePost(int, model.PostUpdateDTO) error
-	DeletePost(int) error
+	GetPosts(context.Context) ([]model.PostResponseDTO, error)
+	GetById(context.Context, int) (*model.PostResponseDTO, error)
+	GetPostsOfUser(context.Context, int) ([]model.PostResponseDTO, error)
+	InsertPost(context.Context, model.PostCreateDTO) error
+	UpdatePost(context.Context, int, model.PostUpdateDTO) error
+	DeletePost(context.Context, int) error
 }
 
 type LocalPostsService struct {
@@ -37,8 +37,11 @@ func NewLocalPostsService(repository repository.PostsRepository, conn *connectio
 	}
 }
 
-func (s *LocalPostsService) GetPosts() ([]model.PostResponseDTO, error) {
-	posts, err := s.repo.GetPosts()
+func (s *LocalPostsService) GetPosts(ctx context.Context) ([]model.PostResponseDTO, error) {
+	ctx, span := s.tracer.Start(ctx, "GetPosts.Service")
+	defer span.End()
+
+	posts, err := s.repo.GetPosts(ctx)
 	if err != nil {
 		if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrOpFailed
@@ -54,12 +57,15 @@ func (s *LocalPostsService) GetPosts() ([]model.PostResponseDTO, error) {
 	return dtos, nil
 }
 
-func (s *LocalPostsService) GetById(id int) (*model.PostResponseDTO, error) {
+func (s *LocalPostsService) GetById(ctx context.Context, id int) (*model.PostResponseDTO, error) {
+	ctx, span := s.tracer.Start(ctx, "GetById.Service")
+	defer span.End()
+
 	post, err := s.getPostFromCache(id)
 	if err != nil && errors.Is(err, redis.Nil) {
 		zap.L().Debug("Cache miss", zap.Int("id", id))
 
-		post, err = s.repo.GetById(id) // Get from db in case of cache miss
+		post, err = s.repo.GetById(ctx, id) // Get from db in case of cache miss
 		if err != nil {
 			if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
 				return nil, ErrOpFailed
@@ -72,8 +78,11 @@ func (s *LocalPostsService) GetById(id int) (*model.PostResponseDTO, error) {
 	return &postReponse, nil
 }
 
-func (s *LocalPostsService) GetPostsOfUser(id int) ([]model.PostResponseDTO, error) {
-	posts, err := s.repo.GetPostsOfUser(id)
+func (s *LocalPostsService) GetPostsOfUser(ctx context.Context, id int) ([]model.PostResponseDTO, error) {
+	ctx, span := s.tracer.Start(ctx, "GetPostsOfUser.Service")
+	defer span.End()
+
+	posts, err := s.repo.GetPostsOfUser(ctx, id)
 	if err != nil {
 		if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrOpFailed
@@ -89,7 +98,10 @@ func (s *LocalPostsService) GetPostsOfUser(id int) ([]model.PostResponseDTO, err
 	return dtos, nil
 }
 
-func (s *LocalPostsService) InsertPost(post model.PostCreateDTO) error {
+func (s *LocalPostsService) InsertPost(ctx context.Context, post model.PostCreateDTO) error {
+	ctx, span := s.tracer.Start(ctx, "InsertPost.Service")
+	defer span.End()
+
 	newpost := model.Post{
 		Id:       s.repo.Count() + 1,
 		Title:    post.Title,
@@ -97,7 +109,7 @@ func (s *LocalPostsService) InsertPost(post model.PostCreateDTO) error {
 		AuthorID: post.AuthorID,
 		Likes:    0,
 	}
-	err := s.repo.InsertPost(newpost)
+	err := s.repo.InsertPost(ctx, newpost)
 	if err != nil {
 		return err
 	}
@@ -106,13 +118,16 @@ func (s *LocalPostsService) InsertPost(post model.PostCreateDTO) error {
 }
 
 // TODO: Improvement needed
-func (s *LocalPostsService) UpdatePost(id int, post model.PostUpdateDTO) error {
+func (s *LocalPostsService) UpdatePost(ctx context.Context, id int, post model.PostUpdateDTO) error {
+	ctx, span := s.tracer.Start(ctx, "UpdatePost.Service")
+	defer span.End()
+
 	updated := model.Post{
 		Id:    post.Id,
 		Title: post.Title,
 		Body:  post.Body,
 	}
-	err := s.repo.UpdatePost(id, updated)
+	err := s.repo.UpdatePost(ctx, id, updated)
 	if err != nil {
 		return err
 	}
@@ -120,8 +135,11 @@ func (s *LocalPostsService) UpdatePost(id int, post model.PostUpdateDTO) error {
 	return nil
 }
 
-func (s *LocalPostsService) DeletePost(id int) error {
-	err := s.repo.DeletePost(id)
+func (s *LocalPostsService) DeletePost(ctx context.Context, id int) error {
+	ctx, span := s.tracer.Start(ctx, "GetUsers.Service")
+	defer span.End()
+
+	err := s.repo.DeletePost(ctx, id)
 	if err != nil {
 		return err
 	}

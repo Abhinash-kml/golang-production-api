@@ -19,11 +19,11 @@ var (
 )
 
 type UserService interface {
-	GetUsers() ([]model.UserResponseDTO, error)
-	GetById(int) (*model.UserResponseDTO, error)
-	InsertUser(model.UserCreateDTO) error
-	UpdateUser(int, model.UserUpdateDTO) error
-	DeleteUser(int) error
+	GetUsers(context.Context) ([]model.UserResponseDTO, error)
+	GetById(context.Context, int) (*model.UserResponseDTO, error)
+	InsertUser(context.Context, model.UserCreateDTO) error
+	UpdateUser(context.Context, int, model.UserUpdateDTO) error
+	DeleteUser(context.Context, int) error
 }
 
 type LocalUserService struct {
@@ -40,8 +40,11 @@ func NewLocalUserService(repository repository.UserRepository, conn *connections
 	}
 }
 
-func (s *LocalUserService) GetUsers() ([]model.UserResponseDTO, error) {
-	users, err := s.repo.GetUsers()
+func (s *LocalUserService) GetUsers(ctx context.Context) ([]model.UserResponseDTO, error) {
+	ctx, span := s.tracer.Start(ctx, "GetUsers.Service")
+	defer span.End()
+
+	users, err := s.repo.GetUsers(ctx)
 	if err != nil {
 		if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrOpFailed
@@ -57,12 +60,15 @@ func (s *LocalUserService) GetUsers() ([]model.UserResponseDTO, error) {
 	return users, nil
 }
 
-func (s *LocalUserService) GetById(id int) (*model.UserResponseDTO, error) {
+func (s *LocalUserService) GetById(ctx context.Context, id int) (*model.UserResponseDTO, error) {
+	ctx, span := s.tracer.Start(ctx, "GetById.Service")
+	defer span.End()
+
 	user, err := s.getUserFromCache(id)
 	if err != nil && errors.Is(err, redis.Nil) {
 		zap.L().Debug("Cache miss", zap.Int("id", id))
 
-		user, err = s.repo.GetById(id) // Get from db in case of case miss
+		user, err = s.repo.GetById(ctx, id) // Get from db in case of case miss
 		if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrOpFailed
 		}
@@ -73,7 +79,10 @@ func (s *LocalUserService) GetById(id int) (*model.UserResponseDTO, error) {
 	return &userResponse, nil
 }
 
-func (s *LocalUserService) InsertUser(user model.UserCreateDTO) error {
+func (s *LocalUserService) InsertUser(ctx context.Context, user model.UserCreateDTO) error {
+	ctx, span := s.tracer.Start(ctx, "InsertUser.InsertUser")
+	defer span.End()
+
 	newuser := model.User{
 		Id:      s.repo.Count() + 1,
 		Name:    user.Name,
@@ -81,7 +90,7 @@ func (s *LocalUserService) InsertUser(user model.UserCreateDTO) error {
 		State:   user.State,
 		Country: user.Country,
 	}
-	err := s.repo.InsertUser(newuser)
+	err := s.repo.InsertUser(ctx, newuser)
 	if err != nil {
 		return err
 	}
@@ -89,7 +98,10 @@ func (s *LocalUserService) InsertUser(user model.UserCreateDTO) error {
 	return nil
 }
 
-func (s *LocalUserService) UpdateUser(id int, new model.UserUpdateDTO) error {
+func (s *LocalUserService) UpdateUser(ctx context.Context, id int, new model.UserUpdateDTO) error {
+	ctx, span := s.tracer.Start(ctx, "UpdateUser.UpdateUser")
+	defer span.End()
+
 	updateduser := model.User{
 		Id: id,
 	}
@@ -114,7 +126,7 @@ func (s *LocalUserService) UpdateUser(id int, new model.UserUpdateDTO) error {
 		}
 	}
 
-	err := s.repo.UpdateUser(id, updateduser)
+	err := s.repo.UpdateUser(ctx, id, updateduser)
 	if err != nil {
 		return err
 	}
@@ -122,8 +134,11 @@ func (s *LocalUserService) UpdateUser(id int, new model.UserUpdateDTO) error {
 	return nil
 }
 
-func (s *LocalUserService) DeleteUser(id int) error {
-	err := s.repo.DeleteUser(id)
+func (s *LocalUserService) DeleteUser(ctx context.Context, id int) error {
+	ctx, span := s.tracer.Start(ctx, "DeleteUser.Service")
+	defer span.End()
+
+	err := s.repo.DeleteUser(ctx, id)
 	if err != nil {
 		return err
 	}

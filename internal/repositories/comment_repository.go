@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -21,12 +22,12 @@ var (
 type CommentRepository interface {
 	Setup() error
 
-	GetComments() ([]model.Comment, error)
-	GetById(int) (*model.Comment, error)
-	GetCommentsOfPost(int) ([]model.Comment, error)
-	InsertComment(model.Comment) error
-	DeleteComment(int) error
-	UpdateComment(int, model.Comment) error
+	GetComments(context.Context) ([]model.Comment, error)
+	GetById(context.Context, int) (*model.Comment, error)
+	GetCommentsOfPost(context.Context, int) ([]model.Comment, error)
+	InsertComment(context.Context, model.Comment) error
+	DeleteComment(context.Context, int) error
+	UpdateComment(context.Context, int, model.Comment) error
 	Count() int
 }
 
@@ -59,7 +60,10 @@ func (e *InMemoryCommentRepository) Setup() error {
 	return nil
 }
 
-func (e *InMemoryCommentRepository) GetComments() ([]model.Comment, error) {
+func (e *InMemoryCommentRepository) GetComments(ctx context.Context) ([]model.Comment, error) {
+	ctx, span := e.tracer.Start(ctx, "GetComments.Repository")
+	defer span.End()
+
 	if len(e.comments) <= 0 {
 		return nil, ErrNoComments
 	}
@@ -67,7 +71,10 @@ func (e *InMemoryCommentRepository) GetComments() ([]model.Comment, error) {
 	return e.comments, nil
 }
 
-func (e *InMemoryCommentRepository) GetById(id int) (*model.Comment, error) {
+func (e *InMemoryCommentRepository) GetById(ctx context.Context, id int) (*model.Comment, error) {
+	ctx, span := e.tracer.Start(ctx, "GetById.Repository")
+	defer span.End()
+
 	for _, value := range e.comments {
 		if value.Id == id {
 			return &value, nil
@@ -77,7 +84,10 @@ func (e *InMemoryCommentRepository) GetById(id int) (*model.Comment, error) {
 	return nil, ErrNoRecord
 }
 
-func (e *InMemoryCommentRepository) GetCommentsOfPost(id int) ([]model.Comment, error) {
+func (e *InMemoryCommentRepository) GetCommentsOfPost(ctx context.Context, id int) ([]model.Comment, error) {
+	ctx, span := e.tracer.Start(ctx, "GetCommentsOfPost.Repository")
+	defer span.End()
+
 	var comments []model.Comment
 
 	for _, value := range e.comments {
@@ -93,12 +103,18 @@ func (e *InMemoryCommentRepository) GetCommentsOfPost(id int) ([]model.Comment, 
 	return comments, nil
 }
 
-func (e *InMemoryCommentRepository) InsertComment(comment model.Comment) error {
+func (e *InMemoryCommentRepository) InsertComment(ctx context.Context, comment model.Comment) error {
+	ctx, span := e.tracer.Start(ctx, "InsertComment.Repository")
+	defer span.End()
+
 	e.comments = append(e.comments, comment)
 	return nil
 }
 
-func (e *InMemoryCommentRepository) DeleteComment(id int) error {
+func (e *InMemoryCommentRepository) DeleteComment(ctx context.Context, id int) error {
+	ctx, span := e.tracer.Start(ctx, "DeleteComment.Repository")
+	defer span.End()
+
 	if len(e.comments) <= 0 {
 		return ErrNoComments
 	}
@@ -114,7 +130,10 @@ func (e *InMemoryCommentRepository) DeleteComment(id int) error {
 	return nil
 }
 
-func (e *InMemoryCommentRepository) UpdateComment(id int, comment model.Comment) error {
+func (e *InMemoryCommentRepository) UpdateComment(ctx context.Context, id int, comment model.Comment) error {
+	ctx, span := e.tracer.Start(ctx, "UpdateComment.Repository")
+	defer span.End()
+
 	for index := range e.comments {
 		if e.comments[index].Id == id {
 			e.comments[index] = comment

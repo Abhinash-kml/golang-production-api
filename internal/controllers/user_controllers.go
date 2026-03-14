@@ -47,7 +47,7 @@ func NewUsersController(userService service.UserService, postService service.Pos
 }
 
 func (c *UsersController) GetUsers(w http.ResponseWriter, r *http.Request) {
-	_, span := c.tracer.Start(context.Background(), "GetUsers.Controller")
+	ctx, span := c.tracer.Start(context.Background(), "GetUsers.Controller")
 	defer span.End()
 
 	cursor := r.URL.Query().Get("cursor")
@@ -73,7 +73,7 @@ func (c *UsersController) GetUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	users, _ := c.userservice.GetUsers() // No point of error handling here as empty row will return [] and 200 status
+	users, _ := c.userservice.GetUsers(ctx) // No point of error handling here as empty row will return [] and 200 status
 	paginatedResponse := Paginate(users, cursor, limit, "users", "http://localhost")
 	encoder := json.NewEncoder(w)
 	encoder.SetIndent("", "    ")
@@ -81,6 +81,9 @@ func (c *UsersController) GetUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *UsersController) GetById(w http.ResponseWriter, r *http.Request) {
+	ctx, span := c.tracer.Start(context.Background(), "GetById.Controller")
+	defer span.End()
+
 	idString := r.PathValue("id")
 	id, err := strconv.Atoi(idString)
 	if err != nil {
@@ -94,7 +97,7 @@ func (c *UsersController) GetById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := c.userservice.GetById(id)
+	user, err := c.userservice.GetById(ctx, id)
 	if err != nil {
 		if errors.Is(err, repository.ErrNoRecord) {
 			SendProblemDetails(w, ProblemNotFound, nil, r.URL.String())
@@ -106,6 +109,9 @@ func (c *UsersController) GetById(w http.ResponseWriter, r *http.Request) {
 
 // GET /users/xxx-xxx-xxx/posts?limit=x
 func (c *UsersController) GetPostsOfUser(w http.ResponseWriter, r *http.Request) {
+	ctx, span := c.tracer.Start(context.Background(), "GetPostsOfUser.Controller")
+	defer span.End()
+
 	userString := r.PathValue("id")
 	userId, err := strconv.Atoi(userString)
 	if err != nil {
@@ -118,7 +124,7 @@ func (c *UsersController) GetPostsOfUser(w http.ResponseWriter, r *http.Request)
 		}, r.URL.String())
 	}
 
-	postResponse, err := c.postservice.GetPostsOfUser(userId)
+	postResponse, err := c.postservice.GetPostsOfUser(ctx, userId)
 	if err != nil {
 		SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		return
@@ -128,11 +134,12 @@ func (c *UsersController) GetPostsOfUser(w http.ResponseWriter, r *http.Request)
 }
 
 func (c *UsersController) PostUser(w http.ResponseWriter, r *http.Request) {
-	c.logger.Info("Connection", zap.String("IP", r.RemoteAddr), zap.String("Method", r.Method), zap.String("Path", r.Pattern))
+	ctx, span := c.tracer.Start(context.Background(), "PostUser.Controller")
+	defer span.End()
 
 	user := model.UserCreateDTO{}
 	json.NewDecoder(r.Body).Decode(&user)
-	err := c.userservice.InsertUser(user)
+	err := c.userservice.InsertUser(ctx, user)
 	if err != nil {
 		SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		return
@@ -142,12 +149,13 @@ func (c *UsersController) PostUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *UsersController) PatchUser(w http.ResponseWriter, r *http.Request) {
-	c.logger.Info("Connection", zap.String("IP", r.RemoteAddr), zap.String("Method", r.Method), zap.String("Path", r.Pattern))
+	ctx, span := c.tracer.Start(context.Background(), "PatchUser.Controller")
+	defer span.End()
 
 	// testing only
 	patch := model.UserUpdateDTO{}
 	json.NewDecoder(r.Body).Decode(&patch)
-	err := c.userservice.UpdateUser(patch.Id, patch)
+	err := c.userservice.UpdateUser(ctx, patch.Id, patch)
 	if err != nil {
 		SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		return
@@ -158,19 +166,27 @@ func (c *UsersController) PatchUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *UsersController) PutUser(w http.ResponseWriter, r *http.Request) {
-	c.logger.Info("Connection", zap.String("IP", r.RemoteAddr), zap.String("Method", r.Method), zap.String("Path", r.Pattern))
+	ctx, span := c.tracer.Start(context.Background(), "PutUser.Controller")
+	defer span.End()
+
+	var update model.UserUpdateDTO
+	json.NewDecoder(r.Body).Decode(&update)
+	err := c.userservice.UpdateUser(ctx, 0, update)
+	if err != nil {
+		SendProblemDetails(w, ProblemError, nil, r.URL.String())
+		return
+	}
 
 	w.WriteHeader(http.StatusNoContent)
-
-	w.Write([]byte("Users Put route"))
 }
 
 func (c *UsersController) DeleteUser(w http.ResponseWriter, r *http.Request) {
-	c.logger.Info("Connection", zap.String("IP", r.RemoteAddr), zap.String("Method", r.Method), zap.String("Path", r.Pattern))
+	ctx, span := c.tracer.Start(context.Background(), "DeleteUser.Controller")
+	defer span.End()
 
 	deleteuser := model.UserDeleteDTO{}
 	json.NewDecoder(r.Body).Decode(&deleteuser)
-	err := c.userservice.DeleteUser(deleteuser.Id)
+	err := c.userservice.DeleteUser(ctx, deleteuser.Id)
 	if err != nil {
 		SendProblemDetails(w, ProblemNotFound, nil, r.URL.String())
 		return

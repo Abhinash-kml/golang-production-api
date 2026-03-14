@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -32,6 +33,9 @@ func NewCommentsController(userService service.UserService, postService service.
 }
 
 func (c *CommentsController) GetComments(w http.ResponseWriter, r *http.Request) {
+	ctx, span := c.tracer.Start(context.Background(), "GetComments.Controller")
+	defer span.End()
+
 	cursor := r.URL.Query().Get("cursor")
 	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
 	if err != nil {
@@ -56,7 +60,7 @@ func (c *CommentsController) GetComments(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	comments, _ := c.commentservice.GetComments() // No point of error handling here as empty row will return [] and 200 status
+	comments, _ := c.commentservice.GetComments(ctx) // No point of error handling here as empty row will return [] and 200 status
 	paginatedResponse := Paginate(comments, cursor, limit, "posts", "http://localhost")
 	encoder := json.NewEncoder(w)
 	encoder.SetIndent("", "    ")
@@ -64,6 +68,9 @@ func (c *CommentsController) GetComments(w http.ResponseWriter, r *http.Request)
 }
 
 func (c *CommentsController) GetById(w http.ResponseWriter, r *http.Request) {
+	ctx, span := c.tracer.Start(context.Background(), "GetById.Controller")
+	defer span.End()
+
 	idString := r.PathValue("id")
 	id, err := strconv.Atoi(idString)
 	if err != nil {
@@ -77,7 +84,7 @@ func (c *CommentsController) GetById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	comment, err := c.commentservice.GetById(id)
+	comment, err := c.commentservice.GetById(ctx, id)
 	if err != nil {
 		if errors.Is(err, repository.ErrNoRecord) {
 			SendProblemDetails(w, ProblemNotFound, nil, r.URL.String())
@@ -88,9 +95,12 @@ func (c *CommentsController) GetById(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *CommentsController) PostComment(w http.ResponseWriter, r *http.Request) {
+	ctx, span := c.tracer.Start(context.Background(), "PostComment.Controller")
+	defer span.End()
+
 	incoming := model.CommentCreateDTO{}
 	json.NewDecoder(r.Body).Decode(&incoming)
-	err := c.commentservice.InsertComment(incoming)
+	err := c.commentservice.InsertComment(ctx, incoming)
 	if err != nil {
 		SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		return
@@ -100,9 +110,12 @@ func (c *CommentsController) PostComment(w http.ResponseWriter, r *http.Request)
 }
 
 func (c *CommentsController) PatchComment(w http.ResponseWriter, r *http.Request) {
+	ctx, span := c.tracer.Start(context.Background(), "PatchComment.Controller")
+	defer span.End()
+
 	incoming := model.CommentUpdateDTO{}
 	json.NewDecoder(r.Body).Decode(&incoming)
-	err := c.commentservice.UpdateComment(incoming.Id, incoming)
+	err := c.commentservice.UpdateComment(ctx, incoming.Id, incoming)
 	if err != nil {
 		SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		return
@@ -112,9 +125,12 @@ func (c *CommentsController) PatchComment(w http.ResponseWriter, r *http.Request
 }
 
 func (c *CommentsController) PutComment(w http.ResponseWriter, r *http.Request) {
+	ctx, span := c.tracer.Start(context.Background(), "PutComment.Controller")
+	defer span.End()
+
 	incoming := model.CommentUpdateDTO{}
 	json.NewDecoder(r.Body).Decode(&incoming)
-	err := c.commentservice.UpdateComment(incoming.Id, incoming)
+	err := c.commentservice.UpdateComment(ctx, incoming.Id, incoming)
 	if err != nil {
 		SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		return
@@ -124,9 +140,12 @@ func (c *CommentsController) PutComment(w http.ResponseWriter, r *http.Request) 
 }
 
 func (c *CommentsController) DeleteComment(w http.ResponseWriter, r *http.Request) {
+	ctx, span := c.tracer.Start(context.Background(), "DeleteComment.Controller")
+	defer span.End()
+
 	incoming := model.CommentDeleteDTO{}
 	json.NewDecoder(r.Body).Decode(&incoming)
-	err := c.commentservice.DeleteComment(incoming.Id)
+	err := c.commentservice.DeleteComment(ctx, incoming.Id)
 	if err != nil {
 		if errors.Is(err, repository.ErrNoRecord) {
 			SendProblemDetails(w, ProblemError, nil, r.URL.String())

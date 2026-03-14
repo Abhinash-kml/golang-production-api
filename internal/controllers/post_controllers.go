@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -32,6 +33,9 @@ func NewPostsController(userService service.UserService, postService service.Pos
 }
 
 func (c *PostsController) GetPosts(w http.ResponseWriter, r *http.Request) {
+	ctx, span := c.tracer.Start(context.Background(), "GetPosts.Controller")
+	defer span.End()
+
 	cursor := r.URL.Query().Get("cursor")
 	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
 	if err != nil {
@@ -55,7 +59,7 @@ func (c *PostsController) GetPosts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	posts, _ := c.postservice.GetPosts() // No point of error handling here as empty row will return [] and 200 status
+	posts, _ := c.postservice.GetPosts(ctx) // No point of error handling here as empty row will return [] and 200 status
 	paginatedResponse := Paginate(posts, cursor, limit, "posts", "http://localhost")
 	encoder := json.NewEncoder(w)
 	encoder.SetIndent("", "    ")
@@ -63,6 +67,9 @@ func (c *PostsController) GetPosts(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *PostsController) GetById(w http.ResponseWriter, r *http.Request) {
+	ctx, span := c.tracer.Start(context.Background(), "GetById.Controller")
+	defer span.End()
+
 	idString := r.PathValue("id")
 	id, err := strconv.Atoi(idString)
 	if err != nil {
@@ -76,7 +83,7 @@ func (c *PostsController) GetById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	post, err := c.postservice.GetById(id)
+	post, err := c.postservice.GetById(ctx, id)
 	if err != nil {
 		if errors.Is(err, repository.ErrNoRecord) {
 			SendProblemDetails(w, ProblemNotFound, nil, r.URL.String())
@@ -89,6 +96,9 @@ func (c *PostsController) GetById(w http.ResponseWriter, r *http.Request) {
 // Should this belong in posts controller or comments controller file ?
 // GET posts/xxx-xxx-xxx/comments?limit=x
 func (c *PostsController) GetCommentsOfPost(w http.ResponseWriter, r *http.Request) {
+	ctx, span := c.tracer.Start(context.Background(), "GetCommentsOfPost.Controller")
+	defer span.End()
+
 	postIdString := r.PathValue("id")
 	postId, err := strconv.Atoi(postIdString)
 	if err != nil {
@@ -102,7 +112,7 @@ func (c *PostsController) GetCommentsOfPost(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	commentResponse, err := c.commentservice.GetCommentsOfPost(postId)
+	commentResponse, err := c.commentservice.GetCommentsOfPost(ctx, postId)
 	if err != nil {
 		SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		return
@@ -112,9 +122,12 @@ func (c *PostsController) GetCommentsOfPost(w http.ResponseWriter, r *http.Reque
 }
 
 func (c *PostsController) PostPost(w http.ResponseWriter, r *http.Request) {
+	ctx, span := c.tracer.Start(context.Background(), "PostPost.Controller")
+	defer span.End()
+
 	incoming := model.PostCreateDTO{}
 	json.NewDecoder(r.Body).Decode(&incoming)
-	err := c.postservice.InsertPost(incoming)
+	err := c.postservice.InsertPost(ctx, incoming)
 	if err != nil {
 		SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		return
@@ -124,9 +137,12 @@ func (c *PostsController) PostPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *PostsController) PutPost(w http.ResponseWriter, r *http.Request) {
+	ctx, span := c.tracer.Start(context.Background(), "PutPost.Controller")
+	defer span.End()
+
 	incoming := model.PostUpdateDTO{}
 	json.NewDecoder(r.Body).Decode(&incoming)
-	err := c.postservice.UpdatePost(incoming.Id, incoming)
+	err := c.postservice.UpdatePost(ctx, incoming.Id, incoming)
 	if err != nil {
 		SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		return
@@ -136,9 +152,12 @@ func (c *PostsController) PutPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *PostsController) PatchPost(w http.ResponseWriter, r *http.Request) {
+	ctx, span := c.tracer.Start(context.Background(), "PatchPost.Controller")
+	defer span.End()
+
 	incoming := model.PostUpdateDTO{}
 	json.NewDecoder(r.Body).Decode(&incoming)
-	err := c.postservice.UpdatePost(incoming.Id, incoming)
+	err := c.postservice.UpdatePost(ctx, incoming.Id, incoming)
 	if err != nil {
 		SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		return
@@ -148,9 +167,12 @@ func (c *PostsController) PatchPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *PostsController) DeletePost(w http.ResponseWriter, r *http.Request) {
+	ctx, span := c.tracer.Start(context.Background(), "DeletePost.Controller")
+	defer span.End()
+
 	incoming := model.PostDeleteDTO{}
 	json.NewDecoder(r.Body).Decode(&incoming)
-	err := c.postservice.DeletePost(incoming.Id)
+	err := c.postservice.DeletePost(ctx, incoming.Id)
 	if err != nil {
 		if errors.Is(err, repository.ErrNoRecord) {
 			SendProblemDetails(w, ProblemNotFound, nil, r.URL.String())

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
 
 	"github.com/abhinash-kml/go-api-server/internal/connections"
@@ -23,7 +24,10 @@ func (r *PostgresUserRepository) Setup() error {
 	return nil
 }
 
-func (r *PostgresUserRepository) GetUsers() ([]model.User, error) {
+func (r *PostgresUserRepository) GetUsers(ctx context.Context) ([]model.User, error) {
+	ctx, span := r.tracer.Start(ctx, "GetUsers.Repository")
+	defer span.End()
+
 	query := `SELECT * FROM users;`
 	rows, err := r.db.Query(query)
 	if err != nil {
@@ -43,7 +47,10 @@ func (r *PostgresUserRepository) GetUsers() ([]model.User, error) {
 	return users, nil
 }
 
-func (r *PostgresUserRepository) GetById(id int) (*model.User, error) {
+func (r *PostgresUserRepository) GetById(ctx context.Context, id int) (*model.User, error) {
+	ctx, span := r.tracer.Start(ctx, "GetById.Repository")
+	defer span.End()
+
 	query := `SELECT * FROM users WHERE id = $1;`
 	var user model.User
 	if err := r.db.QueryRow(query, id).Scan(&user.Id, &user.Name, &user.City, &user.State, &user.Country); err != nil {
@@ -55,7 +62,10 @@ func (r *PostgresUserRepository) GetById(id int) (*model.User, error) {
 }
 
 // TODO: Check this implementation
-func (r *PostgresUserRepository) InsertUser(user model.User) error {
+func (r *PostgresUserRepository) InsertUser(ctx context.Context, user model.User) error {
+	ctx, span := r.tracer.Start(ctx, "InsertUser.Repository")
+	defer span.End()
+
 	query := `INSERT INTO users(name, city, state, country) VALUES($1, $2, $3, $4)`
 	if _, err := r.db.Exec(query, user.Name, user.City, user.State, user.Country); err != nil {
 		return err
@@ -64,11 +74,17 @@ func (r *PostgresUserRepository) InsertUser(user model.User) error {
 	return nil
 }
 
-func (r *PostgresUserRepository) UpdateUser(id int, user model.User) error {
+func (r *PostgresUserRepository) UpdateUser(ctx context.Context, id int, user model.User) error {
+	ctx, span := r.tracer.Start(ctx, "UpdateUser.Repository")
+	defer span.End()
+
 	return nil
 }
 
-func (r *PostgresUserRepository) DeleteUser(id int) error {
+func (r *PostgresUserRepository) DeleteUser(ctx context.Context, id int) error {
+	ctx, span := r.tracer.Start(ctx, "DeleteUser.Repository")
+	defer span.End()
+
 	query := `DELETE FROM users WHERE id = $1;`
 	if _, err := r.db.Exec(query, id); err != nil {
 		return err
