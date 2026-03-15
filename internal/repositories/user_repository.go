@@ -67,7 +67,7 @@ func (e *InMemoryUsersRepository) Setup() error {
 }
 
 func (e *InMemoryUsersRepository) GetUsers(ctx context.Context) ([]model.User, error) {
-	ctx, span := e.tracer.Start(ctx, "GetUsers.Repository")
+	_, span := e.tracer.Start(ctx, "GetUsers.Repository")
 	defer span.End()
 
 	if len(e.users) <= 0 {

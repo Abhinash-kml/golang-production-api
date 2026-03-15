@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
@@ -73,6 +74,7 @@ func (c *UsersController) GetUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	time.Sleep(time.Microsecond * 10)
 	users, _ := c.userservice.GetUsers(ctx) // No point of error handling here as empty row will return [] and 200 status
 	paginatedResponse := Paginate(users, cursor, limit, "users", "http://localhost")
 	encoder := json.NewEncoder(w)

@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/abhinash-kml/go-api-server/internal/connections"
 	model "github.com/abhinash-kml/go-api-server/internal/models"
@@ -41,10 +42,12 @@ func NewLocalUserService(repository repository.UserRepository, conn *connections
 }
 
 func (s *LocalUserService) GetUsers(ctx context.Context) ([]model.UserResponseDTO, error) {
-	ctx, span := s.tracer.Start(ctx, "GetUsers.Service")
+	newCtx, span := s.tracer.Start(ctx, "GetUsers.Service")
 	defer span.End()
 
-	users, err := s.repo.GetUsers(ctx)
+	time.Sleep(time.Microsecond * 10)
+
+	users, err := s.repo.GetUsers(newCtx)
 	if err != nil {
 		if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrOpFailed
