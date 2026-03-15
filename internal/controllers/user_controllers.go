@@ -9,11 +9,13 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"time"
 
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
 	service "github.com/abhinash-kml/go-api-server/internal/services"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
+	"go.opentelemetry.io/otel/trace"
 	oteltracer "go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 )
@@ -48,12 +50,14 @@ func NewUsersController(userService service.UserService, postService service.Pos
 }
 
 func (c *UsersController) GetUsers(w http.ResponseWriter, r *http.Request) {
-	ctx, span := c.tracer.Start(context.Background(), "GetUsers.Controller")
+	ctx, span := c.tracer.Start(r.Context(), "GetUsers.Controller")
 	defer span.End()
 
 	cursor := r.URL.Query().Get("cursor")
 	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "failed to convert limit to numeric value")
 		SendProblemDetails(w, ProblemValidationError, []model.ProblemDetailsError{
 			{
 				Field:   "limit",
@@ -74,21 +78,33 @@ func (c *UsersController) GetUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	time.Sleep(time.Microsecond * 10)
+	span.SetAttributes(attribute.String("cursor", cursor), attribute.Int("limit", limit))
+
 	users, _ := c.userservice.GetUsers(ctx) // No point of error handling here as empty row will return [] and 200 status
+	if len(users) != 0 {
+		span.SetAttributes(attribute.Bool("users.found", true), attribute.Int("users.num", len(users)))
+	} else {
+		span.SetAttributes(attribute.Bool("users.found", false))
+	}
+
 	paginatedResponse := Paginate(users, cursor, limit, "users", "http://localhost")
 	encoder := json.NewEncoder(w)
 	encoder.SetIndent("", "    ")
-	encoder.Encode(paginatedResponse)
+	if err := encoder.Encode(paginatedResponse); err != nil {
+		span.RecordError(err)
+	}
 }
 
 func (c *UsersController) GetById(w http.ResponseWriter, r *http.Request) {
-	ctx, span := c.tracer.Start(context.Background(), "GetById.Controller")
+	ctx, span := c.tracer.Start(r.Context(), "GetById.Controller", trace.WithAttributes(
+		attribute.String("http.method", r.Method),
+	))
 	defer span.End()
 
 	idString := r.PathValue("id")
 	id, err := strconv.Atoi(idString)
 	if err != nil {
+		span.SetStatus(codes.Error, "malformed id")
 		SendProblemDetails(w, ProblemValidationError, []model.ProblemDetailsError{
 			{
 				Field:   "id",
@@ -99,24 +115,38 @@ func (c *UsersController) GetById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	span.SetAttributes(attribute.Int("user.id", id))
+
 	user, err := c.userservice.GetById(ctx, id)
 	if err != nil {
+		span.RecordError(err)
 		if errors.Is(err, repository.ErrNoRecord) {
+			span.SetAttributes(attribute.Bool("user.found", false))
 			SendProblemDetails(w, ProblemNotFound, nil, r.URL.String())
-			return
+		} else {
+			span.SetStatus(codes.Error, "internal server error")
+			SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		}
+		return
 	}
-	json.NewEncoder(w).Encode(user)
+	span.SetAttributes(attribute.Bool("user.found", true))
+
+	if err := json.NewEncoder(w).Encode(user); err != nil {
+		span.RecordError(err)
+	}
 }
 
 // GET /users/xxx-xxx-xxx/posts?limit=x
 func (c *UsersController) GetPostsOfUser(w http.ResponseWriter, r *http.Request) {
-	ctx, span := c.tracer.Start(context.Background(), "GetPostsOfUser.Controller")
+	ctx, span := c.tracer.Start(r.Context(), "GetPostsOfUser.Controller", trace.WithAttributes(
+		attribute.String("http.method", r.Method),
+	))
 	defer span.End()
 
 	userString := r.PathValue("id")
 	userId, err := strconv.Atoi(userString)
 	if err != nil {
+		span.SetStatus(codes.Error, "malformed id")
 		SendProblemDetails(w, ProblemValidationError, []model.ProblemDetailsError{
 			{
 				Field:   "id",
@@ -124,11 +154,21 @@ func (c *UsersController) GetPostsOfUser(w http.ResponseWriter, r *http.Request)
 				Code:    "PARAMTER_MALFORMED",
 			},
 		}, r.URL.String())
+		return
 	}
+
+	span.SetAttributes(attribute.Int("id", userId))
 
 	postResponse, err := c.postservice.GetPostsOfUser(ctx, userId)
 	if err != nil {
-		SendProblemDetails(w, ProblemError, nil, r.URL.String())
+		span.RecordError(err)
+		if errors.Is(err, repository.ErrNoRecord) {
+			span.SetAttributes(attribute.Bool("posts.found", false))
+			SendProblemDetails(w, ProblemNotFound, nil, r.URL.String())
+		} else {
+			span.SetStatus(codes.Error, "internal server error")
+			SendProblemDetails(w, ProblemError, nil, r.URL.String())
+		}
 		return
 	}
 	paginatedResponse := Paginate(postResponse, "", 10, "users", "http://localhost:9000")
@@ -289,7 +329,7 @@ func SendProblemDetails(w http.ResponseWriter, ptype ProblemType, errors []model
 		}
 	case ProblemError:
 		{
-			SendProblemDetailsCustom(w, "https://api.example.com/docs/internal-error", "Internal error", "The requested operation failed due to internal server error", route, errors, http.StatusInternalServerError)
+			SendProblemDetailsCustom(w, "https://api.example.com/docs/internal-error", "Internal server error", "The requested operation failed due to internal server error", route, errors, http.StatusInternalServerError)
 		}
 	case ProblemForbidden:
 		{

@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"time"
 
 	"github.com/abhinash-kml/go-api-server/internal/connections"
 	model "github.com/abhinash-kml/go-api-server/internal/models"
@@ -42,12 +41,10 @@ func NewLocalUserService(repository repository.UserRepository, conn *connections
 }
 
 func (s *LocalUserService) GetUsers(ctx context.Context) ([]model.UserResponseDTO, error) {
-	newCtx, span := s.tracer.Start(ctx, "GetUsers.Service")
+	ctx, span := s.tracer.Start(ctx, "GetUsers.Service")
 	defer span.End()
 
-	time.Sleep(time.Microsecond * 10)
-
-	users, err := s.repo.GetUsers(newCtx)
+	users, err := s.repo.GetUsers(ctx)
 	if err != nil {
 		if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrOpFailed
@@ -73,7 +70,7 @@ func (s *LocalUserService) GetById(ctx context.Context, id int) (*model.UserResp
 
 		user, err = s.repo.GetById(ctx, id) // Get from db in case of case miss
 		if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
-			return nil, ErrOpFailed
+			return nil, repository.ErrNoRecord
 		}
 		go s.addToCache(user) // Add to cache on a separate goroutine asynchronously
 	}
