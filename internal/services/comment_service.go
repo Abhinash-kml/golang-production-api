@@ -10,6 +10,8 @@ import (
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
 	"github.com/redis/go-redis/v9"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 	oteltracer "go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 )
@@ -43,8 +45,12 @@ func (s *LocalCommentService) GetComments(ctx context.Context) ([]model.CommentR
 
 	comments, err := s.repo.GetComments(ctx)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "failed to fetch comments from repository")
 		if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
-			return nil, ErrOpFailed
+			return nil, repository.ErrNoRecord
+		} else {
+			return nil, err
 		}
 	}
 
@@ -61,14 +67,21 @@ func (s *LocalCommentService) GetById(ctx context.Context, id int) (*model.Comme
 	ctx, span := s.tracer.Start(ctx, "GetById.Service")
 	defer span.End()
 
+	span.SetAttributes(attribute.Int("comment.id", id))
+
 	comment, err := s.getCommentFromCache(id)
 	if err != nil && errors.Is(err, redis.Nil) {
+		span.RecordError(err)
 		zap.L().Debug("Cache miss", zap.Int("id", id))
 
 		comment, err = s.repo.GetById(ctx, id)
 		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, "failed to fetch comment from repository")
 			if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
-				return nil, ErrOpFailed
+				return nil, repository.ErrNoRecord
+			} else {
+				return nil, err
 			}
 		}
 		go s.addToCache(comment) // Add to cache on a separate goroutine asynchronously
@@ -82,10 +95,16 @@ func (s *LocalCommentService) GetCommentsOfPost(ctx context.Context, id int) ([]
 	ctx, span := s.tracer.Start(ctx, "GetCommentsOfPost.Service")
 	defer span.End()
 
+	span.SetAttributes(attribute.Int("post.id", id))
+
 	comments, err := s.repo.GetCommentsOfPost(ctx, id)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "failed to fetch comments of post")
 		if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
-			return nil, ErrOpFailed
+			return nil, repository.ErrNoRecord
+		} else {
+			return nil, err
 		}
 	}
 
@@ -101,6 +120,10 @@ func (s *LocalCommentService) InsertComment(ctx context.Context, comment model.C
 	ctx, span := s.tracer.Start(ctx, "InsertComment.Service")
 	defer span.End()
 
+	span.SetAttributes(attribute.Int("comment.authorid", comment.Authorid),
+		attribute.Int("comment.postid", comment.Postid),
+		attribute.String("comment.body", comment.Body))
+
 	newcomment := model.Comment{
 		Id:       s.repo.Count() + 1,
 		AuthorID: comment.Authorid,
@@ -109,6 +132,8 @@ func (s *LocalCommentService) InsertComment(ctx context.Context, comment model.C
 	}
 	err := s.repo.InsertComment(ctx, newcomment)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "failed to insert comment in repository")
 		return err
 	}
 
@@ -119,14 +144,19 @@ func (s *LocalCommentService) DeleteComment(ctx context.Context, id int) error {
 	ctx, span := s.tracer.Start(ctx, "DeleteComment.Service")
 	defer span.End()
 
+	span.SetAttributes(attribute.Int("comment.id", id))
+
 	err := s.repo.DeleteComment(ctx, id)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "failed to delete comment from repository")
 		return err
 	}
 
 	return nil
 }
 
+// TODO: Implement as per JSON Merge patch
 func (s *LocalCommentService) UpdateComment(ctx context.Context, id int, comment model.CommentUpdateDTO) error {
 	ctx, span := s.tracer.Start(ctx, "UpdateComment.Service")
 	defer span.End()

@@ -10,6 +10,8 @@ import (
 	"slices"
 
 	model "github.com/abhinash-kml/go-api-server/internal/models"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 	oteltracer "go.opentelemetry.io/otel/trace"
 )
 
@@ -71,8 +73,11 @@ func (e *InMemoryUsersRepository) GetUsers(ctx context.Context) ([]model.User, e
 	defer span.End()
 
 	if len(e.users) <= 0 {
-		return nil, ErrNoUsers
+		span.SetStatus(codes.Error, "failed to fetch users in repository")
+		return nil, ErrNoRecord
 	}
+
+	span.SetAttributes(attribute.Bool("users.found", true), attribute.Int("users.num", len(e.users)))
 
 	return e.users, nil
 }
@@ -80,6 +85,8 @@ func (e *InMemoryUsersRepository) GetUsers(ctx context.Context) ([]model.User, e
 func (e *InMemoryUsersRepository) GetById(ctx context.Context, id int) (*model.User, error) {
 	ctx, span := e.tracer.Start(ctx, "GetById.Repository")
 	defer span.End()
+
+	span.SetAttributes(attribute.Int("user.id", id))
 
 	for _, value := range e.users {
 		if value.Id == id {
@@ -93,6 +100,12 @@ func (e *InMemoryUsersRepository) GetById(ctx context.Context, id int) (*model.U
 func (e *InMemoryUsersRepository) InsertUser(ctx context.Context, user model.User) error {
 	ctx, span := e.tracer.Start(ctx, "InsertUser.Repository")
 	defer span.End()
+
+	span.SetAttributes(attribute.Int("user.id", user.Id),
+		attribute.String("user.name", user.Name),
+		attribute.String("user.city", user.City),
+		attribute.String("user.state", user.State),
+		attribute.String("user.country", user.Country))
 
 	e.users = append(e.users, user)
 
@@ -117,11 +130,14 @@ func (e *InMemoryUsersRepository) DeleteUser(ctx context.Context, id int) error 
 	ctx, span := e.tracer.Start(ctx, "DeleteUser.Repository")
 	defer span.End()
 
+	span.SetAttributes(attribute.Int("user.id", id))
+
 	users := slices.DeleteFunc(e.users, func(u model.User) bool {
 		if u.Id == id {
 			return true
 		}
 
+		span.SetStatus(codes.Error, "failed to delete user from repository")
 		return false
 	})
 

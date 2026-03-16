@@ -10,6 +10,8 @@ import (
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
 	"github.com/redis/go-redis/v9"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 	oteltracer "go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 )
@@ -43,8 +45,12 @@ func (s *LocalPostsService) GetPosts(ctx context.Context) ([]model.PostResponseD
 
 	posts, err := s.repo.GetPosts(ctx)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "error get posts from repository")
 		if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
-			return nil, ErrOpFailed
+			return nil, repository.ErrNoRecord
+		} else {
+			return nil, err
 		}
 	}
 
@@ -61,14 +67,21 @@ func (s *LocalPostsService) GetById(ctx context.Context, id int) (*model.PostRes
 	ctx, span := s.tracer.Start(ctx, "GetById.Service")
 	defer span.End()
 
+	span.SetAttributes(attribute.Int("post.id", id))
+
 	post, err := s.getPostFromCache(id)
 	if err != nil && errors.Is(err, redis.Nil) {
+		span.RecordError(err)
 		zap.L().Debug("Cache miss", zap.Int("id", id))
 
 		post, err = s.repo.GetById(ctx, id) // Get from db in case of cache miss
 		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, "failed to fetch post from repository")
 			if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
-				return nil, ErrOpFailed
+				return nil, repository.ErrNoRecord
+			} else {
+				return nil, err
 			}
 		}
 		go s.addToCache(post) // Add to cache on a separate goroutine asynchronously
@@ -82,10 +95,16 @@ func (s *LocalPostsService) GetPostsOfUser(ctx context.Context, id int) ([]model
 	ctx, span := s.tracer.Start(ctx, "GetPostsOfUser.Service")
 	defer span.End()
 
+	span.SetAttributes(attribute.Int("user.id", id))
+
 	posts, err := s.repo.GetPostsOfUser(ctx, id)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "failed to fetch posts of user from repository")
 		if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
-			return nil, ErrOpFailed
+			return nil, repository.ErrNoRecord
+		} else {
+			return nil, err
 		}
 	}
 
@@ -102,6 +121,10 @@ func (s *LocalPostsService) InsertPost(ctx context.Context, post model.PostCreat
 	ctx, span := s.tracer.Start(ctx, "InsertPost.Service")
 	defer span.End()
 
+	span.SetAttributes(attribute.Int("post.authorid", post.AuthorID),
+		attribute.String("post.title", post.Title),
+		attribute.String("post.body", post.Body))
+
 	newpost := model.Post{
 		Id:       s.repo.Count() + 1,
 		Title:    post.Title,
@@ -111,13 +134,15 @@ func (s *LocalPostsService) InsertPost(ctx context.Context, post model.PostCreat
 	}
 	err := s.repo.InsertPost(ctx, newpost)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "failed to insert new post in repository")
 		return err
 	}
 
 	return nil
 }
 
-// TODO: Improvement needed
+// TODO: Implement as per JSON merge patch
 func (s *LocalPostsService) UpdatePost(ctx context.Context, id int, post model.PostUpdateDTO) error {
 	ctx, span := s.tracer.Start(ctx, "UpdatePost.Service")
 	defer span.End()
@@ -139,8 +164,12 @@ func (s *LocalPostsService) DeletePost(ctx context.Context, id int) error {
 	ctx, span := s.tracer.Start(ctx, "GetUsers.Service")
 	defer span.End()
 
+	span.SetAttributes(attribute.Int("post.id", id))
+
 	err := s.repo.DeletePost(ctx, id)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "failed to delete post in repository")
 		return err
 	}
 

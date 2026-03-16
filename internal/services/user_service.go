@@ -10,6 +10,9 @@ import (
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
 	"github.com/redis/go-redis/v9"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
+	"go.opentelemetry.io/otel/trace"
 	oteltracer "go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 )
@@ -46,8 +49,12 @@ func (s *LocalUserService) GetUsers(ctx context.Context) ([]model.UserResponseDT
 
 	users, err := s.repo.GetUsers(ctx)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "error getting users from repository")
 		if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
-			return nil, ErrOpFailed
+			return nil, repository.ErrNoRecord
+		} else {
+			return nil, err
 		}
 	}
 
@@ -64,12 +71,17 @@ func (s *LocalUserService) GetById(ctx context.Context, id int) (*model.UserResp
 	ctx, span := s.tracer.Start(ctx, "GetById.Service")
 	defer span.End()
 
+	span.SetAttributes(attribute.Int("user.id", id))
+
 	user, err := s.getUserFromCache(id)
 	if err != nil && errors.Is(err, redis.Nil) {
+		span.RecordError(err)
 		zap.L().Debug("Cache miss", zap.Int("id", id))
 
 		user, err = s.repo.GetById(ctx, id) // Get from db in case of case miss
 		if errors.Is(err, repository.ErrNoRecord) || errors.Is(err, sql.ErrNoRows) {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, "failed to fetch user from repository")
 			return nil, repository.ErrNoRecord
 		}
 		go s.addToCache(user) // Add to cache on a separate goroutine asynchronously
@@ -83,6 +95,11 @@ func (s *LocalUserService) InsertUser(ctx context.Context, user model.UserCreate
 	ctx, span := s.tracer.Start(ctx, "InsertUser.InsertUser")
 	defer span.End()
 
+	span.SetAttributes(attribute.String("user.name", user.Name),
+		attribute.String("user.city", user.City),
+		attribute.String("user.state", user.State),
+		attribute.String("user.country", user.Country))
+
 	newuser := model.User{
 		Id:      s.repo.Count() + 1,
 		Name:    user.Name,
@@ -92,12 +109,15 @@ func (s *LocalUserService) InsertUser(ctx context.Context, user model.UserCreate
 	}
 	err := s.repo.InsertUser(ctx, newuser)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "error inserting user in repository")
 		return err
 	}
 
 	return nil
 }
 
+// TODO: Implement as per JSON merge patch
 func (s *LocalUserService) UpdateUser(ctx context.Context, id int, new model.UserUpdateDTO) error {
 	ctx, span := s.tracer.Start(ctx, "UpdateUser.UpdateUser")
 	defer span.End()
@@ -138,8 +158,12 @@ func (s *LocalUserService) DeleteUser(ctx context.Context, id int) error {
 	ctx, span := s.tracer.Start(ctx, "DeleteUser.Service")
 	defer span.End()
 
+	span.SetAttributes(attribute.Int("user.id", id))
+
 	err := s.repo.DeleteUser(ctx, id)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "error deleting user in repository")
 		return err
 	}
 
@@ -180,4 +204,13 @@ func (s *LocalUserService) getUserFromCache(id int) (*model.User, error) {
 	zap.L().Debug("Cache hit", zap.Int("id", id))
 
 	return user, nil
+}
+
+func HandleRepositoryError(span trace.Span, err error, resource string) {
+	span.RecordError(err)
+	if errors.Is(err, repository.ErrNoRecord) {
+		span.SetAttributes(attribute.Bool(resource+".found", false))
+	} else {
+		span.SetStatus(codes.Error, "internal server error")
+	}
 }
