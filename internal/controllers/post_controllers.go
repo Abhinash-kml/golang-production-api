@@ -3,13 +3,13 @@ package controller
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
 	"strconv"
 
 	model "github.com/abhinash-kml/go-api-server/internal/models"
-	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
 	service "github.com/abhinash-kml/go-api-server/internal/services"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 	oteltracer "go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 )
@@ -39,6 +39,8 @@ func (c *PostsController) GetPosts(w http.ResponseWriter, r *http.Request) {
 	cursor := r.URL.Query().Get("cursor")
 	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "error converting limit to integer")
 		SendProblemDetails(w, ProblemValidationError, []model.ProblemDetailsError{
 			{
 				Field:   "limit",
@@ -49,6 +51,7 @@ func (c *PostsController) GetPosts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if limit < 1 || limit > 100 {
+		span.SetStatus(codes.Error, "provided limit is out of range")
 		SendProblemDetails(w, ProblemValidationError, []model.ProblemDetailsError{
 			{
 				Field:   "limit",
@@ -59,11 +62,20 @@ func (c *PostsController) GetPosts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	span.SetAttributes(attribute.String("cursor", cursor), attribute.Int("limit", limit))
+
 	posts, _ := c.postservice.GetPosts(ctx) // No point of error handling here as empty row will return [] and 200 status
+	if len(posts) != 0 {
+		span.SetAttributes(attribute.Bool("posts.found", true), attribute.Int("posts.num", len(posts)))
+	} else {
+		span.SetAttributes(attribute.Bool("posts.found", false))
+	}
 	paginatedResponse := Paginate(posts, cursor, limit, "posts", "http://localhost")
 	encoder := json.NewEncoder(w)
 	encoder.SetIndent("", "    ")
-	encoder.Encode(paginatedResponse)
+	if err := encoder.Encode(paginatedResponse); err != nil {
+		span.RecordError(err)
+	}
 }
 
 func (c *PostsController) GetById(w http.ResponseWriter, r *http.Request) {
@@ -73,6 +85,8 @@ func (c *PostsController) GetById(w http.ResponseWriter, r *http.Request) {
 	idString := r.PathValue("id")
 	id, err := strconv.Atoi(idString)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "failed to convert provided id to integer")
 		SendProblemDetails(w, ProblemValidationError, []model.ProblemDetailsError{
 			{
 				Field:   "id",
@@ -83,14 +97,17 @@ func (c *PostsController) GetById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	span.SetAttributes(attribute.Int("post.id", id))
+
 	post, err := c.postservice.GetById(ctx, id)
 	if err != nil {
-		if errors.Is(err, repository.ErrNoRecord) {
-			SendProblemDetails(w, ProblemNotFound, nil, r.URL.String())
-			return
-		}
+		HandleServiceError(w, r, span, err, "post")
+		return
 	}
-	json.NewEncoder(w).Encode(post)
+
+	if err := json.NewEncoder(w).Encode(post); err != nil {
+		span.RecordError(err)
+	}
 }
 
 // Should this belong in posts controller or comments controller file ?
@@ -102,6 +119,8 @@ func (c *PostsController) GetCommentsOfPost(w http.ResponseWriter, r *http.Reque
 	postIdString := r.PathValue("id")
 	postId, err := strconv.Atoi(postIdString)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "failed to convert provided id to integer")
 		SendProblemDetails(w, ProblemValidationError, []model.ProblemDetailsError{
 			{
 				Field:   "id",
@@ -112,13 +131,18 @@ func (c *PostsController) GetCommentsOfPost(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
+	span.SetAttributes(attribute.Int("post.id", postId))
+
 	commentResponse, err := c.commentservice.GetCommentsOfPost(ctx, postId)
 	if err != nil {
-		SendProblemDetails(w, ProblemError, nil, r.URL.String())
+		HandleServiceError(w, r, span, err, "comments-of-post")
 		return
 	}
+
 	paginatedResponse := Paginate(commentResponse, "", 10, "users", "http://localhost:9000")
-	json.NewEncoder(w).Encode(paginatedResponse)
+	if err := json.NewEncoder(w).Encode(paginatedResponse); err != nil {
+		span.RecordError(err)
+	}
 }
 
 func (c *PostsController) PostPost(w http.ResponseWriter, r *http.Request) {
@@ -126,9 +150,20 @@ func (c *PostsController) PostPost(w http.ResponseWriter, r *http.Request) {
 	defer span.End()
 
 	incoming := model.PostCreateDTO{}
-	json.NewDecoder(r.Body).Decode(&incoming)
+	if err := json.NewDecoder(r.Body).Decode(&incoming); err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "failed to json decode postcreatedto")
+		return
+	}
+
+	span.SetAttributes(attribute.Int("post.authorid", incoming.AuthorID),
+		attribute.String("post.title", incoming.Title),
+		attribute.String("post.body", incoming.Body))
+
 	err := c.postservice.InsertPost(ctx, incoming)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "error inserting new post")
 		SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		return
 	}
@@ -136,6 +171,7 @@ func (c *PostsController) PostPost(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
+// TODO: Add span attributes as per json merge patch
 func (c *PostsController) PutPost(w http.ResponseWriter, r *http.Request) {
 	ctx, span := c.tracer.Start(context.Background(), "PutPost.Controller")
 	defer span.End()
@@ -151,6 +187,7 @@ func (c *PostsController) PutPost(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// TODO: Add span attributes as per json merge patch
 func (c *PostsController) PatchPost(w http.ResponseWriter, r *http.Request) {
 	ctx, span := c.tracer.Start(context.Background(), "PatchPost.Controller")
 	defer span.End()
@@ -171,13 +208,18 @@ func (c *PostsController) DeletePost(w http.ResponseWriter, r *http.Request) {
 	defer span.End()
 
 	incoming := model.PostDeleteDTO{}
-	json.NewDecoder(r.Body).Decode(&incoming)
+	if err := json.NewDecoder(r.Body).Decode(&incoming); err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "failed to json decode postdeletedto")
+		return
+	}
+
+	span.SetAttributes(attribute.Int("post.id", incoming.Id))
+
 	err := c.postservice.DeletePost(ctx, incoming.Id)
 	if err != nil {
-		if errors.Is(err, repository.ErrNoRecord) {
-			SendProblemDetails(w, ProblemNotFound, nil, r.URL.String())
-			return
-		}
+		HandleServiceError(w, r, span, err, "post")
+		return
 	}
 
 	w.WriteHeader(http.StatusNoContent)

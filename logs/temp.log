@@ -564,3 +564,26 @@
 {"level":"info","ts":"2026-03-16T02:17:39.132+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:62665","Method":"GET","Path":"GET /users"}
 {"level":"info","ts":"2026-03-16T02:17:39.351+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:62668","Method":"GET","Path":"GET /users"}
 {"level":"info","ts":"2026-03-16T02:17:39.531+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:62673","Method":"GET","Path":"GET /users"}
+{"level":"info","ts":"2026-03-16T02:46:45.173+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-16T02:46:47.175+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-16T02:47:47.053+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:62111","Method":"GET","Path":"GET /login"}
+{"level":"debug","ts":"2026-03-16T02:47:47.054+0530","caller":"servers/http.go:190","msg":"Access Token","Duration":10}
+{"level":"debug","ts":"2026-03-16T02:47:47.054+0530","caller":"servers/http.go:191","msg":"Refresh Token","Duration":10080}
+{"level":"debug","ts":"2026-03-16T02:47:47.055+0530","caller":"servers/http.go:227","msg":"Auth Response","Info":"{AccessToken:eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJteS1hcHAiLCJzdWIiOiIxMjMiLCJhdWQiOlsid3d3Lm15YXBwLmNvbSJdLCJleHAiOjE3NzM2MTAwNjcsIm5iZiI6MTc3MzYwOTQ2NywiaWF0IjoxNzczNjA5NDY3LCJqdGkiOiJ0ZXN0aWQifQ.RLPGtShGcmQ49Axy4uePCQCRxKOaksTLYxRZF35bI500h8XBOOS2h0yQgP9fopJtYhAd5cu_Iw8yrzxMxOW0xQ TokenType:Bearer ExpiresIn:10 RefreshToken:eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJteS1hcHAiLCJzdWIiOiIxMjMiLCJhdWQiOlsid3d3Lm15YXBwLmNvbSJdLCJleHAiOjE3NzQyMTQyNjcsIm5iZiI6MTc3MzYwOTQ2NywiaWF0IjoxNzczNjA5NDY3LCJqdGkiOiJ0ZXN0aWQifQ.LQr8ulAXnASt_yh027jp-PQICiQNzD-yXM116TB4D_J9HCH1NZQ8Zj6VvkNlHO7y8sc24TnQX4j_1Fm5I4RCXg Scope:null}"}
+{"level":"info","ts":"2026-03-16T02:48:21.183+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:60403","Method":"GET","Path":"GET /users"}
+{"level":"info","ts":"2026-03-16T02:48:30.541+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:51064","Method":"GET","Path":"GET /users"}
+{"level":"info","ts":"2026-03-16T02:50:23.714+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:54757","Method":"GET","Path":"GET /users"}
+{"level":"info","ts":"2026-03-16T02:51:12.180+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:62295","Method":"GET","Path":"GET /users"}
+{"level":"info","ts":"2026-03-16T02:54:16.140+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:54052","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-03-16T02:54:16.143+0530","caller":"services/user_service.go:69","msg":"Cache miss","id":40}
+{"level":"info","ts":"2026-03-16T02:54:21.385+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:54139","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-03-16T02:54:21.389+0530","caller":"services/user_service.go:69","msg":"Cache miss","id":400}
+{"level":"info","ts":"2026-03-16T03:13:21.792+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:57702","Method":"GET","Path":"GET /login"}
+{"level":"debug","ts":"2026-03-16T03:13:21.793+0530","caller":"servers/http.go:190","msg":"Access Token","Duration":10}
+{"level":"debug","ts":"2026-03-16T03:13:21.793+0530","caller":"servers/http.go:191","msg":"Refresh Token","Duration":10080}
+{"level":"debug","ts":"2026-03-16T03:13:21.793+0530","caller":"servers/http.go:227","msg":"Auth Response","Info":"{AccessToken:eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJteS1hcHAiLCJzdWIiOiIxMjMiLCJhdWQiOlsid3d3Lm15YXBwLmNvbSJdLCJleHAiOjE3NzM2MTE2MDEsIm5iZiI6MTc3MzYxMTAwMSwiaWF0IjoxNzczNjExMDAxLCJqdGkiOiJ0ZXN0aWQifQ.V1sXZvO5JPblMJqD_1NNg1rcTITFmUGkzrw-Ha2MNHFaaFewaw0o9IzeZztfXp9VK7yg80cUi7-skylcgFlN2Q TokenType:Bearer ExpiresIn:10 RefreshToken:eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJteS1hcHAiLCJzdWIiOiIxMjMiLCJhdWQiOlsid3d3Lm15YXBwLmNvbSJdLCJleHAiOjE3NzQyMTU4MDEsIm5iZiI6MTc3MzYxMTAwMSwiaWF0IjoxNzczNjExMDAxLCJqdGkiOiJ0ZXN0aWQifQ._Lb1qlA7yyiGLP4AMugVY1tZF5YSwRyvikZy1qBlggSxfBENKQ0D-tqF1DkCM_UyGe-bUkrICjvmyloozfF4Iw Scope:null}"}
+{"level":"info","ts":"2026-03-16T03:13:45.505+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:57462","Method":"GET","Path":"GET /users"}
+{"level":"info","ts":"2026-03-16T03:13:49.313+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:57591","Method":"GET","Path":"GET /users"}
+{"level":"info","ts":"2026-03-16T03:14:01.633+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:57912","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-03-16T03:14:01.636+0530","caller":"services/user_service.go:69","msg":"Cache miss","id":400}
+{"level":"info","ts":"2026-03-16T03:14:10.887+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:58066","Method":"GET","Path":"GET /users"}

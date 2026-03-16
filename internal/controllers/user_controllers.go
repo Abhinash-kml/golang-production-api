@@ -68,6 +68,7 @@ func (c *UsersController) GetUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if limit < 1 || limit > 10 {
+		span.SetStatus(codes.Error, "provided limit is out of range")
 		SendProblemDetails(w, ProblemValidationError, []model.ProblemDetailsError{
 			{
 				Field:   "limit",
@@ -96,9 +97,7 @@ func (c *UsersController) GetUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *UsersController) GetById(w http.ResponseWriter, r *http.Request) {
-	ctx, span := c.tracer.Start(r.Context(), "GetById.Controller", trace.WithAttributes(
-		attribute.String("http.method", r.Method),
-	))
+	ctx, span := c.tracer.Start(r.Context(), "GetById.Controller")
 	defer span.End()
 
 	idString := r.PathValue("id")
@@ -119,16 +118,10 @@ func (c *UsersController) GetById(w http.ResponseWriter, r *http.Request) {
 
 	user, err := c.userservice.GetById(ctx, id)
 	if err != nil {
-		span.RecordError(err)
-		if errors.Is(err, repository.ErrNoRecord) {
-			span.SetAttributes(attribute.Bool("user.found", false))
-			SendProblemDetails(w, ProblemNotFound, nil, r.URL.String())
-		} else {
-			span.SetStatus(codes.Error, "internal server error")
-			SendProblemDetails(w, ProblemError, nil, r.URL.String())
-		}
+		HandleServiceError(w, r, span, err, "user")
 		return
 	}
+
 	span.SetAttributes(attribute.Bool("user.found", true))
 
 	if err := json.NewEncoder(w).Encode(user); err != nil {
@@ -138,9 +131,7 @@ func (c *UsersController) GetById(w http.ResponseWriter, r *http.Request) {
 
 // GET /users/xxx-xxx-xxx/posts?limit=x
 func (c *UsersController) GetPostsOfUser(w http.ResponseWriter, r *http.Request) {
-	ctx, span := c.tracer.Start(r.Context(), "GetPostsOfUser.Controller", trace.WithAttributes(
-		attribute.String("http.method", r.Method),
-	))
+	ctx, span := c.tracer.Start(r.Context(), "GetPostsOfUser.Controller")
 	defer span.End()
 
 	userString := r.PathValue("id")
@@ -157,22 +148,20 @@ func (c *UsersController) GetPostsOfUser(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	span.SetAttributes(attribute.Int("id", userId))
+	span.SetAttributes(attribute.Int("user.id", userId))
 
 	postResponse, err := c.postservice.GetPostsOfUser(ctx, userId)
 	if err != nil {
-		span.RecordError(err)
-		if errors.Is(err, repository.ErrNoRecord) {
-			span.SetAttributes(attribute.Bool("posts.found", false))
-			SendProblemDetails(w, ProblemNotFound, nil, r.URL.String())
-		} else {
-			span.SetStatus(codes.Error, "internal server error")
-			SendProblemDetails(w, ProblemError, nil, r.URL.String())
-		}
+		HandleServiceError(w, r, span, err, "user-post")
 		return
 	}
+
+	span.SetAttributes(attribute.Bool("user-post.found", true))
+
 	paginatedResponse := Paginate(postResponse, "", 10, "users", "http://localhost:9000")
-	json.NewEncoder(w).Encode(paginatedResponse)
+	if err := json.NewEncoder(w).Encode(paginatedResponse); err != nil {
+		span.RecordError(err)
+	}
 }
 
 func (c *UsersController) PostUser(w http.ResponseWriter, r *http.Request) {
@@ -180,9 +169,21 @@ func (c *UsersController) PostUser(w http.ResponseWriter, r *http.Request) {
 	defer span.End()
 
 	user := model.UserCreateDTO{}
-	json.NewDecoder(r.Body).Decode(&user)
+	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "json decoding usercreatedto failed")
+		return
+	}
+
+	span.SetAttributes(attribute.String("user.name", user.Name),
+		attribute.String("user.city", user.City),
+		attribute.String("user.state", user.State),
+		attribute.String("user.country", user.Country))
+
 	err := c.userservice.InsertUser(ctx, user)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "error inserting new user")
 		SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		return
 	}
@@ -190,6 +191,7 @@ func (c *UsersController) PostUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
+// TODO: Add spans as per json merge patch
 func (c *UsersController) PatchUser(w http.ResponseWriter, r *http.Request) {
 	ctx, span := c.tracer.Start(context.Background(), "PatchUser.Controller")
 	defer span.End()
@@ -207,6 +209,7 @@ func (c *UsersController) PatchUser(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("OK"))
 }
 
+// TODO: Add spans as per json merge patch
 func (c *UsersController) PutUser(w http.ResponseWriter, r *http.Request) {
 	ctx, span := c.tracer.Start(context.Background(), "PutUser.Controller")
 	defer span.End()
@@ -227,9 +230,18 @@ func (c *UsersController) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	defer span.End()
 
 	deleteuser := model.UserDeleteDTO{}
-	json.NewDecoder(r.Body).Decode(&deleteuser)
+	if err := json.NewDecoder(r.Body).Decode(&deleteuser); err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "json decoding userdeletedto failed")
+		return
+	}
+
+	span.SetAttributes(attribute.Int("user.id", deleteuser.Id))
+
 	err := c.userservice.DeleteUser(ctx, deleteuser.Id)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "failed to delete user")
 		SendProblemDetails(w, ProblemNotFound, nil, r.URL.String())
 		return
 	}
@@ -356,4 +368,15 @@ func SendProblemDetailsCustom(w http.ResponseWriter, Type, title, details, insta
 	w.WriteHeader(status)
 
 	json.NewEncoder(w).Encode(reponse)
+}
+
+func HandleServiceError(w http.ResponseWriter, r *http.Request, span trace.Span, err error, resource string) {
+	span.RecordError(err)
+	if errors.Is(err, repository.ErrNoRecord) {
+		span.SetAttributes(attribute.Bool(resource+".found", false))
+		SendProblemDetails(w, ProblemNotFound, nil, r.URL.String())
+	} else {
+		span.SetStatus(codes.Error, "internal server error")
+		SendProblemDetails(w, ProblemError, nil, r.URL.String())
+	}
 }
