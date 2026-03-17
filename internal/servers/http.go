@@ -12,11 +12,13 @@ import (
 
 	"github.com/abhinash-kml/go-api-server/config"
 	controller "github.com/abhinash-kml/go-api-server/internal/controllers"
-	m "github.com/abhinash-kml/go-api-server/internal/middlewares"
+	"github.com/abhinash-kml/go-api-server/internal/middlewares"
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	"github.com/abhinash-kml/go-api-server/internal/realtime"
 	"github.com/abhinash-kml/go-api-server/pkg/util"
 	"github.com/gorilla/websocket"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+	"go.opentelemetry.io/otel"
 	"go.uber.org/zap"
 )
 
@@ -70,12 +72,17 @@ func NewHttpWithConfig(config *config.HttpConfig, authConfig *config.AuthTokenCo
 		option(wrapper)
 	}
 
+	// Handler has been provided externally, just wrap it with otelhttp handler
 	if wrapper.mux != nil {
-		wrapper.server.Handler = wrapper.mux
-	} else {
+		wrappedHandler := otelhttp.NewHandler(wrapper.mux, "api-server")
+		wrapper.server.Handler = wrappedHandler
+	} else { // Handler has not been provided externally, create a default one, wrap it with otelhttp handler
 		defaultmux := http.NewServeMux()
+
+		// Wrap it in otelhttp handler
+		wrappedHandler := otelhttp.NewHandler(defaultmux, "api-server")
 		wrapper.mux = defaultmux
-		wrapper.server.Handler = wrapper.mux
+		wrapper.server.Handler = wrappedHandler
 	}
 
 	return wrapper
@@ -176,6 +183,9 @@ func WithHub(hub *realtime.Hub) FunctionalOption {
 }
 
 func (s *CustomHttpServer) SetupDefaultRoutes() error {
+	tracer := otel.Tracer("middlewares")
+	m := middlewares.NewMiddlewareProvider(tracer)
+
 	// Token routes
 	s.mux.Handle("GET /login", m.CompileHandlers(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		accessTokenDuration, err := time.ParseDuration(s.authConfig.AccessToken.Expiration)

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/abhinash-kml/go-api-server/pkg/ratelimiter"
+	"go.opentelemetry.io/otel/attribute"
 )
 
 var limiter = ratelimiter.FixedWindowLimiter{
@@ -13,13 +14,20 @@ var limiter = ratelimiter.FixedWindowLimiter{
 	Table:          make(map[string]*ratelimiter.ClientInfo),
 }
 
-func RateLimit(next http.Handler) http.Handler {
+func (m *MiddlewareProvider) RateLimit(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx, span := m.tracer.Start(r.Context(), "middleware.RateLimit")
+		defer span.End()
+
 		// Rate limit logic
 		if !limiter.Allow(r.RemoteAddr) {
+			span.SetAttributes(attribute.Bool("ratelimited", true))
 			http.Error(w, "Rate Limited", http.StatusTooManyRequests)
+			return
 		}
 
-		next.ServeHTTP(w, r)
+		span.SetAttributes(attribute.Bool("ratelimited", false))
+
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
