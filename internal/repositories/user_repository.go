@@ -17,10 +17,7 @@ import (
 
 var (
 	ErrSetupFailed     = errors.New("Repository setup failed")
-	ErrNoUsers         = errors.New("No user in repository")
-	ErrUndefinedUsers  = errors.New("Undefined users")
 	ErrZeroLengthSlice = errors.New("Provided slice is of zero length")
-	ErrUserDoesntExist = errors.New("Provided users doesn't exist")
 	ErrNoRecord        = errors.New("No record in database")
 )
 
@@ -73,6 +70,7 @@ func (e *InMemoryUsersRepository) GetUsers(ctx context.Context) ([]model.User, e
 	defer span.End()
 
 	if len(e.users) <= 0 {
+		span.SetAttributes(attribute.Bool("users.found", true))
 		span.SetStatus(codes.Error, "failed to fetch users in repository")
 		return nil, ErrNoRecord
 	}
@@ -94,6 +92,8 @@ func (e *InMemoryUsersRepository) GetById(ctx context.Context, id int) (*model.U
 		}
 	}
 
+	span.SetAttributes(attribute.Bool("user.found", false))
+	span.SetStatus(codes.Error, "failed to fetch user in repoitory")
 	return nil, ErrNoRecord
 }
 
@@ -112,6 +112,7 @@ func (e *InMemoryUsersRepository) InsertUser(ctx context.Context, user model.Use
 	return nil
 }
 
+// TODO: Implement as per JSON Merge Patch
 func (e *InMemoryUsersRepository) UpdateUser(ctx context.Context, id int, user model.User) error {
 	ctx, span := e.tracer.Start(ctx, "UpdateUser.Repository")
 	defer span.End()
@@ -132,16 +133,21 @@ func (e *InMemoryUsersRepository) DeleteUser(ctx context.Context, id int) error 
 
 	span.SetAttributes(attribute.Int("user.id", id))
 
-	users := slices.DeleteFunc(e.users, func(u model.User) bool {
+	oldlen := len(e.users)
+	e.users = slices.DeleteFunc(e.users, func(u model.User) bool {
 		if u.Id == id {
 			return true
 		}
 
-		span.SetStatus(codes.Error, "failed to delete user from repository")
 		return false
 	})
+	newlen := len(e.users)
 
-	e.users = users
+	if newlen != oldlen {
+		span.SetAttributes(attribute.Bool("user.deleted", true))
+	} else {
+		span.SetAttributes(attribute.Bool("user.deleted", false))
+	}
 	return nil
 }
 

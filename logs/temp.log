@@ -587,3 +587,11 @@
 {"level":"info","ts":"2026-03-16T03:14:01.633+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:57912","Method":"GET","Path":"GET /users/{id}"}
 {"level":"debug","ts":"2026-03-16T03:14:01.636+0530","caller":"services/user_service.go:69","msg":"Cache miss","id":400}
 {"level":"info","ts":"2026-03-16T03:14:10.887+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:58066","Method":"GET","Path":"GET /users"}
+{"level":"info","ts":"2026-03-16T09:42:29.781+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-16T09:42:31.831+0530","caller":"servers/http.go:391","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-16T09:42:42.463+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:50182","Method":"GET","Path":"GET /login"}
+{"level":"debug","ts":"2026-03-16T09:42:42.463+0530","caller":"servers/http.go:190","msg":"Access Token","Duration":10}
+{"level":"debug","ts":"2026-03-16T09:42:42.464+0530","caller":"servers/http.go:191","msg":"Refresh Token","Duration":10080}
+{"level":"debug","ts":"2026-03-16T09:42:42.464+0530","caller":"servers/http.go:227","msg":"Auth Response","Info":"{AccessToken:eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJteS1hcHAiLCJzdWIiOiIxMjMiLCJhdWQiOlsid3d3Lm15YXBwLmNvbSJdLCJleHAiOjE3NzM2MzQ5NjIsIm5iZiI6MTc3MzYzNDM2MiwiaWF0IjoxNzczNjM0MzYyLCJqdGkiOiJ0ZXN0aWQifQ.L-F_Y1GaOlJ4V69Cqzj7YukLLOg6_7QZ5URgog1fXrTRUPb7caYbscYX0fHVthPulDA_oIiovjSbCxSEDqpjFQ TokenType:Bearer ExpiresIn:10 RefreshToken:eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJteS1hcHAiLCJzdWIiOiIxMjMiLCJhdWQiOlsid3d3Lm15YXBwLmNvbSJdLCJleHAiOjE3NzQyMzkxNjIsIm5iZiI6MTc3MzYzNDM2MiwiaWF0IjoxNzczNjM0MzYyLCJqdGkiOiJ0ZXN0aWQifQ.XGRgxkgl2hEGg6smO-Iql8UWLQD-jJtLWuUuymzPZ4TvmWANoFiypeivKJr9y1s-9wNfGrF73vk3mj3hkxXtmw Scope:null}"}
+{"level":"info","ts":"2026-03-16T09:43:22.331+0530","caller":"middlewares/logging.go:23","msg":"Connection","IP":"127.0.0.1:53319","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-03-16T09:43:22.334+0530","caller":"services/user_service.go:79","msg":"Cache miss","id":400}

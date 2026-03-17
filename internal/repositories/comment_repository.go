@@ -3,20 +3,15 @@ package repository
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"log"
 	"os"
 	"slices"
 
 	model "github.com/abhinash-kml/go-api-server/internal/models"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 	oteltracer "go.opentelemetry.io/otel/trace"
-)
-
-var (
-	ErrNoComments         = errors.New("No user in repository")
-	ErrUndefinedComments  = errors.New("Undefined users")
-	ErrCommentDoesntExist = errors.New("Provided users doesn't exist")
 )
 
 type CommentRepository interface {
@@ -65,8 +60,12 @@ func (e *InMemoryCommentRepository) GetComments(ctx context.Context) ([]model.Co
 	defer span.End()
 
 	if len(e.comments) <= 0 {
-		return nil, ErrNoComments
+		span.SetAttributes(attribute.Bool("comments.found", false))
+		span.SetStatus(codes.Error, "failed to fetch comments in repository")
+		return nil, ErrNoRecord
 	}
+
+	span.SetAttributes(attribute.Bool("comments.found", true), attribute.Int("comments.num", len(e.comments)))
 
 	return e.comments, nil
 }
@@ -75,18 +74,23 @@ func (e *InMemoryCommentRepository) GetById(ctx context.Context, id int) (*model
 	ctx, span := e.tracer.Start(ctx, "GetById.Repository")
 	defer span.End()
 
+	span.SetAttributes(attribute.Int("comment.id", id))
+
 	for _, value := range e.comments {
 		if value.Id == id {
 			return &value, nil
 		}
 	}
 
+	span.SetAttributes(attribute.Bool("comment.found", false))
 	return nil, ErrNoRecord
 }
 
 func (e *InMemoryCommentRepository) GetCommentsOfPost(ctx context.Context, id int) ([]model.Comment, error) {
 	ctx, span := e.tracer.Start(ctx, "GetCommentsOfPost.Repository")
 	defer span.End()
+
+	span.SetAttributes(attribute.Int("post.id", id))
 
 	var comments []model.Comment
 
@@ -97,8 +101,12 @@ func (e *InMemoryCommentRepository) GetCommentsOfPost(ctx context.Context, id in
 	}
 
 	if len(comments) < 1 {
-		return nil, ErrNoComments
+		span.SetAttributes(attribute.Bool("comments.found", false))
+		span.SetStatus(codes.Error, "failed to fetch comments of post in repository")
+		return nil, ErrNoRecord
 	}
+
+	span.SetAttributes(attribute.Bool("comments.found", true))
 
 	return comments, nil
 }
@@ -107,7 +115,14 @@ func (e *InMemoryCommentRepository) InsertComment(ctx context.Context, comment m
 	ctx, span := e.tracer.Start(ctx, "InsertComment.Repository")
 	defer span.End()
 
+	span.SetAttributes(attribute.Int("comment.id", comment.Id),
+		attribute.Int("comment.postid", comment.PostId),
+		attribute.Int("comment.authorid", comment.AuthorID),
+		attribute.String("comment.body", comment.Body))
+
 	e.comments = append(e.comments, comment)
+
+	span.SetAttributes(attribute.Bool("comment.inserted", true))
 	return nil
 }
 
@@ -115,10 +130,9 @@ func (e *InMemoryCommentRepository) DeleteComment(ctx context.Context, id int) e
 	ctx, span := e.tracer.Start(ctx, "DeleteComment.Repository")
 	defer span.End()
 
-	if len(e.comments) <= 0 {
-		return ErrNoComments
-	}
+	span.SetAttributes(attribute.Int("comment.id", id))
 
+	oldlen := len(e.comments)
 	e.comments = slices.DeleteFunc(e.comments, func(e model.Comment) bool {
 		if e.Id == id {
 			return true
@@ -126,10 +140,18 @@ func (e *InMemoryCommentRepository) DeleteComment(ctx context.Context, id int) e
 
 		return false
 	})
+	newlen := len(e.comments)
+
+	if newlen != oldlen {
+		span.SetAttributes(attribute.Bool("comment.deleted", true))
+	} else {
+		span.SetAttributes(attribute.Bool("comment.deleted", false))
+	}
 
 	return nil
 }
 
+// TODO: Implement as per JSON Merge patch
 func (e *InMemoryCommentRepository) UpdateComment(ctx context.Context, id int, comment model.Comment) error {
 	ctx, span := e.tracer.Start(ctx, "UpdateComment.Repository")
 	defer span.End()

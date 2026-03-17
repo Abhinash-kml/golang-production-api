@@ -10,6 +10,8 @@ import (
 	"slices"
 
 	model "github.com/abhinash-kml/go-api-server/internal/models"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 	oteltracer "go.opentelemetry.io/otel/trace"
 )
 
@@ -60,8 +62,12 @@ func (e *InMemoryPostsRepository) GetPosts(ctx context.Context) ([]model.Post, e
 	defer span.End()
 
 	if len(e.posts) <= 0 {
-		return nil, ErrNoPosts
+		span.SetAttributes(attribute.Bool("posts.found", false))
+		span.SetStatus(codes.Error, "failed to fetch posts in repository")
+		return nil, ErrNoRecord
 	}
+
+	span.SetAttributes(attribute.Bool("posts.found", true), attribute.Int("posts.num", len(e.posts)))
 
 	return e.posts, nil
 }
@@ -70,18 +76,24 @@ func (e *InMemoryPostsRepository) GetById(ctx context.Context, id int) (*model.P
 	ctx, span := e.tracer.Start(ctx, "GetById.Repository")
 	defer span.End()
 
+	span.SetAttributes(attribute.Int("post.id", id))
+
 	for _, value := range e.posts {
 		if value.Id == id {
 			return &value, nil
 		}
 	}
 
+	span.SetAttributes(attribute.Bool("post.found", false))
+	span.SetStatus(codes.Error, "failed to fetch post in repository")
 	return nil, ErrNoRecord
 }
 
 func (e *InMemoryPostsRepository) GetPostsOfUser(ctx context.Context, id int) ([]model.Post, error) {
 	ctx, span := e.tracer.Start(ctx, "GetPostsOfUser.Repository")
 	defer span.End()
+
+	span.SetAttributes(attribute.Int("user.id", id))
 
 	var posts []model.Post
 	for _, value := range e.posts {
@@ -91,9 +103,12 @@ func (e *InMemoryPostsRepository) GetPostsOfUser(ctx context.Context, id int) ([
 	}
 
 	if len(posts) < 1 {
-		return nil, ErrNoPosts
+		span.SetAttributes(attribute.Bool("posts.found", false))
+		span.SetStatus(codes.Error, "failed to fetch posts of user in repository")
+		return nil, ErrNoRecord
 	}
 
+	span.SetAttributes(attribute.Bool("posts.found", true), attribute.Int("posts.num", len(posts)))
 	return posts, nil
 }
 
@@ -101,7 +116,16 @@ func (e *InMemoryPostsRepository) InsertPost(ctx context.Context, post model.Pos
 	ctx, span := e.tracer.Start(ctx, "InsertPost.Repository")
 	defer span.End()
 
+	span.SetAttributes(attribute.Int("post.id", post.Id),
+		attribute.Int("post.authorid", post.AuthorID),
+		attribute.String("post.title", post.Title),
+		attribute.String("post.body", post.Body),
+		attribute.Int("post.likes", post.Likes),
+		attribute.Int("post.created_at", int(post.CreatedAt.Unix())))
+
 	e.posts = append(e.posts, post)
+
+	span.SetAttributes(attribute.Bool("post.inserted", true))
 
 	return nil
 }
@@ -110,6 +134,9 @@ func (e *InMemoryPostsRepository) DeletePost(ctx context.Context, id int) error 
 	ctx, span := e.tracer.Start(ctx, "DeletePost.Repository")
 	defer span.End()
 
+	span.SetAttributes(attribute.Int("post.id", id))
+
+	oldlen := len(e.posts)
 	e.posts = slices.DeleteFunc(e.posts, func(post model.Post) bool {
 		if post.Id == id {
 			return true
@@ -117,6 +144,13 @@ func (e *InMemoryPostsRepository) DeletePost(ctx context.Context, id int) error 
 
 		return false
 	})
+	newlen := len(e.posts)
+
+	if newlen != oldlen {
+		span.SetAttributes(attribute.Bool("post.deleted", true))
+	} else {
+		span.SetAttributes(attribute.Bool("post.deleted", false))
+	}
 
 	return nil
 }
