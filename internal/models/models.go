@@ -1,6 +1,7 @@
 package model
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -34,9 +35,8 @@ type UserDeleteDTO struct {
 }
 
 type UserUpdateDTO struct {
-	Id      int    `json:"id"`
-	What    string `json:"what"`
-	NewData string `json:"newdata"`
+	Id    int             `json:"id"`
+	Patch json.RawMessage `json:"patch"`
 }
 
 type UserReplaceDTO struct {

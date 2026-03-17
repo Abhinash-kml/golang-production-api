@@ -10,9 +10,11 @@ import (
 	"slices"
 
 	model "github.com/abhinash-kml/go-api-server/internal/models"
+	jsonpatch "github.com/evanphx/json-patch/v5"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	oteltracer "go.opentelemetry.io/otel/trace"
+	"go.uber.org/zap"
 )
 
 var (
@@ -29,7 +31,7 @@ type UserRepository interface {
 	GetUsers(context.Context) ([]model.User, error)
 	GetById(context.Context, int) (*model.User, error)
 	InsertUser(context.Context, model.User) error
-	UpdateUser(context.Context, int, model.User) error
+	UpdateUser(context.Context, int, model.UserUpdateDTO) error
 	DeleteUser(context.Context, int) error
 	Count() int
 }
@@ -86,9 +88,10 @@ func (e *InMemoryUsersRepository) GetById(ctx context.Context, id int) (*model.U
 
 	span.SetAttributes(attribute.Int("user.id", id))
 
-	for _, value := range e.users {
-		if value.Id == id {
-			return &value, nil
+	for index := range e.users {
+		if e.users[index].Id == id {
+			zap.L().Info("Repository", zap.Any("address", &e.users[index]))
+			return &e.users[index], nil
 		}
 	}
 
@@ -113,13 +116,60 @@ func (e *InMemoryUsersRepository) InsertUser(ctx context.Context, user model.Use
 }
 
 // TODO: Implement as per JSON Merge Patch
-func (e *InMemoryUsersRepository) UpdateUser(ctx context.Context, id int, user model.User) error {
+func (e *InMemoryUsersRepository) UpdateUser(ctx context.Context, id int, user model.UserUpdateDTO) error {
 	ctx, span := e.tracer.Start(ctx, "UpdateUser.Repository")
 	defer span.End()
 
+	patches, err := jsonpatch.DecodePatch(user.Patch)
+	if err != nil {
+		return errors.New("Failed to decode json patch")
+	}
+
+	var updatedUser *model.User
+
 	for index := range e.users {
 		if e.users[index].Id == id {
-			e.users[index] = user
+			updatedUser = &e.users[index]
+			break
+		}
+	}
+
+	for index := range patches {
+		currentpatch := patches[index]
+		op := currentpatch.Kind()
+		fmt.Println("kind:", op)
+		switch op {
+		case "add":
+		case "remove":
+		case "replace":
+			what, _ := currentpatch.Path()
+			fmt.Println("path:", what)
+			switch what {
+			case "/name":
+				iface, _ := currentpatch.ValueInterface()
+				val, _ := iface.(string)
+				updatedUser.Name = val
+			case "/city":
+				iface, _ := currentpatch.ValueInterface()
+				val, _ := iface.(string)
+				fmt.Println("Value:", val)
+				updatedUser.City = val
+			case "/state":
+				iface, _ := currentpatch.ValueInterface()
+				val, _ := iface.(string)
+				updatedUser.State = val
+			case "/country":
+				iface, _ := currentpatch.ValueInterface()
+				val, _ := iface.(string)
+				updatedUser.Country = val
+			}
+		}
+	}
+
+	for index := range e.users {
+		if e.users[index].Id == id {
+			//e.users[index] = updatedUser
+			fmt.Println(e.users[index])
 			break
 		}
 	}

@@ -638,3 +638,73 @@
 {"level":"debug","ts":"2026-03-18T03:03:12.364+0530","caller":"services/user_service.go:204","msg":"Cache hit","id":50}
 {"level":"info","ts":"2026-03-18T03:03:16.629+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:61094","Method":"GET","Path":"GET /users/{id}"}
 {"level":"debug","ts":"2026-03-18T03:03:16.631+0530","caller":"services/user_service.go:79","msg":"Cache miss","id":500}
+{"level":"info","ts":"2026-03-18T03:32:07.993+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-18T03:32:09.995+0530","caller":"servers/http.go:401","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-18T03:32:20.421+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:57349","Method":"GET","Path":"GET /login"}
+{"level":"debug","ts":"2026-03-18T03:32:20.421+0530","caller":"servers/http.go:200","msg":"Access Token","Duration":10}
+{"level":"debug","ts":"2026-03-18T03:32:20.421+0530","caller":"servers/http.go:201","msg":"Refresh Token","Duration":10080}
+{"level":"debug","ts":"2026-03-18T03:32:20.421+0530","caller":"servers/http.go:237","msg":"Auth Response","Info":"{AccessToken:eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJteS1hcHAiLCJzdWIiOiIxMjMiLCJhdWQiOlsid3d3Lm15YXBwLmNvbSJdLCJleHAiOjE3NzM3ODU1NDAsIm5iZiI6MTc3Mzc4NDk0MCwiaWF0IjoxNzczNzg0OTQwLCJqdGkiOiJ0ZXN0aWQifQ.hk7PL86tcrTyq57d1H__BrTEvxpzB5kdkpeXHiffbN2i37_KcLJArmAjKS3J9PJr7hj5qzlTEdSH4W1GrV50OQ TokenType:Bearer ExpiresIn:10 RefreshToken:eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJteS1hcHAiLCJzdWIiOiIxMjMiLCJhdWQiOlsid3d3Lm15YXBwLmNvbSJdLCJleHAiOjE3NzQzODk3NDAsIm5iZiI6MTc3Mzc4NDk0MCwiaWF0IjoxNzczNzg0OTQwLCJqdGkiOiJ0ZXN0aWQifQ.DueK_XqTlL2JE76B0K-nCcB01_sYe0lryTR2qDvdOCMwJ34erwLm9VChtJIpaXGQJxv5s_v0xzrA6scU8fajuw Scope:null}"}
+{"level":"info","ts":"2026-03-18T03:32:40.724+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:57682","Method":"GET","Path":"GET /users"}
+{"level":"info","ts":"2026-03-18T04:45:52.241+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-18T04:45:54.243+0530","caller":"servers/http.go:401","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-18T04:46:06.655+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:63607","Method":"GET","Path":"GET /login"}
+{"level":"debug","ts":"2026-03-18T04:46:06.656+0530","caller":"servers/http.go:200","msg":"Access Token","Duration":10}
+{"level":"debug","ts":"2026-03-18T04:46:06.656+0530","caller":"servers/http.go:201","msg":"Refresh Token","Duration":10080}
+{"level":"debug","ts":"2026-03-18T04:46:06.656+0530","caller":"servers/http.go:237","msg":"Auth Response","Info":"{AccessToken:eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJteS1hcHAiLCJzdWIiOiIxMjMiLCJhdWQiOlsid3d3Lm15YXBwLmNvbSJdLCJleHAiOjE3NzM3ODk5NjYsIm5iZiI6MTc3Mzc4OTM2NiwiaWF0IjoxNzczNzg5MzY2LCJqdGkiOiJ0ZXN0aWQifQ.qW9UxK3S-qj528znfBo5GghBC2VsYXjl0rRvk6BqtwdpmnCsFAHym4Ru0iRhXTpoSAJbNC2HkWe8LZ4EfqzB7w TokenType:Bearer ExpiresIn:10 RefreshToken:eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJteS1hcHAiLCJzdWIiOiIxMjMiLCJhdWQiOlsid3d3Lm15YXBwLmNvbSJdLCJleHAiOjE3NzQzOTQxNjYsIm5iZiI6MTc3Mzc4OTM2NiwiaWF0IjoxNzczNzg5MzY2LCJqdGkiOiJ0ZXN0aWQifQ.u5e5OdWngiV8k_wmCBge8eBV_GT2s5HCtdsTT8quRtl3gJcAkK9AMRTKfjorktuC2PgOybAZqKz3gzRy_0hpYQ Scope:null}"}
+{"level":"info","ts":"2026-03-18T04:46:23.327+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:63880","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-03-18T04:46:23.329+0530","caller":"services/user_service.go:180","msg":"Cache hit","id":50}
+{"level":"info","ts":"2026-03-18T04:50:53.776+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:50666","Method":"PATCH","Path":"PATCH /users"}
+{"level":"info","ts":"2026-03-18T04:51:29.833+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:51272","Method":"PATCH","Path":"PATCH /users"}
+{"level":"info","ts":"2026-03-18T04:52:52.723+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-18T04:52:54.725+0530","caller":"servers/http.go:401","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-18T04:53:08.516+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:53101","Method":"PATCH","Path":"PATCH /users"}
+{"level":"info","ts":"2026-03-18T04:55:06.222+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-18T04:55:08.224+0530","caller":"servers/http.go:401","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-18T04:55:11.593+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:55148","Method":"PATCH","Path":"PATCH /users"}
+{"level":"info","ts":"2026-03-18T04:57:07.795+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:57068","Method":"PATCH","Path":"PATCH /users"}
+{"level":"info","ts":"2026-03-18T04:57:18.555+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:57243","Method":"GET","Path":"GET /login"}
+{"level":"debug","ts":"2026-03-18T04:57:18.555+0530","caller":"servers/http.go:200","msg":"Access Token","Duration":10}
+{"level":"debug","ts":"2026-03-18T04:57:18.556+0530","caller":"servers/http.go:201","msg":"Refresh Token","Duration":10080}
+{"level":"debug","ts":"2026-03-18T04:57:18.556+0530","caller":"servers/http.go:237","msg":"Auth Response","Info":"{AccessToken:eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJteS1hcHAiLCJzdWIiOiIxMjMiLCJhdWQiOlsid3d3Lm15YXBwLmNvbSJdLCJleHAiOjE3NzM3OTA2MzgsIm5iZiI6MTc3Mzc5MDAzOCwiaWF0IjoxNzczNzkwMDM4LCJqdGkiOiJ0ZXN0aWQifQ.qPT8PGbOROKoxkUueBlpFOX303dJ7bJbBrv4EgFkoyu3d4BPz_RyV6GKMSXOAwvgWeTA0vTNdboRYLA7P_tppw TokenType:Bearer ExpiresIn:10 RefreshToken:eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJteS1hcHAiLCJzdWIiOiIxMjMiLCJhdWQiOlsid3d3Lm15YXBwLmNvbSJdLCJleHAiOjE3NzQzOTQ4MzgsIm5iZiI6MTc3Mzc5MDAzOCwiaWF0IjoxNzczNzkwMDM4LCJqdGkiOiJ0ZXN0aWQifQ.YQZ-jTSl2taMCNjxDsBY35zkHbYIQ8A25Ywlz1g2up02XZqnWZgXY3P7izwTk44CoxYSniZEqk0NWnn7sq_yEw Scope:null}"}
+{"level":"info","ts":"2026-03-18T04:57:47.638+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:57716","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-03-18T04:57:47.640+0530","caller":"services/user_service.go:180","msg":"Cache hit","id":50}
+{"level":"info","ts":"2026-03-18T04:58:06.115+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:58023","Method":"PATCH","Path":"PATCH /users"}
+{"level":"info","ts":"2026-03-18T04:58:19.573+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:58245","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-03-18T04:58:19.576+0530","caller":"services/user_service.go:180","msg":"Cache hit","id":50}
+{"level":"info","ts":"2026-03-18T04:59:54.228+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-18T04:59:56.230+0530","caller":"servers/http.go:401","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-18T05:00:00.967+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:60012","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-03-18T05:00:00.970+0530","caller":"services/user_service.go:180","msg":"Cache hit","id":50}
+{"level":"info","ts":"2026-03-18T05:00:11.948+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:60192","Method":"PATCH","Path":"PATCH /users"}
+{"level":"info","ts":"2026-03-18T05:00:19.484+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:60318","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-03-18T05:00:19.486+0530","caller":"services/user_service.go:180","msg":"Cache hit","id":50}
+{"level":"info","ts":"2026-03-18T05:02:04.342+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-18T05:02:06.344+0530","caller":"servers/http.go:401","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-18T05:02:16.328+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:51677","Method":"PATCH","Path":"PATCH /users"}
+{"level":"info","ts":"2026-03-18T05:03:52.905+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-18T05:03:54.907+0530","caller":"servers/http.go:401","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-18T05:03:57.322+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:53540","Method":"PATCH","Path":"PATCH /users"}
+{"level":"info","ts":"2026-03-18T05:04:24.967+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:53993","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-03-18T05:04:24.970+0530","caller":"services/user_service.go:180","msg":"Cache hit","id":50}
+{"level":"info","ts":"2026-03-18T05:08:12.044+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-18T05:08:14.047+0530","caller":"servers/http.go:401","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-18T05:08:20.520+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:56718","Method":"PATCH","Path":"PATCH /users"}
+{"level":"info","ts":"2026-03-18T05:08:29.672+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:56868","Method":"GET","Path":"GET /login"}
+{"level":"debug","ts":"2026-03-18T05:08:29.672+0530","caller":"servers/http.go:200","msg":"Access Token","Duration":10}
+{"level":"debug","ts":"2026-03-18T05:08:29.673+0530","caller":"servers/http.go:201","msg":"Refresh Token","Duration":10080}
+{"level":"debug","ts":"2026-03-18T05:08:29.673+0530","caller":"servers/http.go:237","msg":"Auth Response","Info":"{AccessToken:eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJteS1hcHAiLCJzdWIiOiIxMjMiLCJhdWQiOlsid3d3Lm15YXBwLmNvbSJdLCJleHAiOjE3NzM3OTEzMDksIm5iZiI6MTc3Mzc5MDcwOSwiaWF0IjoxNzczNzkwNzA5LCJqdGkiOiJ0ZXN0aWQifQ.YaHb1f8acZAU-Ny5Pkv9osNxe_kMptaq25Ss8njw79zf-sS1Xdte-FwTrZAFqst8rS-yBPkF70sQ-tq6Cehr-g TokenType:Bearer ExpiresIn:10 RefreshToken:eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJteS1hcHAiLCJzdWIiOiIxMjMiLCJhdWQiOlsid3d3Lm15YXBwLmNvbSJdLCJleHAiOjE3NzQzOTU1MDksIm5iZiI6MTc3Mzc5MDcwOSwiaWF0IjoxNzczNzkwNzA5LCJqdGkiOiJ0ZXN0aWQifQ.VBWh8hdO3C4nG7VwZe8qlqZVaFpjdhNAtUMvUSun40Fs84RMEozBFW2G6lI4rxmkJJNBrOGEYFn8N3zJc1Jq6Q Scope:null}"}
+{"level":"info","ts":"2026-03-18T05:08:54.346+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:52415","Method":"PATCH","Path":"PATCH /users"}
+{"level":"info","ts":"2026-03-18T05:09:08.350+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:52644","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-03-18T05:09:08.354+0530","caller":"services/user_service.go:180","msg":"Cache hit","id":50}
+{"level":"info","ts":"2026-03-18T05:12:28.430+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-18T05:12:30.432+0530","caller":"servers/http.go:401","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-18T05:12:34.283+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:61668","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-03-18T05:12:34.286+0530","caller":"services/user_service.go:180","msg":"Cache hit","id":50}
+{"level":"info","ts":"2026-03-18T05:12:51.811+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-18T05:12:53.813+0530","caller":"servers/http.go:401","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-18T05:13:01.928+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:62126","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-03-18T05:13:01.932+0530","caller":"services/user_service.go:180","msg":"Cache hit","id":50}
+{"level":"info","ts":"2026-03-18T05:13:47.409+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:62888","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-03-18T05:13:47.411+0530","caller":"services/user_service.go:180","msg":"Cache hit","id":50}
+{"level":"info","ts":"2026-03-18T05:13:47.942+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:62898","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-03-18T05:13:47.945+0530","caller":"services/user_service.go:180","msg":"Cache hit","id":50}

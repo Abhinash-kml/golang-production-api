@@ -74,7 +74,7 @@ func (r *PostgresUserRepository) InsertUser(ctx context.Context, user model.User
 	return nil
 }
 
-func (r *PostgresUserRepository) UpdateUser(ctx context.Context, id int, user model.User) error {
+func (r *PostgresUserRepository) UpdateUser(ctx context.Context, id int, user model.UserUpdateDTO) error {
 	ctx, span := r.tracer.Start(ctx, "UpdateUser.Repository")
 	defer span.End()
 

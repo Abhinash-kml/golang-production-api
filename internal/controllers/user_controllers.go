@@ -196,11 +196,11 @@ func (c *UsersController) PatchUser(w http.ResponseWriter, r *http.Request) {
 	ctx, span := c.tracer.Start(context.Background(), "PatchUser.Controller")
 	defer span.End()
 
-	// testing only
-	patch := model.UserUpdateDTO{}
-	json.NewDecoder(r.Body).Decode(&patch)
-	err := c.userservice.UpdateUser(ctx, patch.Id, patch)
+	body := model.UserUpdateDTO{}
+	json.NewDecoder(r.Body).Decode(&body)
+	err := c.userservice.UpdateUser(ctx, body.Id, body)
 	if err != nil {
+		fmt.Println(err)
 		SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		return
 	}

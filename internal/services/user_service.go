@@ -118,35 +118,11 @@ func (s *LocalUserService) InsertUser(ctx context.Context, user model.UserCreate
 }
 
 // TODO: Implement as per JSON merge patch
-func (s *LocalUserService) UpdateUser(ctx context.Context, id int, new model.UserUpdateDTO) error {
+func (s *LocalUserService) UpdateUser(ctx context.Context, id int, dto model.UserUpdateDTO) error {
 	ctx, span := s.tracer.Start(ctx, "UpdateUser.UpdateUser")
 	defer span.End()
 
-	updateduser := model.User{
-		Id: id,
-	}
-
-	// TODO: Improve this
-	switch new.What {
-	case "name":
-		{
-			updateduser.Name = new.NewData
-		}
-	case "country":
-		{
-			updateduser.Country = new.NewData
-		}
-	case "city":
-		{
-			updateduser.City = new.NewData
-		}
-	case "state":
-		{
-			updateduser.State = new.NewData
-		}
-	}
-
-	err := s.repo.UpdateUser(ctx, id, updateduser)
+	err := s.repo.UpdateUser(ctx, id, dto)
 	if err != nil {
 		return err
 	}
