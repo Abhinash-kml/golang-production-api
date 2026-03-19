@@ -31,7 +31,8 @@ type UserRepository interface {
 	GetUsers(context.Context) ([]model.User, error)
 	GetById(context.Context, int) (*model.User, error)
 	InsertUser(context.Context, model.User) error
-	UpdateUser(context.Context, int, model.UserUpdateDTO) error
+	UpdateUser(context.Context, model.UserUpdateDTO) error
+	ReplaceUser(context.Context, model.UserReplaceDTO) error
 	DeleteUser(context.Context, int) error
 	Count() int
 }
@@ -116,7 +117,7 @@ func (e *InMemoryUsersRepository) InsertUser(ctx context.Context, user model.Use
 }
 
 // TODO: Implement as per JSON Merge Patch
-func (e *InMemoryUsersRepository) UpdateUser(ctx context.Context, id int, user model.UserUpdateDTO) error {
+func (e *InMemoryUsersRepository) UpdateUser(ctx context.Context, user model.UserUpdateDTO) error {
 	ctx, span := e.tracer.Start(ctx, "UpdateUser.Repository")
 	defer span.End()
 
@@ -128,7 +129,7 @@ func (e *InMemoryUsersRepository) UpdateUser(ctx context.Context, id int, user m
 	var updatedUser *model.User
 
 	for index := range e.users {
-		if e.users[index].Id == id {
+		if e.users[index].Id == user.Id {
 			updatedUser = &e.users[index]
 			break
 		}
@@ -166,10 +167,24 @@ func (e *InMemoryUsersRepository) UpdateUser(ctx context.Context, id int, user m
 		}
 	}
 
+	// TODO: Update user in cache
+
+	return nil
+}
+
+func (e *InMemoryUsersRepository) ReplaceUser(ctx context.Context, dto model.UserReplaceDTO) error {
+	ctx, span := e.tracer.Start(ctx, "ReplaceUser.Repository")
+	defer span.End()
+
+	span.SetAttributes(attribute.Int("user.id", dto.Id),
+		attribute.String("user.name", dto.Name),
+		attribute.String("user.city", dto.City),
+		attribute.String("user.state", dto.State),
+		attribute.String("user.country", dto.Country))
+
 	for index := range e.users {
-		if e.users[index].Id == id {
-			//e.users[index] = updatedUser
-			fmt.Println(e.users[index])
+		if e.users[index].Id == dto.Id {
+			e.users[index] = model.User(dto)
 			break
 		}
 	}

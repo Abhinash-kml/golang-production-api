@@ -25,7 +25,8 @@ type PostsRepository interface {
 	GetPostsOfUser(context.Context, int) ([]model.Post, error)
 	InsertPost(context.Context, model.Post) error
 	DeletePost(context.Context, int) error
-	UpdatePost(context.Context, int, model.Post) error
+	UpdatePost(context.Context, model.PostUpdateDTO) error
+	ReplacePost(context.Context, model.PostReplaceDTO) error
 	Count() int
 }
 
@@ -155,16 +156,28 @@ func (e *InMemoryPostsRepository) DeletePost(ctx context.Context, id int) error 
 	return nil
 }
 
-func (e *InMemoryPostsRepository) UpdatePost(ctx context.Context, id int, post model.Post) error {
+// TODO: Implement after thinking
+func (e *InMemoryPostsRepository) UpdatePost(ctx context.Context, dto model.PostUpdateDTO) error {
 	ctx, span := e.tracer.Start(ctx, "UpdatePost.Repository")
 	defer span.End()
 
 	for index := range e.posts {
-		if e.posts[index].Id == id {
-			e.posts[index] = post
+		if e.posts[index].Id == dto.Id {
+			// e.posts[index] = model.Post(dto)
 			break
 		}
 	}
+
+	return nil
+}
+
+func (e *InMemoryPostsRepository) ReplacePost(ctx context.Context, dto model.PostReplaceDTO) error {
+	ctx, span := e.tracer.Start(ctx, "UpdatePost.Repository")
+	defer span.End()
+
+	span.SetAttributes(attribute.Int("post.id", dto.Id),
+		attribute.String("post.title", dto.Title),
+		attribute.String("post.body", dto.Body))
 
 	return nil
 }

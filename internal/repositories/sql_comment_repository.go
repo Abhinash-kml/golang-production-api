@@ -111,6 +111,10 @@ func (r *PostgresCommentRepository) UpdateComment(ctx context.Context, id int, c
 	return nil
 }
 
+func (e *PostgresCommentRepository) ReplaceComment(ctx context.Context, dto model.CommentReplaceDTO) error {
+	return nil
+}
+
 func (r *PostgresCommentRepository) Count() int {
 	query := `SELECT COUNT(*) FROM comments;`
 	var count int

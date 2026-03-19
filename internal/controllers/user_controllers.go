@@ -196,9 +196,9 @@ func (c *UsersController) PatchUser(w http.ResponseWriter, r *http.Request) {
 	ctx, span := c.tracer.Start(context.Background(), "PatchUser.Controller")
 	defer span.End()
 
-	body := model.UserUpdateDTO{}
-	json.NewDecoder(r.Body).Decode(&body)
-	err := c.userservice.UpdateUser(ctx, body.Id, body)
+	dto := model.UserUpdateDTO{}
+	json.NewDecoder(r.Body).Decode(&dto)
+	err := c.userservice.UpdateUser(ctx, dto)
 	if err != nil {
 		fmt.Println(err)
 		SendProblemDetails(w, ProblemError, nil, r.URL.String())
@@ -206,17 +206,15 @@ func (c *UsersController) PatchUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusNoContent)
-	w.Write([]byte("OK"))
 }
 
-// TODO: Add spans as per json merge patch
 func (c *UsersController) PutUser(w http.ResponseWriter, r *http.Request) {
 	ctx, span := c.tracer.Start(context.Background(), "PutUser.Controller")
 	defer span.End()
 
-	var update model.UserUpdateDTO
-	json.NewDecoder(r.Body).Decode(&update)
-	err := c.userservice.UpdateUser(ctx, 0, update)
+	var dto model.UserReplaceDTO
+	json.NewDecoder(r.Body).Decode(&dto)
+	err := c.userservice.ReplaceUser(ctx, dto)
 	if err != nil {
 		SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		return

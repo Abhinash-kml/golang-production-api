@@ -6,6 +6,7 @@ import (
 
 	"github.com/abhinash-kml/go-api-server/internal/connections"
 	model "github.com/abhinash-kml/go-api-server/internal/models"
+	"go.opentelemetry.io/otel/attribute"
 	oteltracer "go.opentelemetry.io/otel/trace"
 )
 
@@ -107,6 +108,18 @@ func (r *PostgresPostRepository) DeletePost(ctx context.Context, id int) error {
 func (r *PostgresPostRepository) UpdatePost(ctx context.Context, id int, post model.Post) error {
 	ctx, span := r.tracer.Start(ctx, "UpdatePost.Repository")
 	defer span.End()
+
+	return nil
+}
+
+// TODO: Full implementation
+func (e *PostgresPostRepository) ReplacePost(ctx context.Context, dto model.PostReplaceDTO) error {
+	ctx, span := e.tracer.Start(ctx, "UpdatePost.Repository")
+	defer span.End()
+
+	span.SetAttributes(attribute.Int("post.id", dto.Id),
+		attribute.String("post.title", dto.Title),
+		attribute.String("post.body", dto.Body))
 
 	return nil
 }

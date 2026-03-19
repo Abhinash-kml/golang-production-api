@@ -176,10 +176,18 @@ func (c *PostsController) PutPost(w http.ResponseWriter, r *http.Request) {
 	ctx, span := c.tracer.Start(context.Background(), "PutPost.Controller")
 	defer span.End()
 
-	incoming := model.PostUpdateDTO{}
-	json.NewDecoder(r.Body).Decode(&incoming)
-	err := c.postservice.UpdatePost(ctx, incoming.Id, incoming)
+	dto := model.PostReplaceDTO{}
+	json.NewDecoder(r.Body).Decode(&dto)
+
+	span.SetAttributes(attribute.Int("post.id", dto.Id),
+		attribute.String("post.title", dto.Title),
+		attribute.String("post.body", dto.Body),
+		attribute.Int("post.likes", dto.Likes))
+
+	err := c.postservice.ReplacePost(ctx, dto)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "error replacing post")
 		SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		return
 	}
@@ -192,10 +200,17 @@ func (c *PostsController) PatchPost(w http.ResponseWriter, r *http.Request) {
 	ctx, span := c.tracer.Start(context.Background(), "PatchPost.Controller")
 	defer span.End()
 
-	incoming := model.PostUpdateDTO{}
-	json.NewDecoder(r.Body).Decode(&incoming)
-	err := c.postservice.UpdatePost(ctx, incoming.Id, incoming)
+	dto := model.PostUpdateDTO{}
+	json.NewDecoder(r.Body).Decode(&dto)
+
+	span.SetAttributes(attribute.Int("post.id", dto.Id),
+		attribute.String("post.title", dto.Title),
+		attribute.String("post.body", dto.Body))
+
+	err := c.postservice.UpdatePost(ctx, dto)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "error updating post")
 		SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		return
 	}

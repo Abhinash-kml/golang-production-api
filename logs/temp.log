@@ -708,3 +708,14 @@
 {"level":"debug","ts":"2026-03-18T05:13:47.411+0530","caller":"services/user_service.go:180","msg":"Cache hit","id":50}
 {"level":"info","ts":"2026-03-18T05:13:47.942+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:62898","Method":"GET","Path":"GET /users/{id}"}
 {"level":"debug","ts":"2026-03-18T05:13:47.945+0530","caller":"services/user_service.go:180","msg":"Cache hit","id":50}
+{"level":"info","ts":"2026-03-18T05:18:15.796+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-18T05:18:17.798+0530","caller":"servers/http.go:401","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-18T05:18:22.766+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:60781","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-03-18T05:18:22.768+0530","caller":"services/user_service.go:180","msg":"Cache hit","id":50}
+{"level":"info","ts":"2026-03-18T05:22:47.524+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:57992","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-03-18T05:22:47.526+0530","caller":"services/user_service.go:79","msg":"Cache miss","id":50}
+{"level":"info","ts":"2026-03-18T05:22:47.527+0530","caller":"repositories/user_repository.go:93","msg":"Repository","address":{"id":50,"name":"Gaurav Malhotra","city":"Patiala","state":"Punjab","country":"India"}}
+{"level":"info","ts":"2026-03-18T05:23:40.370+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:65038","Method":"PATCH","Path":"PATCH /users"}
+{"level":"info","ts":"2026-03-18T05:23:54.455+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:65265","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-03-18T05:23:54.457+0530","caller":"services/user_service.go:79","msg":"Cache miss","id":50}
+{"level":"info","ts":"2026-03-18T05:23:54.457+0530","caller":"repositories/user_repository.go:93","msg":"Repository","address":{"id":50,"name":"Gaurav Malhotra","city":"kolokolo","state":"Punjab","country":"India"}}

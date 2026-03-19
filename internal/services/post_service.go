@@ -21,7 +21,8 @@ type PostsService interface {
 	GetById(context.Context, int) (*model.PostResponseDTO, error)
 	GetPostsOfUser(context.Context, int) ([]model.PostResponseDTO, error)
 	InsertPost(context.Context, model.PostCreateDTO) error
-	UpdatePost(context.Context, int, model.PostUpdateDTO) error
+	UpdatePost(context.Context, model.PostUpdateDTO) error
+	ReplacePost(context.Context, model.PostReplaceDTO) error
 	DeletePost(context.Context, int) error
 }
 
@@ -143,17 +144,32 @@ func (s *LocalPostsService) InsertPost(ctx context.Context, post model.PostCreat
 }
 
 // TODO: Implement as per JSON merge patch
-func (s *LocalPostsService) UpdatePost(ctx context.Context, id int, post model.PostUpdateDTO) error {
+func (s *LocalPostsService) UpdatePost(ctx context.Context, dto model.PostUpdateDTO) error {
 	ctx, span := s.tracer.Start(ctx, "UpdatePost.Service")
 	defer span.End()
 
-	updated := model.Post{
-		Id:    post.Id,
-		Title: post.Title,
-		Body:  post.Body,
-	}
-	err := s.repo.UpdatePost(ctx, id, updated)
+	span.SetAttributes(attribute.Int("post.id", dto.Id),
+		attribute.String("post.title", dto.Title),
+		attribute.String("post.body", dto.Body))
+
+	err := s.repo.UpdatePost(ctx, dto)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "failed to update post in repository")
+		return err
+	}
+
+	return nil
+}
+
+func (s *LocalPostsService) ReplacePost(ctx context.Context, dto model.PostReplaceDTO) error {
+	ctx, span := s.tracer.Start(ctx, "ReplacePost.Service")
+	defer span.End()
+
+	err := s.repo.ReplacePost(ctx, dto)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "failed to replace post in repository")
 		return err
 	}
 

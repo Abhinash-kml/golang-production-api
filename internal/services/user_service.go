@@ -9,6 +9,7 @@ import (
 	"github.com/abhinash-kml/go-api-server/internal/connections"
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
+	jsonpatch "github.com/evanphx/json-patch/v5"
 	"github.com/redis/go-redis/v9"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
@@ -25,7 +26,8 @@ type UserService interface {
 	GetUsers(context.Context) ([]model.UserResponseDTO, error)
 	GetById(context.Context, int) (*model.UserResponseDTO, error)
 	InsertUser(context.Context, model.UserCreateDTO) error
-	UpdateUser(context.Context, int, model.UserUpdateDTO) error
+	UpdateUser(context.Context, model.UserUpdateDTO) error
+	ReplaceUser(context.Context, model.UserReplaceDTO) error
 	DeleteUser(context.Context, int) error
 }
 
@@ -117,16 +119,41 @@ func (s *LocalUserService) InsertUser(ctx context.Context, user model.UserCreate
 	return nil
 }
 
-// TODO: Implement as per JSON merge patch
-func (s *LocalUserService) UpdateUser(ctx context.Context, id int, dto model.UserUpdateDTO) error {
+func (s *LocalUserService) UpdateUser(ctx context.Context, dto model.UserUpdateDTO) error {
 	ctx, span := s.tracer.Start(ctx, "UpdateUser.UpdateUser")
 	defer span.End()
 
-	err := s.repo.UpdateUser(ctx, id, dto)
+	patches, _ := jsonpatch.DecodePatch(dto.Patch)
+
+	span.SetAttributes(attribute.Int("user.id", dto.Id),
+		attribute.Int("user.patches", len(patches)))
+
+	err := s.repo.UpdateUser(ctx, dto)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "error upadating user in repository")
 		return err
 	}
 
+	return nil
+}
+
+func (e *LocalUserService) ReplaceUser(ctx context.Context, dto model.UserReplaceDTO) error {
+	ctx, span := e.tracer.Start(ctx, "ReplaceUser.Service")
+	defer span.End()
+
+	span.SetAttributes(attribute.Int("user.id", dto.Id),
+		attribute.String("user.name", dto.Name),
+		attribute.String("user.city", dto.City),
+		attribute.String("user.state", dto.State),
+		attribute.String("user.country", dto.Country))
+
+	err := e.repo.ReplaceUser(ctx, dto)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "error replacing user in repository")
+		return err
+	}
 	return nil
 }
 

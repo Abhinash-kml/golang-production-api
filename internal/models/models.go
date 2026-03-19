@@ -149,6 +149,11 @@ type CommentUpdateDTO struct {
 	Body string `json:"body"`
 }
 
+type CommentReplaceDTO struct {
+	Id   int    `json:"id"`
+	Body string `json:"string"`
+}
+
 func NewComment(id, authorid, postid int, body string, likes int) *Comment {
 	return &Comment{
 		Id:       id,

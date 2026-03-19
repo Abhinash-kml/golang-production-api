@@ -22,7 +22,8 @@ type CommentService interface {
 	GetCommentsOfPost(context.Context, int) ([]model.CommentResponseDTO, error)
 	InsertComment(context.Context, model.CommentCreateDTO) error
 	DeleteComment(context.Context, int) error
-	UpdateComment(context.Context, int, model.CommentUpdateDTO) error
+	UpdateComment(context.Context, model.CommentUpdateDTO) error
+	ReplaceComment(context.Context, model.CommentReplaceDTO) error
 }
 
 type LocalCommentService struct {
@@ -157,17 +158,32 @@ func (s *LocalCommentService) DeleteComment(ctx context.Context, id int) error {
 }
 
 // TODO: Implement as per JSON Merge patch
-func (s *LocalCommentService) UpdateComment(ctx context.Context, id int, comment model.CommentUpdateDTO) error {
+func (s *LocalCommentService) UpdateComment(ctx context.Context, dto model.CommentUpdateDTO) error {
 	ctx, span := s.tracer.Start(ctx, "UpdateComment.Service")
 	defer span.End()
 
-	// TODO: Fetch and replace old values of unmodifed attributes
-	updatedcomment := model.Comment{
-		Id:   comment.Id,
-		Body: comment.Body,
-	}
-	err := s.repo.UpdateComment(ctx, id, updatedcomment)
+	// Span attributes as per update dto
+
+	err := s.repo.UpdateComment(ctx, dto)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "failed to update comment in repository")
+		return err
+	}
+
+	return nil
+}
+
+func (s *LocalCommentService) ReplaceComment(ctx context.Context, dto model.CommentReplaceDTO) error {
+	ctx, span := s.tracer.Start(ctx, "ReplaceComment.Service")
+	defer span.End()
+
+	// Span attributes as per update dto
+
+	err := s.repo.ReplaceComment(ctx, dto)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "failed to replace comment in repository")
 		return err
 	}
 

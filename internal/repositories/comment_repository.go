@@ -22,7 +22,8 @@ type CommentRepository interface {
 	GetCommentsOfPost(context.Context, int) ([]model.Comment, error)
 	InsertComment(context.Context, model.Comment) error
 	DeleteComment(context.Context, int) error
-	UpdateComment(context.Context, int, model.Comment) error
+	UpdateComment(context.Context, model.CommentUpdateDTO) error
+	ReplaceComment(context.Context, model.CommentReplaceDTO) error
 	Count() int
 }
 
@@ -152,17 +153,23 @@ func (e *InMemoryCommentRepository) DeleteComment(ctx context.Context, id int) e
 }
 
 // TODO: Implement as per JSON Merge patch
-func (e *InMemoryCommentRepository) UpdateComment(ctx context.Context, id int, comment model.Comment) error {
+func (e *InMemoryCommentRepository) UpdateComment(ctx context.Context, dto model.CommentUpdateDTO) error {
 	ctx, span := e.tracer.Start(ctx, "UpdateComment.Repository")
 	defer span.End()
 
+	// Span attributes as per update dto to be decided
+
 	for index := range e.comments {
-		if e.comments[index].Id == id {
-			e.comments[index] = comment
+		if e.comments[index].Id == dto.Id {
+			// e.comments[index] = comment
 			break
 		}
 	}
 
+	return nil
+}
+
+func (e *InMemoryCommentRepository) ReplaceComment(ctx context.Context, dto model.CommentReplaceDTO) error {
 	return nil
 }
 

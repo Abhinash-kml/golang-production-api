@@ -74,10 +74,14 @@ func (r *PostgresUserRepository) InsertUser(ctx context.Context, user model.User
 	return nil
 }
 
-func (r *PostgresUserRepository) UpdateUser(ctx context.Context, id int, user model.UserUpdateDTO) error {
+func (r *PostgresUserRepository) UpdateUser(ctx context.Context, user model.UserUpdateDTO) error {
 	ctx, span := r.tracer.Start(ctx, "UpdateUser.Repository")
 	defer span.End()
 
+	return nil
+}
+
+func (e *PostgresUserRepository) ReplaceUser(ctx context.Context, dto model.UserReplaceDTO) error {
 	return nil
 }
 

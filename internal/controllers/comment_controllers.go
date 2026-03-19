@@ -115,18 +115,18 @@ func (c *CommentsController) PostComment(w http.ResponseWriter, r *http.Request)
 	ctx, span := c.tracer.Start(r.Context(), "PostComment.Controller")
 	defer span.End()
 
-	incoming := model.CommentCreateDTO{}
-	if err := json.NewDecoder(r.Body).Decode(&incoming); err != nil {
+	dto := model.CommentCreateDTO{}
+	if err := json.NewDecoder(r.Body).Decode(&dto); err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, "failed to json decode commentcreatedto")
 		return
 	}
 
-	span.SetAttributes(attribute.Int("comment.authorid", incoming.Authorid),
-		attribute.Int("comment.postid", incoming.Postid),
-		attribute.String("comment.body", incoming.Body))
+	span.SetAttributes(attribute.Int("comment.authorid", dto.Authorid),
+		attribute.Int("comment.postid", dto.Postid),
+		attribute.String("comment.body", dto.Body))
 
-	err := c.commentservice.InsertComment(ctx, incoming)
+	err := c.commentservice.InsertComment(ctx, dto)
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, "error inserting new comment")
@@ -142,10 +142,15 @@ func (c *CommentsController) PatchComment(w http.ResponseWriter, r *http.Request
 	ctx, span := c.tracer.Start(context.Background(), "PatchComment.Controller")
 	defer span.End()
 
-	incoming := model.CommentUpdateDTO{}
-	json.NewDecoder(r.Body).Decode(&incoming)
-	err := c.commentservice.UpdateComment(ctx, incoming.Id, incoming)
+	dto := model.CommentUpdateDTO{}
+	json.NewDecoder(r.Body).Decode(&dto)
+
+	// Span attributes as per dto
+
+	err := c.commentservice.UpdateComment(ctx, dto)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "error updating comment")
 		SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		return
 	}
@@ -158,9 +163,12 @@ func (c *CommentsController) PutComment(w http.ResponseWriter, r *http.Request) 
 	ctx, span := c.tracer.Start(context.Background(), "PutComment.Controller")
 	defer span.End()
 
-	incoming := model.CommentUpdateDTO{}
-	json.NewDecoder(r.Body).Decode(&incoming)
-	err := c.commentservice.UpdateComment(ctx, incoming.Id, incoming)
+	dto := model.CommentReplaceDTO{}
+	json.NewDecoder(r.Body).Decode(&dto)
+
+	// Span attributes as per dto
+
+	err := c.commentservice.ReplaceComment(ctx, dto)
 	if err != nil {
 		SendProblemDetails(w, ProblemError, nil, r.URL.String())
 		return
@@ -173,16 +181,16 @@ func (c *CommentsController) DeleteComment(w http.ResponseWriter, r *http.Reques
 	ctx, span := c.tracer.Start(context.Background(), "DeleteComment.Controller")
 	defer span.End()
 
-	incoming := model.CommentDeleteDTO{}
-	if err := json.NewDecoder(r.Body).Decode(&incoming); err != nil {
+	dto := model.CommentDeleteDTO{}
+	if err := json.NewDecoder(r.Body).Decode(&dto); err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, "error json decoding commentdeletedto")
 		return
 	}
 
-	span.SetAttributes(attribute.Int("comment.id", incoming.Id))
+	span.SetAttributes(attribute.Int("comment.id", dto.Id))
 
-	err := c.commentservice.DeleteComment(ctx, incoming.Id)
+	err := c.commentservice.DeleteComment(ctx, dto.Id)
 	if err != nil {
 		HandleServiceError(w, r, span, err, "comment")
 		return
