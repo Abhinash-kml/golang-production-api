@@ -3,6 +3,8 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
+	"os"
 
 	"github.com/abhinash-kml/go-api-server/internal/connections"
 	model "github.com/abhinash-kml/go-api-server/internal/models"
@@ -21,6 +23,33 @@ func NewPostgresUserRepository(connection *connections.PostgresConnection, trace
 }
 
 func (r *PostgresUserRepository) Setup() error {
+	query := `INSERT INTO users(id, name, city, state, country) VALUES ($1, $2, $3, $4, $5)
+				ON CONFLICT (id)
+				DO UPDATE SET
+				name = EXCULDED.name,
+				city = EXCLUDED.city,
+				state = EXCLUDED.state,
+				country = EXCULDED.country;`
+
+	file, err := os.OpenFile("./mocks/users.json", os.O_RDONLY, 0644)
+	if err != nil {
+		zap.L().Fatal("Failed to open file for respitory setup", zap.Error(err), zap.String("file", "users.json"))
+	}
+
+	var users []model.User
+	users = make([]model.User, 0, 150)
+	err = json.NewDecoder(file).Decode(&users)
+	if err != nil {
+		zap.L().Fatal("Faile dto decode json from mocks file")
+	}
+
+	for index := range users {
+		_, err := r.db.Exec(query, users[index].Id, users[index].Name, users[index].City, users[index].State, users[index].Country)
+		if err != nil {
+			zap.L().Fatal("Faile dto execute query", zap.Error(err))
+		}
+	}
+
 	return nil
 }
 

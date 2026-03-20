@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS posts(
-    id SERIAL,
+    id SERIAL UNIQUE,
     title TEXT,
     body TEXT,
     likes INT,

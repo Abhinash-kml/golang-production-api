@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS users(
-    id SERIAL,
+    id SERIAL UNIQUE,
     name TEXT,
     city TEXT,
     state TEXT,
     country TEXT,
-    CONSTRAINT pkey_users PRIMARY KEY(id)
+    CONSTRAINT pkey_users PRIMARY KEY(id),
 );

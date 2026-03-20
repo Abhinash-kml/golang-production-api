@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS comments(
-    id SERIAL,
+    id SERIAL UNIQUE,
     authorid SERIAL, 
     postid SERIAL, 
     body TEXT, 
