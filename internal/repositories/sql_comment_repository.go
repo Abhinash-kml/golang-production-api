@@ -104,7 +104,7 @@ func (r *PostgresCommentRepository) DeleteComment(ctx context.Context, id int) e
 }
 
 // TODO: Implement as per Json Merge patch
-func (r *PostgresCommentRepository) UpdateComment(ctx context.Context, id int, comment model.Comment) error {
+func (r *PostgresCommentRepository) UpdateComment(ctx context.Context, comment model.CommentUpdateDTO) error {
 	ctx, span := r.tracer.Start(ctx, "UpdateComment.Repository")
 	defer span.End()
 

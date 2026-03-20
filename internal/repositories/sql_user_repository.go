@@ -26,10 +26,10 @@ func (r *PostgresUserRepository) Setup() error {
 	query := `INSERT INTO users(id, name, city, state, country) VALUES ($1, $2, $3, $4, $5)
 				ON CONFLICT (id)
 				DO UPDATE SET
-				name = EXCULDED.name,
+				name = EXCLUDED.name,
 				city = EXCLUDED.city,
 				state = EXCLUDED.state,
-				country = EXCULDED.country;`
+				country = EXCLUDED.country;`
 
 	file, err := os.OpenFile("./mocks/users.json", os.O_RDONLY, 0644)
 	if err != nil {

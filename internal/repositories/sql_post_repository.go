@@ -105,7 +105,7 @@ func (r *PostgresPostRepository) DeletePost(ctx context.Context, id int) error {
 }
 
 // TODO: Implement as per JSON Merge Patch
-func (r *PostgresPostRepository) UpdatePost(ctx context.Context, id int, post model.Post) error {
+func (r *PostgresPostRepository) UpdatePost(ctx context.Context, post model.PostUpdateDTO) error {
 	ctx, span := r.tracer.Start(ctx, "UpdatePost.Repository")
 	defer span.End()
 

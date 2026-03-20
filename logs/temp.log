@@ -719,3 +719,18 @@
 {"level":"info","ts":"2026-03-18T05:23:54.455+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:65265","Method":"GET","Path":"GET /users/{id}"}
 {"level":"debug","ts":"2026-03-18T05:23:54.457+0530","caller":"services/user_service.go:79","msg":"Cache miss","id":50}
 {"level":"info","ts":"2026-03-18T05:23:54.457+0530","caller":"repositories/user_repository.go:93","msg":"Repository","address":{"id":50,"name":"Gaurav Malhotra","city":"kolokolo","state":"Punjab","country":"India"}}
+{"level":"info","ts":"2026-03-21T00:08:53.348+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"info","ts":"2026-03-21T00:08:53.369+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"fatal","ts":"2026-03-21T00:08:53.469+0530","caller":"repositories/sql_user_repository.go:49","msg":"Faile dto execute query","error":"pq: relation \"users\" does not exist at position 1:13 (42P01)"}
+{"level":"info","ts":"2026-03-21T00:09:43.814+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"info","ts":"2026-03-21T00:09:43.824+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"fatal","ts":"2026-03-21T00:09:43.869+0530","caller":"cmd/main.go:100","msg":"Migrate up failed","error":"migration failed: syntax error at or near \")\" in line 0: CREATE TABLE IF NOT EXISTS users(\r\n    id SERIAL UNIQUE,\r\n    name TEXT,\r\n    city TEXT,\r\n    state TEXT,\r\n    country TEXT,\r\n    CONSTRAINT pkey_users PRIMARY KEY(id),\r\n); (details: pq: syntax error at or near \")\" at position 8:1 (42601))"}
+{"level":"info","ts":"2026-03-21T00:11:15.501+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"info","ts":"2026-03-21T00:11:15.510+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"fatal","ts":"2026-03-21T00:11:15.646+0530","caller":"cmd/main.go:100","msg":"Migrate up failed","error":"Dirty database version 1. Fix and force version."}
+{"level":"info","ts":"2026-03-21T00:12:04.261+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"info","ts":"2026-03-21T00:12:04.269+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"fatal","ts":"2026-03-21T00:12:04.355+0530","caller":"repositories/sql_user_repository.go:49","msg":"Faile dto execute query","error":"pq: missing FROM-clause entry for table \"exculded\" at position 4:12 (42P01)"}
+{"level":"info","ts":"2026-03-21T00:13:28.588+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"info","ts":"2026-03-21T00:13:28.599+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"fatal","ts":"2026-03-21T00:13:28.667+0530","caller":"repositories/sql_user_repository.go:49","msg":"Faile dto execute query","error":"pq: missing FROM-clause entry for table \"exculded\" at position 4:12 (42P01)"}
