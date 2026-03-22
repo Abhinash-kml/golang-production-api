@@ -3,10 +3,13 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
+	"os"
 
 	"github.com/abhinash-kml/go-api-server/internal/connections"
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	oteltracer "go.opentelemetry.io/otel/trace"
+	"go.uber.org/zap"
 )
 
 type PostgresCommentRepository struct {
@@ -19,6 +22,32 @@ func NewPostgresCommentRepository(connection *connections.PostgresConnection, tr
 }
 
 func (r *PostgresCommentRepository) Setup() error {
+	query := `INSERT INTO comments(id, author_id, post_id, body, likes) VALUES($1, $2, $3, $4, $5)
+				ON CONFLICT(id)
+				DO UPDATE SET
+					body = EXCLUDED.body,
+					likes = EXCLUDED.likes;`
+
+	file, err := os.OpenFile("./mocks/comments.json", os.O_RDONLY, 0644)
+	if err != nil {
+		zap.L().Fatal("Failed to open mocks file for comment repository setup")
+	}
+
+	var comments []model.Comment
+	comments = make([]model.Comment, 150)
+
+	err = json.NewDecoder(file).Decode(&comments)
+	if err != nil {
+		zap.L().Fatal("Failed to decode json from mocks file", zap.Error(err), zap.String("file", "comments.json"))
+	}
+
+	for index := range comments {
+		_, err := r.db.Exec(query, comments[index].Id, comments[index].AuthorID, comments[index].PostId, comments[index].Body, comments[index].Likes)
+		if err != nil {
+			zap.L().Fatal("Failed to execute sql query", zap.Error(err))
+		}
+	}
+
 	return nil
 }
 

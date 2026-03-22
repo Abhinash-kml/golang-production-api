@@ -26,27 +26,27 @@ func (r *PostgresUserRepository) Setup() error {
 	query := `INSERT INTO users(id, name, city, state, country) VALUES ($1, $2, $3, $4, $5)
 				ON CONFLICT (id)
 				DO UPDATE SET
-				name = EXCLUDED.name,
-				city = EXCLUDED.city,
-				state = EXCLUDED.state,
-				country = EXCLUDED.country;`
+					name = EXCLUDED.name,
+					city = EXCLUDED.city,
+					state = EXCLUDED.state,
+					country = EXCLUDED.country;`
 
 	file, err := os.OpenFile("./mocks/users.json", os.O_RDONLY, 0644)
 	if err != nil {
-		zap.L().Fatal("Failed to open file for respitory setup", zap.Error(err), zap.String("file", "users.json"))
+		zap.L().Fatal("Failed to open mocks file for user repository setup", zap.Error(err), zap.String("file", "users.json"))
 	}
 
 	var users []model.User
 	users = make([]model.User, 0, 150)
 	err = json.NewDecoder(file).Decode(&users)
 	if err != nil {
-		zap.L().Fatal("Faile dto decode json from mocks file")
+		zap.L().Fatal("Failed to decode json from mocks file", zap.Error(err))
 	}
 
 	for index := range users {
 		_, err := r.db.Exec(query, users[index].Id, users[index].Name, users[index].City, users[index].State, users[index].Country)
 		if err != nil {
-			zap.L().Fatal("Faile dto execute query", zap.Error(err))
+			zap.L().Fatal("Failed to execute sql query", zap.Error(err))
 		}
 	}
 

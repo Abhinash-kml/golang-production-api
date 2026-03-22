@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS posts(
     title TEXT,
     body TEXT,
     likes INT,
-    authorid INT,
-    created_at TIMESTAMP,
+    author_id INT,
+    created_at TIMESTAMP DEFAULT NOW(),
     CONSTRAINT pkey_posts PRIMARY KEY(id)
 );

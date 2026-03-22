@@ -734,3 +734,24 @@
 {"level":"info","ts":"2026-03-21T00:13:28.588+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
 {"level":"info","ts":"2026-03-21T00:13:28.599+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
 {"level":"fatal","ts":"2026-03-21T00:13:28.667+0530","caller":"repositories/sql_user_repository.go:49","msg":"Faile dto execute query","error":"pq: missing FROM-clause entry for table \"exculded\" at position 4:12 (42P01)"}
+{"level":"info","ts":"2026-03-21T00:14:36.193+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"info","ts":"2026-03-21T00:14:36.203+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-21T00:14:38.307+0530","caller":"servers/http.go:401","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-21T00:16:48.864+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"info","ts":"2026-03-21T00:16:48.875+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"fatal","ts":"2026-03-21T00:16:48.905+0530","caller":"cmd/main.go:100","msg":"Migrate up failed","error":"no change"}
+{"level":"info","ts":"2026-03-21T00:17:02.669+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"info","ts":"2026-03-21T00:17:02.677+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-21T00:17:04.731+0530","caller":"servers/http.go:401","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-23T05:16:04.619+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"info","ts":"2026-03-23T05:16:04.641+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"fatal","ts":"2026-03-23T05:16:04.743+0530","caller":"cmd/main.go:100","msg":"Migrate up failed","error":"migration failed: syntax error at or near \"DEAFULT\" (column 32) in line 7: CREATE TABLE IF NOT EXISTS posts(\r\n    id SERIAL UNIQUE,\r\n    title TEXT,\r\n    body TEXT,\r\n    likes INT,\r\n    author_id INT,\r\n    created_at TIMESTAMP DEAFULT NOW(),\r\n    CONSTRAINT pkey_posts PRIMARY KEY(id)\r\n); (details: pq: syntax error at or near \"DEAFULT\" at position 7:26 (42601))"}
+{"level":"info","ts":"2026-03-23T05:17:12.434+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"info","ts":"2026-03-23T05:17:12.445+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"fatal","ts":"2026-03-23T05:17:12.668+0530","caller":"repositories/sql_comment_repository.go:33","msg":"Failed to open mocks file for comment repository setup"}
+{"level":"info","ts":"2026-03-23T05:17:43.110+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"info","ts":"2026-03-23T05:17:43.119+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"fatal","ts":"2026-03-23T05:17:43.148+0530","caller":"cmd/main.go:100","msg":"Migrate up failed","error":"no change"}
+{"level":"info","ts":"2026-03-23T05:17:54.530+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"info","ts":"2026-03-23T05:17:54.540+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-23T05:17:56.807+0530","caller":"servers/http.go:401","msg":"Server started successfully.","Address":":9000"}

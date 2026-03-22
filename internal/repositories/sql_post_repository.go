@@ -3,11 +3,14 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
+	"os"
 
 	"github.com/abhinash-kml/go-api-server/internal/connections"
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	"go.opentelemetry.io/otel/attribute"
 	oteltracer "go.opentelemetry.io/otel/trace"
+	"go.uber.org/zap"
 )
 
 type PostgresPostRepository struct {
@@ -20,6 +23,33 @@ func NewPostgresPostRepository(connection *connections.PostgresConnection, trace
 }
 
 func (r *PostgresPostRepository) Setup() error {
+	query := `INSERT INTO posts(id, title, body, likes, author_id) VALUES($1, $2, $3, $4, $5)
+				ON CONFLICT(id)
+				DO UPDATE SET
+					title = EXCLUDED.title,
+					body = EXCLUDED.body,
+					likes = EXCLUDED.likes;`
+
+	file, err := os.OpenFile("./mocks/posts.json", os.O_RDONLY, 0644)
+	if err != nil {
+		zap.L().Fatal("Failed to open mocks file for post repository setup", zap.Error(err), zap.String("file", "posts.json"))
+	}
+
+	var posts []model.Post
+	posts = make([]model.Post, 150)
+
+	err = json.NewDecoder(file).Decode(&posts)
+	if err != nil {
+		zap.L().Fatal("Failed to decode json from mocks file", zap.Error(err))
+	}
+
+	for index := range posts {
+		_, err := r.db.Exec(query, posts[index].Id, posts[index].Title, posts[index].Body, posts[index].Likes, posts[index].AuthorID)
+		if err != nil {
+			zap.L().Fatal("Failed to execute sql query", zap.Error(err))
+		}
+	}
+
 	return nil
 }
 
