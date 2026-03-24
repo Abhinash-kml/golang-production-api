@@ -10,7 +10,6 @@ import (
 	"slices"
 
 	model "github.com/abhinash-kml/go-api-server/internal/models"
-	jsonpatch "github.com/evanphx/json-patch/v5"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	oteltracer "go.opentelemetry.io/otel/trace"
@@ -117,53 +116,51 @@ func (e *InMemoryUsersRepository) InsertUser(ctx context.Context, user model.Use
 }
 
 // TODO: Implement as per JSON Merge Patch
-func (e *InMemoryUsersRepository) UpdateUser(ctx context.Context, user model.UserUpdateDTO) error {
+func (e *InMemoryUsersRepository) UpdateUser(ctx context.Context, dto model.UserUpdateDTO) error {
 	ctx, span := e.tracer.Start(ctx, "UpdateUser.Repository")
 	defer span.End()
 
-	patches, err := jsonpatch.DecodePatch(user.Patch)
-	if err != nil {
-		return errors.New("Failed to decode json patch")
-	}
+	span.SetAttributes(attribute.Int("user.id", dto.Id),
+		attribute.Int("user.patch.num", len(dto.Patches)))
 
-	var updatedUser *model.User
-
+	var user *model.User
 	for index := range e.users {
-		if e.users[index].Id == user.Id {
-			updatedUser = &e.users[index]
+		if e.users[index].Id == dto.Id {
+			user = &e.users[index]
 			break
 		}
 	}
 
-	for index := range patches {
-		currentpatch := patches[index]
-		op := currentpatch.Kind()
-		fmt.Println("kind:", op)
-		switch op {
-		case "add":
-		case "remove":
-		case "replace":
-			what, _ := currentpatch.Path()
-			fmt.Println("path:", what)
-			switch what {
-			case "/name":
-				iface, _ := currentpatch.ValueInterface()
-				val, _ := iface.(string)
-				updatedUser.Name = val
-			case "/city":
-				iface, _ := currentpatch.ValueInterface()
-				val, _ := iface.(string)
-				fmt.Println("Value:", val)
-				updatedUser.City = val
-			case "/state":
-				iface, _ := currentpatch.ValueInterface()
-				val, _ := iface.(string)
-				updatedUser.State = val
-			case "/country":
-				iface, _ := currentpatch.ValueInterface()
-				val, _ := iface.(string)
-				updatedUser.Country = val
+	for index := range dto.Patches {
+		current := dto.Patches[index]
+		field := current.Field
+		interfaceValue := current.Value
+
+		switch field {
+		case "name":
+			value, ok := interfaceValue.(string)
+			if !ok {
+				zap.L().Fatal("Failed to update user due to type assertion", zap.String("field", "name"))
 			}
+			user.Name = value
+		case "city":
+			value, ok := interfaceValue.(string)
+			if !ok {
+				zap.L().Fatal("Failed to update user due to type assertion", zap.String("field", "city"))
+			}
+			user.City = value
+		case "state":
+			value, ok := interfaceValue.(string)
+			if !ok {
+				zap.L().Fatal("Failed to update user due to type assertion", zap.String("field", "state"))
+			}
+			user.State = value
+		case "country":
+			value, ok := interfaceValue.(string)
+			if !ok {
+				zap.L().Fatal("Failed to update user due to type assertion", zap.String("field", "country"))
+			}
+			user.Country = value
 		}
 	}
 

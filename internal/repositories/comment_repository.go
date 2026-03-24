@@ -12,6 +12,7 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	oteltracer "go.opentelemetry.io/otel/trace"
+	"go.uber.org/zap"
 )
 
 type CommentRepository interface {
@@ -157,14 +158,36 @@ func (e *InMemoryCommentRepository) UpdateComment(ctx context.Context, dto model
 	ctx, span := e.tracer.Start(ctx, "UpdateComment.Repository")
 	defer span.End()
 
-	// Span attributes as per update dto to be decided
+	span.SetAttributes(attribute.Int("comment.id", dto.Id),
+		attribute.Int("comment.patch.num", len(dto.Patches)))
 
+	span.SetAttributes(attribute.Int("comment.id", dto.Id),
+		attribute.Int("comment.patch.num", len(dto.Patches)))
+
+	var comment *model.Comment
 	for index := range e.comments {
 		if e.comments[index].Id == dto.Id {
-			// e.comments[index] = comment
+			comment = &e.comments[index]
 			break
 		}
 	}
+
+	for index := range dto.Patches {
+		current := dto.Patches[index]
+		field := current.Field
+		interfaceValue := current.Value
+
+		switch field {
+		case "body":
+			value, ok := interfaceValue.(string)
+			if !ok {
+				zap.L().Fatal("Failed to update comment due to type assertion", zap.String("field", "body"))
+			}
+			comment.Body = value
+		}
+	}
+
+	// Update comment in cache
 
 	return nil
 }

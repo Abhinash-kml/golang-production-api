@@ -9,7 +9,6 @@ import (
 	"github.com/abhinash-kml/go-api-server/internal/connections"
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
-	jsonpatch "github.com/evanphx/json-patch/v5"
 	"github.com/redis/go-redis/v9"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
@@ -123,10 +122,8 @@ func (s *LocalUserService) UpdateUser(ctx context.Context, dto model.UserUpdateD
 	ctx, span := s.tracer.Start(ctx, "UpdateUser.UpdateUser")
 	defer span.End()
 
-	patches, _ := jsonpatch.DecodePatch(dto.Patch)
-
 	span.SetAttributes(attribute.Int("user.id", dto.Id),
-		attribute.Int("user.patches", len(patches)))
+		attribute.Int("user.patch.count", len(dto.Patches)))
 
 	err := s.repo.UpdateUser(ctx, dto)
 	if err != nil {

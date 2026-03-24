@@ -204,8 +204,7 @@ func (c *PostsController) PatchPost(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&dto)
 
 	span.SetAttributes(attribute.Int("post.id", dto.Id),
-		attribute.String("post.title", dto.Title),
-		attribute.String("post.body", dto.Body))
+		attribute.Int("post.patch.num", len(dto.Patches)))
 
 	err := c.postservice.UpdatePost(ctx, dto)
 	if err != nil {

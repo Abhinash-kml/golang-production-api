@@ -149,8 +149,7 @@ func (s *LocalPostsService) UpdatePost(ctx context.Context, dto model.PostUpdate
 	defer span.End()
 
 	span.SetAttributes(attribute.Int("post.id", dto.Id),
-		attribute.String("post.title", dto.Title),
-		attribute.String("post.body", dto.Body))
+		attribute.Int("post.patch.num", len(dto.Patches)))
 
 	err := s.repo.UpdatePost(ctx, dto)
 	if err != nil {

@@ -145,7 +145,8 @@ func (c *CommentsController) PatchComment(w http.ResponseWriter, r *http.Request
 	dto := model.CommentUpdateDTO{}
 	json.NewDecoder(r.Body).Decode(&dto)
 
-	// Span attributes as per dto
+	span.SetAttributes(attribute.Int("comment.id", dto.Id),
+		attribute.Int("comment.patch.num", len(dto.Patches)))
 
 	err := c.commentservice.UpdateComment(ctx, dto)
 	if err != nil {

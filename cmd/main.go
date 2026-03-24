@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -19,7 +18,6 @@ import (
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
 	"github.com/abhinash-kml/go-api-server/internal/servers"
 	service "github.com/abhinash-kml/go-api-server/internal/services"
-	"github.com/golang-migrate/migrate"
 	_ "github.com/golang-migrate/migrate/database/postgres"
 	_ "github.com/golang-migrate/migrate/source/file"
 	"github.com/redis/go-redis/v9"
@@ -73,8 +71,8 @@ func main() {
 	commentsTracer := otel.Tracer("comments")
 
 	// Connections
-	postgresdsn := "postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"
-	postgresConnection := connections.NewPostgresConnection(postgresdsn)
+	// postgresdsn := "postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"
+	// postgresConnection := connections.NewPostgresConnection(postgresdsn)
 	redisConnection := connections.NewRedisConnection(&redis.Options{
 		Addr:     "localhost:6379",
 		DB:       0,
@@ -82,36 +80,36 @@ func main() {
 	})
 
 	// Migrations
-	migrateFlag := flag.String("migrate", "none", "Usage: up, down, none (default)")
-	flag.Parse()
-	fmt.Println(migrateFlag) // Dummy
-	m, err := migrate.New(
-		"file://db/migrations",
-		postgresdsn,
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
+	// migrateFlag := flag.String("migrate", "none", "Usage: up, down, none (default)")
+	// flag.Parse()
+	// fmt.Println(migrateFlag) // Dummy
+	// m, err := migrate.New(
+	// 	"file://db/migrations",
+	// 	postgresdsn,
+	// )
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	// Perform schema migration as per action
-	switch *migrateFlag {
-	case "up":
-		if err := m.Up(); err != nil {
-			logger.Fatal("Migrate up failed", zap.Error(err))
-		}
-	case "down":
-		if err := m.Down(); err != nil {
-			logger.Fatal("Migrate down failed", zap.Error(err))
-		}
-	case "none": // Default case do nothing
-	}
+	// // Perform schema migration as per action
+	// switch *migrateFlag {
+	// case "up":
+	// 	if err := m.Up(); err != nil {
+	// 		logger.Fatal("Migrate up failed", zap.Error(err))
+	// 	}
+	// case "down":
+	// 	if err := m.Down(); err != nil {
+	// 		logger.Fatal("Migrate down failed", zap.Error(err))
+	// 	}
+	// case "none": // Default case do nothing
+	// }
 
 	// Repository
-	userrepository := repository.NewPostgresUserRepository(postgresConnection, usersTracer)
+	userrepository := repository.NewInMemoryUsersRepository(usersTracer)
 	userrepository.Setup()
-	postsrepository := repository.NewPostgresPostRepository(postgresConnection, postsTracer)
+	postsrepository := repository.NewInMemoryPostsRepository(postsTracer)
 	postsrepository.Setup()
-	commentrepository := repository.NewPostgresCommentRepository(postgresConnection, commentsTracer)
+	commentrepository := repository.NewInMemoryCommentsRepository(commentsTracer)
 	commentrepository.Setup()
 
 	// Service

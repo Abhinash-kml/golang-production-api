@@ -755,3 +755,54 @@
 {"level":"info","ts":"2026-03-23T05:17:54.530+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
 {"level":"info","ts":"2026-03-23T05:17:54.540+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
 {"level":"info","ts":"2026-03-23T05:17:56.807+0530","caller":"servers/http.go:401","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-25T04:54:37.386+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-25T04:54:39.446+0530","caller":"servers/http.go:401","msg":"Server started successfully.","Address":":"}
+{"level":"info","ts":"2026-03-25T04:56:47.669+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-25T04:56:49.671+0530","caller":"servers/http.go:401","msg":"Server started successfully.","Address":":"}
+{"level":"info","ts":"2026-03-25T04:56:57.737+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-25T04:56:59.739+0530","caller":"servers/http.go:401","msg":"Server started successfully.","Address":":"}
+{"level":"info","ts":"2026-03-25T04:57:50.588+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-25T04:57:52.590+0530","caller":"servers/http.go:401","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-25T04:58:18.803+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:57715","Method":"GET","Path":"GET /login"}
+{"level":"debug","ts":"2026-03-25T04:58:18.804+0530","caller":"servers/http.go:200","msg":"Access Token","Duration":10}
+{"level":"debug","ts":"2026-03-25T04:58:18.804+0530","caller":"servers/http.go:201","msg":"Refresh Token","Duration":10080}
+{"level":"debug","ts":"2026-03-25T04:58:18.805+0530","caller":"servers/http.go:237","msg":"Auth Response","Info":"{AccessToken:eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJteS1hcHAiLCJzdWIiOiIxMjMiLCJhdWQiOlsid3d3Lm15YXBwLmNvbSJdLCJleHAiOjE3NzQzOTU0OTgsIm5iZiI6MTc3NDM5NDg5OCwiaWF0IjoxNzc0Mzk0ODk4LCJqdGkiOiJ0ZXN0aWQifQ.Z-61EyOZMRQC20W7TL5JW69llE1Ej30W--hmibJ8_MWksAYbp4ioZUD8R39_6P7MzS6g2CgpK0Jhc_97j0UerA TokenType:Bearer ExpiresIn:10 RefreshToken:eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJteS1hcHAiLCJzdWIiOiIxMjMiLCJhdWQiOlsid3d3Lm15YXBwLmNvbSJdLCJleHAiOjE3NzQ5OTk2OTgsIm5iZiI6MTc3NDM5NDg5OCwiaWF0IjoxNzc0Mzk0ODk4LCJqdGkiOiJ0ZXN0aWQifQ.Ug_CRpyNJLWKqvVET2vAW-bZlbsMQzI5fusT4J9WtXB0hNsM5JYQQ6IMDv0yNiltcTQyt2JUcRbqFIFiYduCYA Scope:null}"}
+{"level":"info","ts":"2026-03-25T04:59:04.685+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:64737","Method":"PATCH","Path":"PATCH /users"}
+{"level":"info","ts":"2026-03-25T04:59:16.962+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:64936","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-03-25T04:59:16.966+0530","caller":"services/user_service.go:204","msg":"Cache hit","id":50}
+{"level":"info","ts":"2026-03-25T04:59:32.985+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:65297","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-03-25T04:59:32.987+0530","caller":"services/user_service.go:204","msg":"Cache hit","id":50}
+{"level":"info","ts":"2026-03-25T04:59:33.574+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:65308","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-03-25T04:59:33.576+0530","caller":"services/user_service.go:204","msg":"Cache hit","id":50}
+{"level":"info","ts":"2026-03-25T05:00:17.809+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:54361","Method":"PATCH","Path":"PATCH /users"}
+{"level":"info","ts":"2026-03-25T05:00:36.863+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:54673","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-03-25T05:00:36.867+0530","caller":"services/user_service.go:80","msg":"Cache miss","id":50}
+{"level":"info","ts":"2026-03-25T05:00:36.867+0530","caller":"repositories/user_repository.go:93","msg":"Repository","address":{"id":50,"name":"Gaurav Malhotra","city":"Patiala","state":"Punjab","country":"India"}}
+{"level":"info","ts":"2026-03-25T05:04:34.353+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:50637","Method":"PATCH","Path":"PATCH /users"}
+{"level":"info","ts":"2026-03-25T05:04:42.303+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:50769","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-03-25T05:04:42.305+0530","caller":"services/user_service.go:80","msg":"Cache miss","id":50}
+{"level":"info","ts":"2026-03-25T05:04:42.305+0530","caller":"repositories/user_repository.go:93","msg":"Repository","address":{"id":50,"name":"Meow Meow","city":"MeowCity","state":"MeowState","country":"MeowCountry"}}
+{"level":"info","ts":"2026-03-25T05:21:40.709+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-25T05:21:42.711+0530","caller":"servers/http.go:401","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-25T05:21:55.356+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:65378","Method":"GET","Path":"GET /posts/{id}"}
+{"level":"debug","ts":"2026-03-25T05:21:55.359+0530","caller":"services/post_service.go:76","msg":"Cache miss","id":50}
+{"level":"info","ts":"2026-03-25T05:22:32.142+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:50226","Method":"PATCH","Path":"PATCH /posts"}
+{"level":"info","ts":"2026-03-25T05:22:42.110+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:50390","Method":"GET","Path":"GET /posts/{id}"}
+{"level":"debug","ts":"2026-03-25T05:22:42.113+0530","caller":"services/post_service.go:225","msg":"Cache hit","id":50}
+{"level":"info","ts":"2026-03-25T05:23:06.319+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:63920","Method":"GET","Path":"GET /posts/{id}"}
+{"level":"debug","ts":"2026-03-25T05:23:06.322+0530","caller":"services/post_service.go:76","msg":"Cache miss","id":50}
+{"level":"info","ts":"2026-03-25T05:23:21.958+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:64277","Method":"GET","Path":"GET /comments/{id}"}
+{"level":"debug","ts":"2026-03-25T05:23:21.960+0530","caller":"services/comment_service.go:76","msg":"Cache miss","id":50}
+{"level":"info","ts":"2026-03-25T05:23:32.798+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:64452","Method":"GET","Path":"GET /comments/{id}"}
+{"level":"debug","ts":"2026-03-25T05:23:32.801+0530","caller":"services/comment_service.go:76","msg":"Cache miss","id":30}
+{"level":"info","ts":"2026-03-25T05:23:59.077+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:56446","Method":"GET","Path":"GET /comments/{id}"}
+{"level":"debug","ts":"2026-03-25T05:23:59.082+0530","caller":"services/comment_service.go:225","msg":"Cache hit","id":24}
+{"level":"info","ts":"2026-03-25T05:24:25.446+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:56882","Method":"PATCH","Path":"PATCH /comments"}
+{"level":"info","ts":"2026-03-25T05:24:32.776+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:57003","Method":"GET","Path":"GET /comments/{id}"}
+{"level":"debug","ts":"2026-03-25T05:24:32.779+0530","caller":"services/comment_service.go:225","msg":"Cache hit","id":24}
+{"level":"info","ts":"2026-03-25T05:24:47.381+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:52345","Method":"GET","Path":"GET /comments/{id}"}
+{"level":"debug","ts":"2026-03-25T05:24:47.383+0530","caller":"services/comment_service.go:76","msg":"Cache miss","id":24}
+{"level":"info","ts":"2026-03-25T05:24:56.892+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:61832","Method":"GET","Path":"GET /comments/{id}"}
+{"level":"debug","ts":"2026-03-25T05:24:56.895+0530","caller":"services/comment_service.go:76","msg":"Cache miss","id":23}
+{"level":"info","ts":"2026-03-25T05:25:00.045+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:61885","Method":"GET","Path":"GET /comments/{id}"}
+{"level":"debug","ts":"2026-03-25T05:25:00.046+0530","caller":"services/comment_service.go:225","msg":"Cache hit","id":24}

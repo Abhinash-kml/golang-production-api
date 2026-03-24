@@ -162,7 +162,8 @@ func (s *LocalCommentService) UpdateComment(ctx context.Context, dto model.Comme
 	ctx, span := s.tracer.Start(ctx, "UpdateComment.Service")
 	defer span.End()
 
-	// Span attributes as per update dto
+	span.SetAttributes(attribute.Int("comment.id", dto.Id),
+		attribute.Int("comment.patch.num", len(dto.Patches)))
 
 	err := s.repo.UpdateComment(ctx, dto)
 	if err != nil {

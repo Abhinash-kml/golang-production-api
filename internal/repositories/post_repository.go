@@ -13,6 +13,7 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	oteltracer "go.opentelemetry.io/otel/trace"
+	"go.uber.org/zap"
 )
 
 var ErrNoPosts = errors.New("No posts in repository")
@@ -161,12 +162,39 @@ func (e *InMemoryPostsRepository) UpdatePost(ctx context.Context, dto model.Post
 	ctx, span := e.tracer.Start(ctx, "UpdatePost.Repository")
 	defer span.End()
 
+	span.SetAttributes(attribute.Int("post.id", dto.Id),
+		attribute.Int("post.patch.num", len(dto.Patches)))
+
+	var post *model.Post
 	for index := range e.posts {
 		if e.posts[index].Id == dto.Id {
-			// e.posts[index] = model.Post(dto)
+			post = &e.posts[index]
 			break
 		}
 	}
+
+	for index := range dto.Patches {
+		current := dto.Patches[index]
+		field := current.Field
+		interfaceValue := current.Value
+
+		switch field {
+		case "title":
+			value, ok := interfaceValue.(string)
+			if !ok {
+				zap.L().Fatal("Failed to update user due to type assertion", zap.String("field", "title"))
+			}
+			post.Title = value
+		case "body":
+			value, ok := interfaceValue.(string)
+			if !ok {
+				zap.L().Fatal("Failed to update user due to type assertion", zap.String("field", "body"))
+			}
+			post.Body = value
+		}
+	}
+
+	// Update post in cache
 
 	return nil
 }

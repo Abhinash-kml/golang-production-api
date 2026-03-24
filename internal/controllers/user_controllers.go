@@ -198,6 +198,10 @@ func (c *UsersController) PatchUser(w http.ResponseWriter, r *http.Request) {
 
 	dto := model.UserUpdateDTO{}
 	json.NewDecoder(r.Body).Decode(&dto)
+
+	span.SetAttributes(attribute.Int("user.id", dto.Id),
+		attribute.Int("user.patch.num", len(dto.Patches)))
+
 	err := c.userservice.UpdateUser(ctx, dto)
 	if err != nil {
 		fmt.Println(err)

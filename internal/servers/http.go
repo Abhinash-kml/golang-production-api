@@ -4,10 +4,10 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
-	"flag"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/abhinash-kml/go-api-server/config"
@@ -56,7 +56,7 @@ type CustomHttpServer struct {
 
 func NewHttpWithConfig(config *config.HttpConfig, authConfig *config.AuthTokenConfig, options ...FunctionalOption) *CustomHttpServer {
 	internal := &http.Server{
-		Addr:           fmt.Sprintf(":%s", flag.Arg(0)),
+		Addr:           fmt.Sprintf(":%s", os.Args[1]),
 		IdleTimeout:    time.Second * time.Duration(config.IdleTimeout),
 		ReadTimeout:    time.Second * time.Duration(config.ReadTimeout),
 		WriteTimeout:   time.Second * time.Duration(config.WriteTimeout),

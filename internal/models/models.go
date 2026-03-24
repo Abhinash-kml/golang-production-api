@@ -1,7 +1,6 @@
 package model
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -35,8 +34,8 @@ type UserDeleteDTO struct {
 }
 
 type UserUpdateDTO struct {
-	Id    int             `json:"id"`
-	Patch json.RawMessage `json:"patch"`
+	Id      int     `json:"id"`
+	Patches []Patch `json:"patch"`
 }
 
 type UserReplaceDTO struct {
@@ -102,9 +101,8 @@ type PostDeleteDTO struct {
 }
 
 type PostUpdateDTO struct {
-	Id    int    `json:"id"`
-	Title string `json:"title"`
-	Body  string `json:"body"`
+	Id      int     `json:"id"`
+	Patches []Patch `json:"patch"`
 }
 
 type PostReplaceDTO struct {
@@ -145,8 +143,8 @@ type CommentDeleteDTO struct {
 }
 
 type CommentUpdateDTO struct {
-	Id   int    `json:"id"`
-	Body string `json:"body"`
+	Id      int     `json:"id"`
+	Patches []Patch `json:"patch"`
 }
 
 type CommentReplaceDTO struct {
@@ -218,4 +216,9 @@ type CustomJwtClaims struct {
 	Role    string `json:"role"`
 	Version string `json:"version"`
 	jwt.RegisteredClaims
+}
+
+type Patch struct {
+	Field string `json:"field"`
+	Value any    `json:"value"`
 }
