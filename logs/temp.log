@@ -836,3 +836,9 @@
 {"level":"info","ts":"2026-03-26T06:05:49.057+0530","caller":"servers/http.go:401","msg":"Server started successfully.","Address":":9000"}
 {"level":"info","ts":"2026-03-26T06:05:51.471+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:57201","Method":"PATCH","Path":"PATCH /users"}
 {"level":"fatal","ts":"2026-03-26T06:05:51.473+0530","caller":"repositories/sql_user_repository.go:132","msg":"Failed to execute sql query","error":"pq: syntax error at or near \",\" at column 26 (42601)"}
+{"level":"info","ts":"2026-03-26T06:11:45.021+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"info","ts":"2026-03-26T06:11:45.031+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-03-26T06:11:47.120+0530","caller":"servers/http.go:401","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-03-26T06:11:53.464+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:61070","Method":"PATCH","Path":"PATCH /users"}
+{"level":"info","ts":"2026-03-26T06:12:11.747+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:51685","Method":"GET","Path":"GET /users/{id}"}
+{"level":"debug","ts":"2026-03-26T06:12:11.750+0530","caller":"services/user_service.go:80","msg":"Cache miss","id":50}

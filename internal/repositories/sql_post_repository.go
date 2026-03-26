@@ -4,8 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"os"
 
+	"github.com/Masterminds/squirrel"
 	"github.com/abhinash-kml/go-api-server/internal/connections"
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	"go.opentelemetry.io/otel/attribute"
@@ -135,9 +137,31 @@ func (r *PostgresPostRepository) DeletePost(ctx context.Context, id int) error {
 }
 
 // TODO: Implement as per JSON Merge Patch
-func (r *PostgresPostRepository) UpdatePost(ctx context.Context, post model.PostUpdateDTO) error {
+func (r *PostgresPostRepository) UpdatePost(ctx context.Context, dto model.PostUpdateDTO) error {
 	ctx, span := r.tracer.Start(ctx, "UpdatePost.Repository")
 	defer span.End()
+
+	span.SetAttributes(attribute.Int("post.id", dto.Id),
+		attribute.Int("post.patch.num", len(dto.Patches)))
+
+	// Read fields from patches
+	fields := make(map[string]any)
+	for index := range dto.Patches {
+		current := dto.Patches[index]
+		fields[current.Field] = current.Value
+	}
+
+	// Build one update query to prevent multiple calls to db
+	squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar)
+	query := squirrel.Update("posts").SetMap(fields).Where(squirrel.Eq{"id": dto.Id})
+	sqlString, args, _ := query.PlaceholderFormat(squirrel.Dollar).ToSql()
+	fmt.Println(sqlString)
+
+	// Execute the update call
+	_, err := r.db.Exec(sqlString, args...)
+	if err != nil {
+		zap.L().Fatal("Failed to execute sql query", zap.Error(err))
+	}
 
 	return nil
 }
