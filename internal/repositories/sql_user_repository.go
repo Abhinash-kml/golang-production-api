@@ -4,11 +4,14 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"os"
 
+	"github.com/Masterminds/squirrel"
 	"github.com/abhinash-kml/go-api-server/internal/connections"
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	_ "github.com/lib/pq"
+	"go.opentelemetry.io/otel/attribute"
 	oteltracer "go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 )
@@ -103,9 +106,31 @@ func (r *PostgresUserRepository) InsertUser(ctx context.Context, user model.User
 	return nil
 }
 
-func (r *PostgresUserRepository) UpdateUser(ctx context.Context, user model.UserUpdateDTO) error {
+func (r *PostgresUserRepository) UpdateUser(ctx context.Context, dto model.UserUpdateDTO) error {
 	ctx, span := r.tracer.Start(ctx, "UpdateUser.Repository")
 	defer span.End()
+
+	span.SetAttributes(attribute.Int("user.id", dto.Id),
+		attribute.Int("user.patch.num", len(dto.Patches)))
+
+	// Read fields from patches
+	fields := make(map[string]any)
+	for index := range dto.Patches {
+		current := dto.Patches[index]
+		fields[current.Field] = current.Value
+	}
+
+	// Build one update query to prevent multiple calls to db
+	squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar)
+	query := squirrel.Update("users").SetMap(fields).Where(squirrel.Eq{"id": dto.Id})
+	sqlString, args, _ := query.PlaceholderFormat(squirrel.Dollar).ToSql()
+	fmt.Println(sqlString)
+
+	// Execute the update call
+	_, err := r.db.Exec(sqlString, args...)
+	if err != nil {
+		zap.L().Fatal("Failed to execute sql query", zap.Error(err))
+	}
 
 	return nil
 }
