@@ -13,6 +13,7 @@ import (
 	model "github.com/abhinash-kml/go-api-server/internal/models"
 	repository "github.com/abhinash-kml/go-api-server/internal/repositories"
 	service "github.com/abhinash-kml/go-api-server/internal/services"
+	"github.com/go-playground/validator/v10"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
@@ -175,12 +176,20 @@ func (c *UsersController) PostUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Validator
+	validate := validator.New(validator.WithRequiredStructEnabled())
+	err := validate.Struct(user)
+	if err != nil {
+		SendProblemDetails(w, ProblemValidationError, nil, r.URL.String())
+		return
+	}
+
 	span.SetAttributes(attribute.String("user.name", user.Name),
 		attribute.String("user.city", user.City),
 		attribute.String("user.state", user.State),
 		attribute.String("user.country", user.Country))
 
-	err := c.userservice.InsertUser(ctx, user)
+	err = c.userservice.InsertUser(ctx, user)
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, "error inserting new user")

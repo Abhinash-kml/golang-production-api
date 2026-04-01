@@ -23,10 +23,10 @@ type UserRequestDTO struct {
 type UserResponseDTO = User
 
 type UserCreateDTO struct {
-	Name    string `json:"name"`
-	City    string `json:"city"`
-	State   string `json:"state"`
-	Country string `json:"country"`
+	Name    string `json:"name" validate:"required"`
+	City    string `json:"city" validate:"required"`
+	State   string `json:"state" validate:"required"`
+	Country string `json:"country" validate:"required"`
 }
 
 type UserDeleteDTO struct {
