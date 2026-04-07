@@ -844,3 +844,8 @@
 {"level":"debug","ts":"2026-03-26T06:12:11.750+0530","caller":"services/user_service.go:80","msg":"Cache miss","id":50}
 {"level":"info","ts":"2026-04-01T19:05:37.209+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
 {"level":"fatal","ts":"2026-04-01T19:05:39.326+0530","caller":"connections/redis.go:20","msg":"Redis connection failed","error":"dial tcp [::1]:6379: connectex: No connection could be made because the target machine actively refused it."}
+{"level":"info","ts":"2026-04-01T19:06:24.549+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"info","ts":"2026-04-01T19:06:24.559+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-04-01T19:06:26.810+0530","caller":"servers/http.go:401","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-04-01T19:06:32.762+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:54889","Method":"POST","Path":"POST /users"}
+{"level":"info","ts":"2026-04-01T19:06:51.087+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:55226","Method":"POST","Path":"POST /users"}
