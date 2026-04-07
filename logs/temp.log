@@ -849,3 +849,13 @@
 {"level":"info","ts":"2026-04-01T19:06:26.810+0530","caller":"servers/http.go:401","msg":"Server started successfully.","Address":":9000"}
 {"level":"info","ts":"2026-04-01T19:06:32.762+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:54889","Method":"POST","Path":"POST /users"}
 {"level":"info","ts":"2026-04-01T19:06:51.087+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:55226","Method":"POST","Path":"POST /users"}
+{"level":"info","ts":"2026-04-03T15:51:51.912+0530","caller":"connections/postgres.go:46","msg":"Connected to postgresql database","dsn":"postgresql://postgres:Abx305@localhost:5432/goapp?sslmode=disable"}
+{"level":"info","ts":"2026-04-03T15:51:51.925+0530","caller":"connections/redis.go:45","msg":"Connected to redis database","address":"localhost:6379","db":0}
+{"level":"info","ts":"2026-04-03T15:51:54.198+0530","caller":"servers/http.go:401","msg":"Server started successfully.","Address":":9000"}
+{"level":"info","ts":"2026-04-03T15:52:25.028+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:54988","Method":"GET","Path":"GET /users"}
+{"level":"info","ts":"2026-04-03T17:09:39.904+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:54905","Method":"GET","Path":"GET /users"}
+{"level":"info","ts":"2026-04-03T17:09:40.434+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:54922","Method":"GET","Path":"GET /users"}
+{"level":"info","ts":"2026-04-03T17:09:40.791+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:54931","Method":"GET","Path":"GET /users"}
+{"level":"info","ts":"2026-04-03T18:00:33.660+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:54458","Method":"GET","Path":"GET /users"}
+{"level":"info","ts":"2026-04-03T18:00:34.096+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:54480","Method":"GET","Path":"GET /users"}
+{"level":"info","ts":"2026-04-03T18:00:34.451+0530","caller":"middlewares/logging.go:14","msg":"Connection","IP":"127.0.0.1:54502","Method":"GET","Path":"GET /users"}
